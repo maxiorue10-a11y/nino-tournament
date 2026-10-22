@@ -1,0 +1,7 @@
+respaldos/
+state*.json
+node_modules/
+public/heroes/
+public/picks/
+public/bans/
+public/logos/

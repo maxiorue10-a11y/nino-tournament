@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Programación</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Montserrat:wght@600;700;800;900&display=swap">
+<style>
+:root{--gold:#e9b949;--gold2:#f7dc8c;--tinta:#111;--papel:#f2f2f0}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:var(--tinta);
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+#app{position:relative;width:1920px;height:1080px;overflow:hidden}
+
+/* ---------- fondo ---------- */
+#fondo{position:absolute;inset:0;background:linear-gradient(118deg,#fff 0 38%,#ededeb 38% 100%)}
+#fondo i{position:absolute;display:block}
+.d1{top:-60px;left:-120px;width:420px;height:1400px;transform:rotate(18deg);
+ background:repeating-linear-gradient(90deg,rgba(0,0,0,.045) 0 2px,transparent 2px 70px)}
+.d2{top:200px;left:-40px;width:26px;height:230px;transform:skewX(-18deg);background:var(--gold)}
+.d3{top:430px;left:-55px;width:14px;height:150px;transform:skewX(-18deg);background:#2b3bd6}
+.d4{top:150px;right:-60px;width:30px;height:420px;transform:skewX(-18deg);background:var(--gold);opacity:.55}
+.d5{bottom:-40px;right:120px;width:18px;height:300px;transform:skewX(-18deg);background:#c8102e;opacity:.5}
+.d6{top:240px;left:300px;width:140px;height:26px;transform:skewX(-18deg);background:#2b3bd6}
+
+/* ---------- barra superior ---------- */
+#cinta{position:absolute;left:0;top:0;width:1920px;height:54px;display:flex;align-items:center;
+ padding:0 34px;background:#fff;border-bottom:1px solid #e2e2de;font-family:'Montserrat',sans-serif}
+#cinta b{font-size:19px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+#cinta span{font-size:19px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#6b6b6b}
+#cinta .der{margin-left:auto;display:flex;align-items:center;gap:10px}
+.pl{display:inline-block;color:var(--tinta);font-size:17px;letter-spacing:-3px}
+
+/* ---------- encabezado ---------- */
+#hd{position:absolute;left:0;top:54px;width:1920px;height:186px;background:#fff;border-bottom:2px solid #dedede}
+#hd:after{content:'';position:absolute;inset:0;pointer-events:none;
+ background:repeating-linear-gradient(108deg,rgba(0,0,0,.035) 0 3px,transparent 3px 90px)}
+.elogo{position:absolute;left:34px;top:8px;width:170px;height:170px;display:grid;place-items:center}
+.elogo img{max-width:100%;max-height:100%;object-fit:contain}
+.elogo span{font-size:52px;font-weight:800;color:var(--gold)}
+.ttl{position:absolute;left:218px;top:16px;right:620px}
+.ttl b{display:block;font-size:84px;font-weight:800;font-style:italic;line-height:.92;letter-spacing:1px;
+ text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ color:var(--gold);-webkit-text-stroke:2px #c9972a;text-shadow:0 4px 0 rgba(0,0,0,.12)}
+.chips{display:flex;margin-top:8px}
+.chips b{font-size:28px;font-weight:800;font-style:normal;letter-spacing:2px;text-transform:uppercase;padding:5px 26px;
+ white-space:nowrap;-webkit-text-stroke:0}
+.chips .c1{background:#111;color:#fff;clip-path:polygon(0 0,100% 0,calc(100% - 16px) 100%,0 100%)}
+.chips .c2{background:var(--gold);color:#111;margin-left:-10px;padding-left:30px;
+ clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
+.qr{position:absolute;right:368px;top:28px;width:160px;text-align:center}
+.qr small{display:block;font-family:'Montserrat',sans-serif;font-size:17px;font-weight:700;
+ text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.qr .img{width:96px;height:96px;margin:0 auto;display:grid;place-items:center;overflow:hidden;background:#fff}
+.qr .img img{width:100%;height:100%;object-fit:contain}
+.spon{position:absolute;right:34px;top:28px;width:300px}
+.spon .lb{min-height:34px;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--gold);color:#111;
+ font-size:19px;line-height:1.1;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+ padding:4px 8px}
+.spon .bx{height:84px;background:#fff;border:1px solid #e6e6e6;border-top:0;display:grid;place-items:center;padding:8px}
+.spon .bx img{max-width:92%;max-height:68px;object-fit:contain}
+
+/* ---------- panel izquierdo ---------- */
+#izq{position:absolute;left:34px;top:286px;width:600px}
+.ph{height:62px;line-height:62px;text-align:center;background:linear-gradient(180deg,var(--gold2),var(--gold));
+ clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,22px 100%);
+ font-size:40px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#111}
+.foto{height:434px;background:linear-gradient(#f7f7f5,#e8e8e4);border-left:1px solid #e0e0dc;border-right:1px solid #e0e0dc;
+ display:flex;align-items:flex-end;justify-content:center;overflow:hidden;position:relative}
+.foto .gr{display:flex;align-items:flex-end;justify-content:center;gap:0;height:100%;width:100%}
+.foto .p{flex:1;min-width:0;height:100%;display:flex;align-items:flex-end;justify-content:center;position:relative;overflow:hidden}
+.foto .p img{width:100%;height:100%;object-fit:contain;object-position:bottom}
+.foto .p svg{width:72%;height:76%;fill:#c9c9c4}
+.foto .uno img{width:74%}
+.nombres{min-height:44px;background:var(--gold);display:flex;align-items:center;justify-content:center;gap:12px;
+ padding:5px 14px;font-size:26px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#111;
+ flex-wrap:wrap;line-height:1.1}
+.nombres i{font-style:normal;opacity:.6}
+
+/* ---------- cuenta regresiva ---------- */
+#cd{position:absolute;left:34px;top:838px;width:600px;text-align:center}
+#cd small{display:block;font-family:'Montserrat',sans-serif;font-size:34px;font-weight:800;
+ letter-spacing:.5px;text-transform:uppercase}
+#cd small em{font-style:normal;font-weight:600}
+#cd b{display:block;font-size:136px;font-weight:800;line-height:.92;letter-spacing:-2px;
+ font-variant-numeric:tabular-nums;margin-top:2px}
+
+/* ---------- ventana ---------- */
+#win{position:absolute;left:646px;top:256px;width:1246px;height:700px;border:2px solid #d6d6d2;background:transparent}
+#win.feat{background:linear-gradient(#fff,#efefec)}
+.fm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px}
+.fm .fl{font-size:32px;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:#666}
+.fr{display:flex;align-items:center;justify-content:center;gap:46px;width:100%;padding:0 40px}
+.ft{flex:1;max-width:420px;text-align:center}
+.ft .fg{height:210px;display:grid;place-items:center;margin-bottom:16px}
+.ft .fg img{max-width:100%;max-height:100%;object-fit:contain}
+.ft .fg span{font-size:96px;font-weight:800;color:#d8d8d4}
+.ft b{display:block;font-size:48px;font-weight:800;text-transform:uppercase;line-height:1.05;
+ overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.fsc{font-family:'Montserrat',sans-serif;font-size:96px;font-weight:900;line-height:1}
+.fsc span{color:var(--gold)}
+
+/* ---------- partidas del día (panel izquierdo) ---------- */
+.mlist{border-left:1px solid #e0e0dc;border-right:1px solid #e0e0dc;background:#fbfbf9;padding:12px;
+ display:flex;flex-direction:column;gap:12px;height:434px;overflow:hidden}
+.mc{background:#fff;border:1px solid #e4e4e0;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.mch{display:flex;justify-content:space-between;align-items:center;padding:5px 12px;background:#111;color:#fff;
+ font-size:21px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.mch em{font-style:normal;color:var(--gold)}
+.mt2{display:flex;align-items:center;gap:11px;padding:8px 12px;border-top:1px solid #eee}
+.mt2 i{width:5px;height:40px;flex:none;background:var(--c)}
+.mt2 .lg{width:48px;height:42px;flex:none;display:grid;place-items:center;overflow:hidden}
+.mt2 .lg img{max-width:100%;max-height:100%;object-fit:contain}
+.mt2 b{flex:1;min-width:0;font-size:28px;font-weight:700;text-transform:uppercase;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt2 em{font-style:normal;font-size:30px;font-weight:800}
+
+/* ---------- pie ---------- */
+#tick{position:absolute;left:630px;top:1002px;width:900px;height:52px;display:flex}
+#tick .tg{flex:none;max-width:330px;padding:0 42px 0 26px;background:#111;color:#fff;display:flex;align-items:center;
+ font-size:27px;font-weight:800;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;overflow:hidden;
+ clip-path:polygon(0 0,100% 0,calc(100% - 26px) 100%,0 100%)}
+#tick .tx{flex:1;min-width:0;margin-left:-24px;background:var(--gold);display:flex;align-items:center;overflow:hidden;
+ clip-path:polygon(26px 0,100% 0,calc(100% - 26px) 100%,0 100%)}
+#tick .tx div{white-space:nowrap;font-size:28px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+ color:#111;animation:sl 24s linear infinite;padding-left:100%}
+@keyframes sl{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+#lema{position:absolute;left:34px;top:1016px;display:flex;align-items:center;gap:10px;
+ font-family:'Montserrat',sans-serif;font-size:21px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+#lema b{font-weight:800}#lema span{font-weight:500;color:#555}
+#lemad{position:absolute;right:34px;top:1016px;display:flex;align-items:center;gap:10px;
+ font-family:'Montserrat',sans-serif;font-size:21px;font-weight:800;text-transform:uppercase}
+.fade{animation:fd .4s ease-out}
+@keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style></head><body>
+<div id="app">
+  <div id="fondo"><i class="d1"></i><i class="d2"></i><i class="d3"></i><i class="d4"></i><i class="d5"></i><i class="d6"></i></div>
+  <div id="cinta"></div><div id="hd"></div>
+  <div id="izq"></div><div id="cd"></div><div id="win"></div>
+  <div id="tick"></div><div id="lema"></div><div id="lemad"></div>
+</div>
+<script src="theme.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SIL='<svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4.2"/><path d="M3.5 24c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5z"/></svg>';
+const FLE='<span class="pl">&#9654;&#9654;</span>';
+let S=null,vista=0,spi=0;
+
+/* ---------- cuenta regresiva ---------- */
+function faltan(at){if(!at)return null;const[h,m]=at.split(':').map(Number);if(isNaN(h))return null;
+  const d=new Date(),o=new Date();o.setHours(h,m,0,0);
+  let s=Math.round((o-d)/1000);if(s<-3600)s+=86400;return s}
+function textoReloj(s){if(s<=0)return null;
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),g=s%60;
+  return (h?h+':':'')+String(m).padStart(2,'0')+':'+String(g).padStart(2,'0')}
+
+/* ---------- vistas que rotan ---------- */
+function vistas(){const v=[];
+  ['hosts','casters','analysts'].forEach((k,i)=>{if(S.show[k]&&S.talent[i].people.some(p=>p.name))v.push({t:'tal',i})});
+  const ms=S.matches.filter(m=>m.on);
+  if(S.show.matches&&ms.length){const n=Math.max(1,S.perPage||2);
+    for(let i=0;i<ms.length;i+=n)v.push({t:'mat',lista:ms.slice(i,i+n)})}
+  return v}
+
+/* ---------- dibujo ---------- */
+function pintarCinta(){const E=S.ev;
+  $('cinta').innerHTML=`${FLE}&nbsp;<b>${esc((E.title||'').split(' ')[0]||'Torneo')}</b>&nbsp;<span>${esc((E.title||'').split(' ').slice(1).join(' '))}</span>&nbsp;${FLE}
+    <span class="der">${FLE}&nbsp;<b style="font-size:19px">${esc(E.sub||'')}</b>&nbsp;<span>${esc(E.stage||'')}</span>&nbsp;&#10033;</span>`}
+
+function pintarHd(){const E=S.ev,sp=sponsorActual();
+  $('hd').innerHTML=`
+   <div class="elogo">${E.logo?`<img src="${E.logo}">`:`<span>${esc((E.title||'ML').slice(0,2))}</span>`}</div>
+   <div class="ttl"><b>${esc(E.title||'Torneo')}</b>
+     <div class="chips">${E.sub?`<b class="c1">${esc(E.sub)}</b>`:''}${E.stage?`<b class="c2">${esc(E.stage)}</b>`:''}</div></div>
+   ${E.qr?`<div class="qr"><small>${esc(E.qrLabel||'')}</small><div class="img"><img src="${E.qr}"></div></div>`:''}
+   ${S.sw.sponsor&&(sp.etq||sp.logo)?`<div class="spon"><div class="lb">${esc(sp.etq||'')}</div>
+     <div class="bx">${sp.logo?`<img src="${sp.logo}">`:''}</div></div>`:''}`}
+
+function pintarIzq(){const V=vistas();
+  if(!V.length){$('izq').style.display='none';return}
+  $('izq').style.display='';const v=V[vista%V.length];
+  if(v.t==='tal'){const T=S.talent[v.i],g=T.people.filter(p=>p.name);
+    $('izq').innerHTML=`<div class="ph">${esc(T.title)}</div>
+     <div class="foto"><div class="gr fade ${g.length===1?'uno':''}">${g.map(p=>`<span class="p">${p.photo?`<img src="${p.photo}">`:SIL}</span>`).join('')}</div></div>
+     <div class="nombres">${g.map(p=>esc(p.name)).join(' <i>-</i> ')}</div>`}
+  else{$('izq').innerHTML=`<div class="ph">Partidas de hoy</div>
+     <div class="mlist fade">${v.lista.map(m=>`<div class="mc">
+       <div class="mch"><span>${esc(m.label)}</span><em>${esc(m.time)}${m.bo?' · BO'+esc(m.bo):''}</em></div>
+       ${m.teams.map((t,k)=>`<div class="mt2" style="--c:${colorLado(k,k?'#ff3d55':'#2f80ff')}"><i></i>
+         <span class="lg">${t.logo?`<img src="${t.logo}">`:''}</span>
+         <b>${esc(t.name)||'Por definir'}</b><em>${esc(t.score)}</em></div>`).join('')}</div>`).join('')}</div>
+     <div class="nombres">${esc(S.ev.stage||'Programación')}</div>`}}
+
+function pintarCd(){const C=S.cd;
+  if(!S.sw.countdown||!C.at){$('cd').style.display='none';return}
+  $('cd').style.display='';const s=faltan(C.at),t=s===null?null:textoReloj(s);
+  const et=esc(t?C.label:C.end),p=et.lastIndexOf(' ');
+  $('cd').innerHTML=t
+    ?`<small>${p>0?et.slice(0,p)+' <em>'+et.slice(p+1)+'</em>':et}</small><b>${t}</b>`
+    :`<b style="font-size:74px">${et}</b>`}
+
+function pintarWin(){const w=$('win'),d=S.matches.find(m=>m.on);
+  if(S.main==='featured'&&d){w.className='feat';
+    const eq=t=>`<div class="ft"><div class="fg">${t.logo?`<img src="${t.logo}">`:`<span>${esc((t.name||'?')[0])}</span>`}</div><b>${esc(t.name)||'Por definir'}</b></div>`;
+    w.innerHTML=`<div class="fm"><div class="fl">${esc(d.label)} · ${esc(d.time)}${d.bo?' · BO'+esc(d.bo):''}</div>
+      <div class="fr">${eq(d.teams[0])}
+        <div class="fsc">${esc(d.teams[0].score||'0')} <span>–</span> ${esc(d.teams[1].score||'0')}</div>
+        ${eq(d.teams[1])}</div></div>`}
+  else{w.className='';w.innerHTML=''}
+  if(w.className==='feat'){$('fondo').style.clipPath='none';return}
+  const r=w.getBoundingClientRect(),W=1920,H=1080;
+  const x1=(r.left/W*100).toFixed(3)+'%',x2=(r.right/W*100).toFixed(3)+'%';
+  const y1=(r.top/H*100).toFixed(3)+'%',y2=(r.bottom/H*100).toFixed(3)+'%';
+  $('fondo').style.clipPath=`polygon(0 0,100% 0,100% ${y1},${x1} ${y1},${x1} ${y2},${x2} ${y2},${x2} ${y1},100% ${y1},100% 100%,0 100%)`}
+
+function pintarPie(){
+  if(S.sw.ticker&&S.ticker){$('tick').style.display='';
+    const tg=esc(S.tickerTag||S.ev.sub||S.ev.title||'');
+    if($('tick').dataset.t!==S.ticker+'|'+tg){$('tick').dataset.t=S.ticker+'|'+tg;
+      $('tick').innerHTML=`<span class="tg">${tg}</span><span class="tx"><div>${esc(S.ticker)} &nbsp;&nbsp;&bull;&nbsp;&nbsp; ${esc(S.ticker)}</div></span>`}}
+  else $('tick').style.display='none';
+  const L=(S.ev.left||'').trim(),R=(S.ev.right||'').trim(),p=L.indexOf(' ');
+  $('lema').innerHTML=L?`&#10006; ${p>0?`<b>${esc(L.slice(0,p))}</b> <span>${esc(L.slice(p+1))}</span>`:`<b>${esc(L)}</b>`}`:'';
+  $('lemad').innerHTML=R?`${esc(R)} ${FLE}`:''}
+
+function sponsorActual(){
+  const et=(S.sponsorLabels||'').split(',').map(x=>x.trim()).filter(Boolean),lg=S.sponsors||[];
+  const n=Math.max(et.length,lg.length);if(!n)return{};
+  const i=spi%n;
+  return{etq:et.length?et[i%et.length]:'',logo:lg.length?lg[i%lg.length]:''}}
+
+function pintar(){if(!S)return;pintarCinta();pintarHd();pintarIzq();pintarCd();pintarWin();pintarPie()}
+
+let tv=null,ts=null;
+function ciclos(){clearInterval(tv);clearInterval(ts);
+  tv=setInterval(()=>{const n=vistas().length;if(n>1){vista=(vista+1)%n;pintarIzq()}},Math.max(2,S.secs||7)*1000);
+  ts=setInterval(()=>{spi++;pintarHd()},Math.max(1,S.sponsorSecs||3)*1000)}
+setInterval(()=>{if(S)pintarCd()},500);
+
+document.addEventListener('tema',()=>{if(S)pintar()});
+new EventSource('/events?k=schedule').onmessage=e=>{
+  const d=JSON.parse(e.data);if(!d||!d.matches)return;
+  S=d;S.show=S.show||{};S.sw=S.sw||{};S.cd=S.cd||{};S.ev=S.ev||{};
+  vista=0;pintar();ciclos()};
+</script></body></html>

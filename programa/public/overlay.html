@@ -1,0 +1,414 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Overlay MLBB</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Montserrat:wght@600;700;800&display=swap">
+<style>
+:root{--gold:#f2b84b;--ink:#0b1220;--panel:rgba(10,16,30,.88)}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font-family:'Bahnschrift','Arial Narrow','Segoe UI',sans-serif;color:#fff}
+#app{position:relative;width:1920px;height:1080px}
+.pop{animation:pop .7s ease-out}
+@keyframes pop{0%{transform:scale(.9);filter:brightness(2.5)}100%{transform:none;filter:none}}
+
+/* ===== DRAFT PICK (estilo MPL) ===== */
+#mb{position:absolute;left:0;bottom:0;width:1920px;height:276px;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase;color:#fff}
+/* fila de arriba */
+#mb .r1{position:absolute;left:0;right:0;top:0;height:56px;background:#04060b}
+.eqn{position:absolute;top:0;height:56px;width:300px;display:flex;align-items:center;gap:12px;
+ padding:0 18px;background:transparent;color:#fff}
+.eqn.l{left:0}
+.eqn.r{right:0;flex-direction:row-reverse}
+.eqn .lg{width:38px;height:38px;flex:none;display:grid;place-items:center;overflow:hidden}
+.eqn .lg img{max-width:100%;max-height:100%;object-fit:contain}
+.eqn .pips{display:flex;gap:3px;flex:none}
+.eqn .pips i{width:11px;height:18px;border-radius:2px;background:#cdd2dd;display:block;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.eqn .pips i.on{background:var(--c)}
+.eqn b{flex:1;min-width:0;font-size:27px;line-height:1.1;font-weight:800;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eqn.r b{text-align:right}
+.mban{position:absolute;top:0;height:56px;display:flex;gap:2px}
+.mban .bx{position:relative;width:62px;height:56px;overflow:hidden;background:#1a2235;display:grid;place-items:center}
+.mban .bx video,.mban .bx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.78)}
+.mban .bx.vac:after{content:'';width:26px;height:26px;border:3px solid var(--gold);border-radius:50%;position:relative}
+.mban .bx.vac:before{content:'';position:absolute;width:32px;height:3px;background:var(--gold);transform:rotate(-45deg);z-index:2}
+.mban .bx.act{box-shadow:inset 0 0 0 3px #ff4655}
+.mlogo{position:absolute;left:744px;top:0;width:432px;height:56px;background:#fff;display:grid;place-items:center;
+ overflow:hidden}
+.mcaja{height:100%;width:100%;padding:0 20px;display:grid;place-items:center}
+.mlogo img{max-height:48px;max-width:260px;object-fit:contain}
+.mlogo span{color:#101522;font-size:26px;font-weight:800;letter-spacing:2px;white-space:nowrap}
+/* fila de picks */
+#mb .r2{position:absolute;left:0;right:0;top:56px;bottom:0;background:#04060b}
+.mpk{position:absolute;top:0;width:744px;height:220px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+.pcel{position:relative;overflow:hidden;background:linear-gradient(170deg,#f6d98a,#e0a92c 55%,#c98f1c)}
+.pcel .art{position:absolute;left:0;right:0;top:0;bottom:34px;overflow:hidden;display:grid;place-items:center}
+/* el heroe se ve mas grande: se agranda un poco y se centra en la parte de arriba */
+.pcel .art video,.pcel .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+ object-position:center top;transform:scale(1.32);transform-origin:50% 18%}
+.pcel .lane{position:absolute;left:0;right:0;top:0;bottom:34px;display:grid;place-items:center}
+.pcel .lane img{width:54px;height:54px;object-fit:contain;filter:brightness(0) saturate(100%) opacity(.82)}
+.pcel .hn{position:absolute;left:0;top:0;bottom:34px;width:30px;display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(90deg,rgba(6,10,20,.92),rgba(6,10,20,.45));z-index:2}
+.pcel .hn span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:19px;font-weight:800;letter-spacing:2px;
+ white-space:nowrap;overflow:hidden;max-height:168px;text-shadow:0 1px 3px #000}
+.pcel .nk{position:absolute;left:0;right:0;bottom:0;height:34px;display:flex;align-items:center;justify-content:center;background:var(--c);
+ font-size:20px;font-weight:700;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 5px;
+ box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.pcel.act{box-shadow:inset 0 0 0 4px #fff;z-index:3}
+/* centro */
+.mcen{position:absolute;left:744px;top:0;width:432px;height:220px;background:#f4f5f8;color:#101522;
+ display:flex;flex-direction:column;align-items:center}
+.mcen .mg{height:46px;display:flex;align-items:center;gap:14px;font-size:23px;font-weight:800;letter-spacing:2px}
+.mcen .mg i{font-style:normal;color:#9aa3b8;letter-spacing:-2px}
+.mcen .mid{flex:1;width:100%;display:grid;grid-template-columns:1fr 176px 1fr;align-items:center;justify-items:center}
+.mcen .tl{width:86px;height:86px;display:grid;place-items:center;overflow:hidden}
+.mcen .tl img{max-width:100%;max-height:100%;object-fit:contain}
+.rombo{width:160px;height:112px;background:linear-gradient(180deg,#f6d98a,#e0a92c);display:flex;flex-direction:column;
+ align-items:center;justify-content:center;color:#101522}
+.rombo small{font-size:17px;font-weight:800;letter-spacing:3px;line-height:1}
+.rombo.rsv{background:linear-gradient(180deg,#ff8f9b,#e03a4d);color:#fff}
+.eqn .bk{flex:none;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.12);
+ font-size:15px;font-weight:700;letter-spacing:.5px;font-variant-numeric:tabular-nums;color:#cfd6e6}
+.eqn .bk.usando{background:var(--c);color:#fff}
+.eqn .bk.cero{opacity:.35}
+.rombo b{font-size:52px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.flech{position:absolute;top:118px;width:34px;height:34px;display:grid;place-items:center}
+.flech svg{width:30px;height:30px;fill:#2fbf5f}
+.flech.l{left:104px}.flech.r{right:104px;transform:scaleX(-1)}
+.mcen .pie{height:42px;width:100%;display:grid;grid-template-columns:1fr 1fr}
+.mcen .pie span{display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;
+ letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;padding:0 8px}
+.cpt{display:inline-grid;place-items:center;width:1.05em;height:1.05em;border-radius:50%;
+ background:var(--gold);color:#1b1405;font-size:.62em;font-weight:800;line-height:1;vertical-align:.12em;margin-left:.3em}
+/* ===== POST-DRAFT LINE-UP (estilo claro MPL) ===== */
+#lu{position:absolute;inset:0;overflow:hidden;color:#141821;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+.pl{display:inline-block;font-size:15px;letter-spacing:-3px}
+#lu .cpt{background:rgba(0,0,0,.28);color:#fff}
+.lubg{position:absolute;inset:0;background:linear-gradient(118deg,#fff 0 40%,#eceef1 40% 100%)}
+.lubg i{position:absolute;display:block}
+.lb1{top:-40px;left:-80px;width:300px;height:1300px;transform:rotate(16deg);
+ background:repeating-linear-gradient(90deg,rgba(0,0,0,.04) 0 2px,transparent 2px 64px)}
+.lb2{top:60px;left:-60px;width:150px;height:140px;transform:skewX(-18deg);background:#1f34c4}
+.lb3{top:150px;left:-20px;width:18px;height:420px;transform:skewX(-18deg);background:#e9b949}
+.lb4{bottom:-60px;right:-40px;width:170px;height:260px;transform:skewX(-18deg);background:#c8102e;opacity:.85}
+.lb5{bottom:40px;right:160px;width:16px;height:280px;transform:skewX(-18deg);background:#e9b949;opacity:.7}
+.lcinta{position:absolute;left:0;top:0;width:1920px;height:52px;display:flex;align-items:center;padding:0 34px;
+ background:#fff;border-bottom:1px solid #e4e6ea;font-family:'Montserrat',sans-serif}
+.lcinta b{font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.lcinta span{font-size:18px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#6e737c}
+.lcinta .der{margin-left:auto;display:flex;align-items:center;gap:9px}
+.lhead{position:absolute;top:92px;height:86px;display:flex;align-items:stretch}
+.lhead.l{left:150px}.lhead.r{right:150px;flex-direction:row-reverse}
+.lhead .lgc{width:124px;background:#fff;border:1px solid #e4e6ea;display:grid;place-items:center;padding:8px}
+.lhead .lgc img{max-width:100%;max-height:100%;object-fit:contain}
+.lhead .tg{min-width:270px;padding:0 34px;background:var(--c);display:flex;align-items:center;justify-content:center;
+ color:#fff;font-size:58px;font-weight:800;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;
+ clip-path:polygon(0 0,100% 0,calc(100% - 26px) 100%,0 100%)}
+.lhead.r .tg{clip-path:polygon(26px 0,100% 0,100% 100%,0 100%)}
+.lhead .wins{width:104px;background:#fff;border:1px solid #e4e6ea;display:flex;align-items:center;
+ justify-content:center;gap:7px}
+.lhead .wins i{width:9px;height:42px;background:#d6d9df;display:block}
+.lhead .wins i.on{background:var(--c)}
+.ltor{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:300px;height:250px;
+ display:grid;place-items:center;z-index:3}
+.ltor img{max-width:100%;max-height:100%;object-fit:contain}
+.ltor b{font-size:46px;font-weight:800;color:#e9b949;text-transform:uppercase;text-align:center;line-height:1}
+.lchips{position:absolute;left:50%;top:272px;transform:translateX(-50%);display:flex;height:40px}
+.lchips b{display:flex;align-items:center;padding:0 26px;font-size:24px;font-weight:800;letter-spacing:1px;
+ text-transform:uppercase;white-space:nowrap}
+.lchips .c1{background:#fff;border:1px solid #e4e6ea;clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
+.lchips .c2{background:linear-gradient(90deg,#f0cf78,#e9b949);color:#141821;margin-left:-14px;padding-left:34px;
+ clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
+.lgrid{position:absolute;top:330px;height:600px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.lgrid.l{left:52px;width:890px}.lgrid.r{right:52px;width:890px}
+.lcard{position:relative;overflow:hidden;background:linear-gradient(#e9ecf0,#d8dce2)}
+.lcard .art{position:absolute;left:0;right:0;top:0;bottom:44px;overflow:hidden}
+/* el heroe entra entero (mas chico) y atras queda la misma imagen borrosa para rellenar */
+.lcard .art>.bg{position:absolute;inset:-10%;filter:blur(22px) saturate(1.1);opacity:.85}
+.lcard .art>.bg img,.lcard .art>.bg video{width:100%;height:100%;object-fit:cover;object-position:center top}
+.lcard .art:before{content:'';position:absolute;inset:0;z-index:1;
+ background:linear-gradient(rgba(237,239,242,.9),rgba(237,239,242,.32) 50%,rgba(237,239,242,0) 76%)}
+.lcard .art>img,.lcard .art>video{position:absolute;left:-18%;width:136%;height:100%;z-index:2;
+ object-fit:contain;object-position:center bottom;
+ -webkit-mask-image:linear-gradient(to bottom,transparent 29%,#000 48%);
+ mask-image:linear-gradient(to bottom,transparent 29%,#000 48%)}
+.lcard .art:after{content:'';position:absolute;left:0;right:0;bottom:0;height:46%;z-index:3;
+ background:linear-gradient(transparent,rgba(236,238,241,.25) 45%,rgba(236,238,241,.85))}
+.lcard .hname{position:absolute;left:0;right:0;bottom:52px;text-align:center;font-size:23px;font-weight:700;
+ letter-spacing:1px;text-transform:uppercase;color:#2a2f3a;z-index:4;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px}
+.lcard .vacio{position:absolute;inset:0 0 44px 0;display:grid;place-items:center}
+.lcard .vacio img{width:76px;height:76px;object-fit:contain;opacity:.3}
+.lcard .nk{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
+ justify-content:center;gap:7px;background:var(--c);color:#fff;font-size:24px;font-weight:700;
+ letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;overflow:hidden;padding:0 12px 0 40px}
+.lcard .ln{position:absolute;left:0;bottom:0;width:34px;height:44px;background:rgba(0,0,0,.22);
+ display:grid;place-items:center;z-index:4}
+.lcard .ln img{width:21px;height:21px;object-fit:contain;filter:brightness(0) invert(1);opacity:.95}
+.lpie{position:absolute;bottom:26px;display:flex;align-items:center;gap:10px;
+ font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;text-transform:uppercase}
+.lpie.l{left:34px}.lpie.r{right:34px}
+.lpie span{font-weight:500;color:#5d636d}
+/* ===== DRAFT ANTERIOR (mismo estilo claro que el Line-up) ===== */
+#pv{position:absolute;inset:0;overflow:hidden;color:#141821;background:#eef0f3;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+#pv .vacio2{position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+ font-size:42px;font-weight:800;color:#8d939e;text-transform:uppercase;letter-spacing:2px}
+.pvtit{position:absolute;left:0;right:0;top:74px;text-align:center}
+.pvtit b{font-size:52px;font-weight:800;letter-spacing:3px;text-transform:uppercase;line-height:1}
+.pvtit span{display:block;margin-top:6px;font-size:25px;font-weight:700;letter-spacing:3px;
+ text-transform:uppercase;color:#8a6a17}
+.pvhead{position:absolute;top:170px;height:78px;display:flex;align-items:stretch}
+.pvhead.l{left:52px}.pvhead.r{right:52px;flex-direction:row-reverse}
+.pvhead .lgc{width:110px;background:#fff;border:1px solid #e4e6ea;display:grid;place-items:center;padding:7px}
+.pvhead .lgc img{max-width:100%;max-height:100%;object-fit:contain}
+.pvhead .tg{min-width:240px;padding:0 30px;background:var(--c);display:flex;align-items:center;justify-content:center;
+ color:#fff;font-size:46px;font-weight:800;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;
+ clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%)}
+.pvhead.r .tg{clip-path:polygon(22px 0,100% 0,100% 100%,0 100%)}
+.pvban{position:absolute;top:268px;display:flex;align-items:center;gap:4px}
+.pvban.l{left:52px}.pvban.r{right:52px;flex-direction:row-reverse}
+.pvban em{font-style:normal;font-size:19px;font-weight:800;letter-spacing:2px;color:#787f8b;
+ text-transform:uppercase;padding:0 12px 0 2px}
+.pvban.r em{padding:0 2px 0 12px}
+.pvban i{position:relative;display:block;width:86px;height:62px;overflow:hidden;background:#d6dae1}
+.pvban i img,.pvban i video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+ object-position:center 22%;filter:grayscale(1) brightness(.82)}
+.pvban i:after{content:'';position:absolute;left:-12%;right:-12%;top:50%;height:3px;background:#d8384a;
+ transform:rotate(-30deg)}
+.pvban i.sin{background:#e3e6ea}.pvban i.sin:after{background:#b9bfc8}
+.pvgrid{position:absolute;top:360px;height:520px;width:890px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.pvgrid.l{left:52px}.pvgrid.r{right:52px}
+.pvpie{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-size:21px;font-weight:700;
+ letter-spacing:3px;text-transform:uppercase;color:#6d737e}
+/* ===== ESTADISTICAS DE LA SERIE ===== */
+#stx{position:absolute;inset:0;overflow:hidden;color:#141821;background:#eef0f3;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+#stx .vacio2{position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+ font-size:42px;font-weight:800;color:#8d939e;text-transform:uppercase;letter-spacing:2px}
+.sxtit{position:absolute;left:0;right:0;top:78px;text-align:center}
+.sxtit b{font-size:54px;font-weight:800;letter-spacing:3px;text-transform:uppercase;line-height:1}
+.sxmarc{position:absolute;left:0;right:0;top:152px;display:flex;align-items:center;justify-content:center;gap:18px}
+.sxmarc .eq{display:flex;align-items:center;gap:14px;min-width:420px}
+.sxmarc .eq.r{flex-direction:row-reverse}
+.sxmarc .lg{width:66px;height:66px;flex:none;display:grid;place-items:center;overflow:hidden}
+.sxmarc .lg img{max-width:100%;max-height:100%;object-fit:contain}
+.sxmarc .nm{flex:1;font-size:36px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sxmarc .eq.r .nm{text-align:right}
+.sxmarc .pt{width:86px;height:70px;display:grid;place-items:center;background:var(--c);color:#fff;
+ font-size:46px;font-weight:800;font-variant-numeric:tabular-nums}
+.sxmarc .vs{font-size:26px;font-weight:800;color:#9aa1ad;letter-spacing:2px}
+.sxcol{position:absolute;top:268px;width:820px}
+.sxcol.l{left:88px}.sxcol.r{right:88px}
+.sxcab{display:flex;align-items:center;gap:12px;height:48px;padding:0 20px;background:#141821;color:#fff}
+.sxcab b{font-size:24px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+.sxcab span{margin-left:auto;font-size:17px;font-weight:600;letter-spacing:1px;color:#aab1bd}
+.sxfila{display:flex;align-items:center;gap:16px;height:92px;padding:0 20px;background:#fff;
+ border-bottom:1px solid #e4e6ea}
+.sxfila:nth-child(even){background:#f7f8fa}
+.sxfila .pos{width:34px;flex:none;font-size:25px;font-weight:800;color:#b3b9c4;
+ font-variant-numeric:tabular-nums;text-align:center}
+.sxfila .rt{width:74px;height:74px;flex:none;position:relative;overflow:hidden;background:#dfe3e9}
+.sxfila .rt img,.sxfila .rt video{position:absolute;inset:0;width:100%;height:100%;
+ object-fit:cover;object-position:center 20%}
+.sxfila .hn2{flex:1;min-width:0;font-size:30px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sxbar{width:250px;flex:none;height:18px;background:#e4e7ec;position:relative}
+.sxbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#f0cf78,#e9b949)}
+.sxcol.l .sxbar i{background:linear-gradient(90deg,#7fa8e8,#2f6fe0)}
+.sxcnt{width:66px;flex:none;text-align:right;font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.sxpie{position:absolute;left:88px;right:88px;bottom:68px;display:flex;align-items:stretch;height:74px;
+ background:#fff;border:1px solid #e4e6ea}
+.sxpie .et{display:flex;align-items:center;padding:0 24px;font-size:20px;font-weight:800;letter-spacing:2px;
+ text-transform:uppercase;color:#6d737e;border-right:1px solid #e4e6ea}
+.sxpie .lado{flex:1;display:flex;align-items:center;justify-content:center;gap:14px;
+ font-size:26px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.sxpie .lado i{font-style:normal;display:grid;place-items:center;min-width:52px;height:40px;
+ background:var(--c);color:#fff;font-size:26px;font-variant-numeric:tabular-nums}
+</style></head><body><div id="app"></div>
+<script src="theme.js"></script>
+<script src="equipos.js"></script>
+<script src="heroes.js"></script>
+<script>
+const view=new URLSearchParams(location.search).get('view')||'draft';
+const $=document.getElementById('app'),prevSeen={};
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Busca primero el video .webm, luego .mp4, luego la imagen .png; si no hay nada, queda la inicial
+const vid=(h,tipo)=>{const f=mediaFor(h,tipo);if(!f)return '';return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`:`<img src="${f}" onerror="this.remove()">`};
+const pop=(k,h)=>{const n=prevSeen[k]!==h&&h;prevSeen[k]=h;return n?' pop':''};
+const FL='<svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21z"/></svg>';
+function numText(M){const T=M.timer;if(M.useTimer&&T){const n=T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left;
+  return String(n)}return M.score}
+const mmss=n=>{n=Math.max(0,n|0);return Math.floor(n/60)+':'+String(n%60).padStart(2,'0')};
+let curM=null;setInterval(()=>{const e=document.getElementById('num');if(e&&curM)e.textContent=numText(curM)},250);
+function draft(s){const[A,B]=s.teams,S2=s;
+ const M=Object.assign({game:1,bestOf:3,wins:[0,0],score:'00',stage:'',tournament:'',season:'',logo:'',
+   useTimer:false,step:0,usarReserva:false,reservaSecs:60,reserva:[60,60]},s.match||{});curM=M;
+ const L=[0,1,2,3,4],R=[4,3,2,1,0],act=flowInfo(M.step);
+ const esAct=(t,i,k)=>act&&act.type===t&&act.team===i&&act.slot===k;
+ const lanes=T=>T.lanes||[0,1,2,3,4];
+ const logo=T=>T.logo?`<img src="${T.logo}">`:'';
+ const need=Math.max(1,Math.ceil(M.bestOf/2));
+ const pips=i=>`<span class="pips" style="--c:${S2.teams[i].color}">${Array.from({length:need},(_,p)=>
+   `<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</span>`;
+ const T0=M.timer||{},enRsv=T0.modo==='reserva'&&act;
+ const bancoDe=i=>{const r=Array.isArray(M.reserva)?M.reserva:[0,0];
+   if(enRsv&&act.team===i)return T0.running?Math.max(0,Math.ceil((T0.endsAt-Date.now())/1000)):(T0.left||0);
+   return Math.max(0,r[i]||0)};
+ const banco=i=>{if(!M.usarReserva)return '';const q=bancoDe(i);
+   return `<span class="bk${enRsv&&act.team===i?' usando':''}${q?'':' cero'}" style="--c:${S2.teams[i].color}">${mmss(q)}</span>`};
+ const cab=(T,c,i)=>`<div class="eqn ${c}"><span class="lg">${logo(T)}</span><b>${esc(T.name)}</b>${banco(i)}${pips(i)}</div>`;
+ const ban=(i,k,h)=>`<div class="bx${h?'':' vac'}${esAct('ban',i,k)?' act':''}${pop('b'+i+k,h)}">${h?vid(h,'ban'):''}</div>`;
+ const cel=(i,k,T,h)=>`<div class="pcel${esAct('pick',i,k)?' act':''}${pop('p'+i+k,h)}" style="--c:${T.color}">
+   ${h?`<div class="art">${vid(h,'pick')}</div><div class="hn"><span>${esc(h)}</span></div>`
+      :`<div class="lane"><img src="${LANE_ICON[lanes(T)[k]]}" onerror="this.remove()"></div>`}
+   <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div></div>`;
+ const fase=enRsv?'Reserva':(act?(act.type==='ban'?'Baneando':'Eligiendo'):'Listo');
+ /* la sigla del equipo: el TAG si lo escribieron, si no la primera palabra del nombre */
+ const corto=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
+   const p=String(T.name||'').trim().split(/\s+/);
+   return (p[0]||'').length<=3&&p.length>1?(p[0]+' '+p[1]):(p[0]||'')};
+ return `<div id="mb">
+  <div class="r1">
+   ${cab(A,'l',0)}
+   <div class="mban" style="left:300px">${L.map(k=>ban(0,k,s.bans[0][k])).join('')}</div>
+   <div class="mlogo"><div class="mcaja">${M.logo?`<img src="${M.logo}">`:`<span>${esc(M.tournament||'')}</span>`}</div></div>
+   <div class="mban" style="right:300px">${R.map(k=>ban(1,k,s.bans[1][k])).join('')}</div>
+   ${cab(B,'r',1)}
+  </div>
+  <div class="r2">
+   <div class="mpk" style="left:0">${L.map(k=>cel(0,k,A,s.picks[0][k])).join('')}</div>
+   <div class="mcen">
+     <div class="mg"><i>|||</i>Partida ${esc(M.game)} · BO${esc(M.bestOf)}<i>|||</i></div>
+     <div class="mid">
+       <span class="tl">${logo(A)}</span>
+       <span class="rombo${enRsv?' rsv':''}"><small>${fase}</small><b id="num">${esc(numText(M))}</b></span>
+       <span class="tl">${logo(B)}</span>
+       ${act&&act.team===0?`<span class="flech l">${FL}</span>`:''}
+       ${act&&act.team===1?`<span class="flech r">${FL}</span>`:''}
+     </div>
+     <div class="pie"><span style="background:${A.color}">${esc(corto(A))}</span>
+       <span style="background:${B.color}">${esc(corto(B))}</span></div>
+   </div>
+   <div class="mpk" style="left:1176px">${R.map(k=>cel(1,k,B,s.picks[1][k])).join('')}</div>
+  </div></div>`}
+function lineup(s){const[A,B]=s.teams;
+ const M=Object.assign({wins:[0,0],bestOf:3,game:1,stage:'',tournament:'',season:'',logo:'',
+   lemaIzq:'',lemaDer:'',lineupBg:true},s.match||{});
+ const need=Math.max(1,Math.ceil((M.bestOf||3)/2));
+ const FL2='<span class="pl">&#9654;&#9654;</span>';
+ const sigla=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
+   return (String(T.name||'').trim().split(/\s+/)[0]||'').toUpperCase()};
+ const cab=(T,i,c)=>`<div class="lhead ${c}" style="--c:${T.color}">
+   <div class="lgc">${T.logo?`<img src="${T.logo}">`:''}</div>
+   <div class="tg">${esc(sigla(T))}</div>
+   <div class="wins">${Array.from({length:need},(_,p)=>`<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</div>
+ </div>`;
+ const tarjetas=(i,T,c)=>{const lanes=T.lanes||[0,1,2,3,4];
+   const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
+   return `<div class="lgrid ${c}">${ord.map(k=>{const h=s.picks[i][k],ln=lanes[k];
+     return `<div class="lcard${pop('lu'+i+k,h)}" style="--c:${T.color}">
+       ${h?`<div class="art"><div class="bg">${vid(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
+          :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
+       <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
+       <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
+     </div>`}).join('')}</div>`};
+ const fondo=M.lineupBg!==false
+   ?'<div class="lubg"><i class="lb1"></i><i class="lb2"></i><i class="lb3"></i><i class="lb4"></i><i class="lb5"></i></div>':'';
+ return `<div id="lu">${fondo}
+  <div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
+    <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>
+  ${cab(A,0,'l')}${cab(B,1,'r')}
+  <div class="ltor">${M.logo?`<img src="${M.logo}">`:`<b>${esc(M.tournament||'')}</b>`}</div>
+  <div class="lchips">${M.stage?`<b class="c1">${esc(M.stage)}</b>`:''}<b class="c2">Partida ${esc(M.game)} &middot; BO${esc(M.bestOf)}</b></div>
+  ${tarjetas(0,A,'l')}${tarjetas(1,B,'r')}
+  ${M.lemaIzq?`<div class="lpie l">&#10006; <b>${esc(M.lemaIzq)}</b></div>`:''}
+  ${M.lemaDer?`<div class="lpie r"><b>${esc(M.lemaDer)}</b> ${FL2}</div>`:''}
+ </div>`}
+function previous(s){const g=s.history&&s.history[s.prev];
+ const M=Object.assign({tournament:'',season:'',stage:'',bestOf:5},s.match||{});
+ const FL2='<span class="pl">&#9654;&#9654;</span>';
+ const cinta=`<div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
+   <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>`;
+ if(!g)return `<div id="pv">${cinta}<div class="vacio2">Todavía no hay una partida guardada<br>
+   <span style="font-size:24px;font-weight:600;letter-spacing:1px">Guarda el draft desde el control cuando termine la partida</span></div></div>`;
+ const sigla=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
+   return (String(T.name||'').trim().split(/\s+/)[0]||'').toUpperCase()};
+ const cab=(T,c)=>`<div class="pvhead ${c}" style="--c:${T.color}">
+   <div class="lgc">${T.logo?`<img src="${T.logo}">`:''}</div>
+   <div class="tg">${esc(sigla(T))}</div></div>`;
+ const bans=(i,c)=>`<div class="pvban ${c}"><em>Baneos</em>${g.bans[i].map(h=>
+   `<i class="${h?'':'sin'}" title="${esc(h)}">${h?vid(h,'ban'):''}</i>`).join('')}</div>`;
+ const tarjetas=(i,T,c)=>{const lanes=T.lanes||[0,1,2,3,4];
+   const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
+   return `<div class="pvgrid ${c}">${ord.map(k=>{const h=g.picks[i][k],ln=lanes[k];
+     return `<div class="lcard" style="--c:${T.color}">
+       ${h?`<div class="art"><div class="bg">${vid(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
+          :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
+       <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
+       <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
+     </div>`}).join('')}</div>`};
+ const[A,B]=g.teams;
+ return `<div id="pv">${cinta}
+  <div class="pvtit"><b>Draft anterior</b><span>Partida ${s.prev+1}</span></div>
+  ${cab(A,'l')}${cab(B,'r')}
+  ${bans(0,'l')}${bans(1,'r')}
+  ${tarjetas(0,A,'l')}${tarjetas(1,B,'r')}
+  <div class="pvpie">${esc(A.name||'')} &nbsp;&#10033;&nbsp; ${esc(B.name||'')}</div>
+ </div>`}
+function stats(s){
+ const M=Object.assign({tournament:'',season:'',stage:'',bestOf:5,wins:[0,0]},s.match||{});
+ const FL2='<span class="pl">&#9654;&#9654;</span>';
+ const cinta=`<div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
+   <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>`;
+ const H=Array.isArray(s.history)?s.history:[];
+ if(!H.length)return `<div id="stx">${cinta}<div class="vacio2">Todavía no hay partidas guardadas<br>
+   <span style="font-size:24px;font-weight:600;letter-spacing:1px">Guarda cada draft desde el control cuando termine la partida</span></div></div>`;
+ /* contamos cuantas veces aparece cada heroe en toda la serie */
+ const contar=campo=>{const m={};
+   H.forEach(g=>(g[campo]||[]).forEach(lado=>(lado||[]).forEach(h=>{
+     if(h)m[h]=(m[h]||0)+1})));
+   return Object.entries(m).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,6)};
+ const topBans=contar('bans'),topPicks=contar('picks');
+ const lista=(arr,tipo,et,cls)=>{const max=arr.length?arr[0][1]:1;
+   return `<div class="sxcol ${cls}">
+     <div class="sxcab"><b>${et}</b><span>${H.length} partida${H.length===1?'':'s'}</span></div>
+     ${arr.map(([h,n],i)=>`<div class="sxfila">
+       <span class="pos">${i+1}</span>
+       <span class="rt">${vid(h,tipo)}</span>
+       <span class="hn2">${esc(h)}</span>
+       <span class="sxbar"><i style="width:${Math.round(n/max*100)}%"></i></span>
+       <span class="sxcnt">${n}</span></div>`).join('')}</div>`};
+ /* partidas ganadas desde cada lado */
+ const gan=[0,1].map(i=>H.filter(g=>g.ganador===i).length);
+ const[A,B]=s.teams;
+ return `<div id="stx">${cinta}
+  <div class="sxtit"><b>Estadísticas de la serie</b></div>
+  <div class="sxmarc">
+    <span class="eq" style="--c:${A.color}"><span class="lg">${A.logo?`<img src="${A.logo}">`:''}</span>
+      <span class="nm">${esc(A.name)}</span><span class="pt">${M.wins[0]|0}</span></span>
+    <span class="vs">BO${esc(M.bestOf)}</span>
+    <span class="eq r" style="--c:${B.color}"><span class="lg">${B.logo?`<img src="${B.logo}">`:''}</span>
+      <span class="nm">${esc(B.name)}</span><span class="pt">${M.wins[1]|0}</span></span>
+  </div>
+  ${lista(topBans,'ban','Más baneados','l')}
+  ${lista(topPicks,'pick','Más elegidos','r')}
+  <div class="sxpie">
+    <span class="et">Partidas ganadas</span>
+    <span class="lado" style="--c:${A.color}"><i>${gan[0]}</i> desde el lado azul</span>
+    <span class="lado" style="--c:${B.color}"><i>${gan[1]}</i> desde el lado rojo</span>
+  </div>
+ </div>`}
+let _s=null;
+function encajar(){[['.eqn b',27,13],['.pcel .nk',20,11],['.mcen .pie span',25,13],['.mcen .mg',23,14],
+   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16]]
+  .forEach(([sel,max,min])=>document.querySelectorAll(sel).forEach(el=>{
+    let f=max;el.style.fontSize=f+'px';
+    while(el.scrollWidth>el.clientWidth&&f>min){f-=1;el.style.fontSize=f+'px'}}))}
+function render(s){if(!s.teams)return;_s=s;
+ s.teams.forEach((t,i)=>t.color=colorLado(i,t.color));$.innerHTML=({draft,lineup,previous,stats}[view]||draft)(s);
+ encajar();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(encajar)}
+document.addEventListener('tema',()=>{if(_s)render(_s)});
+let lastS=null;new EventSource('/events').onmessage=e=>{lastS=JSON.parse(e.data);loadMedia().then(()=>render(lastS))};
+</script></body></html>

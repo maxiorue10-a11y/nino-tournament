@@ -1,0 +1,245 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Control de Programación · MLBB</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="panel.css">
+<script>try{document.documentElement.dataset.tema=localStorage.getItem("tema")||"oscuro"}catch(e){}</script>
+<style>
+.onair{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:1100px){.onair{grid-template-columns:repeat(2,1fr)}}
+.oa{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--input);border:2px solid var(--line);border-radius:8px;cursor:pointer}
+.oa.on{border-color:var(--acc);background:var(--acc-soft)}
+.oa input{width:22px;height:22px;flex:none;accent-color:var(--acc)}
+.oa b{display:block;font-size:15px;font-weight:600}
+.oa small{color:var(--mut);font-size:12px}
+.opts{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:14px}
+.opt{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut)}
+.opt input,.opt select{width:auto;min-width:76px}
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:0;border-radius:0;background:var(--card2)}
+.seg button.on{background:var(--acc);color:var(--acc-tx)}
+.sw{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:14px;color:var(--tx)}
+.sw i{width:42px;height:23px;border-radius:12px;background:var(--line);position:relative;transition:.15s;flex:none}
+.sw i:after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#7d8db0;transition:.15s}
+.sw.on i{background:var(--acc)}.sw.on i:after{left:22px;background:var(--acc-tx)}
+.tal{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1100px){.tal{grid-template-columns:1fr}}
+.talp{background:var(--input);border:1px solid var(--line);border-radius:8px;padding:14px}
+.per{display:flex;align-items:center;gap:8px;margin-top:7px}
+.photo{width:62px;height:62px;flex:none;border-radius:6px;background:linear-gradient(var(--acc),#c98a12);display:grid;place-items:center;
+ font-weight:600;font-size:12px;color:var(--acc-tx);cursor:pointer;overflow:hidden;text-align:center}
+.photo img{width:100%;height:100%;object-fit:cover}
+.mts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1400px){.mts{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.mts{grid-template-columns:1fr}}
+.mt{background:var(--input);border:1px solid var(--line);border-radius:8px;padding:12px}
+.mt.on{border-color:var(--acc)}
+.mth{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mth em{font-style:normal;font-size:15px;font-weight:600;color:var(--acc);min-width:16px}
+.mth label{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--mut);cursor:pointer}
+.mth label input{width:18px;height:18px;accent-color:var(--acc)}
+.mth .acts{margin-left:auto}
+.mrow{display:flex;align-items:center;gap:8px;margin-top:7px}
+.mrow .bar{width:4px;height:48px;flex:none;border-radius:2px;background:var(--c)}
+.mlogo{width:54px;height:48px;flex:none;border:1px dashed var(--line);border-radius:5px;display:grid;place-items:center;
+ font-weight:500;font-size:12px;color:var(--mut);cursor:pointer;overflow:hidden}
+.mlogo img{width:100%;height:100%;object-fit:contain}
+.mrow .sc{width:74px;flex:none;text-align:center;font-weight:600;font-size:16px}
+.spon{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.sp{position:relative;width:132px;height:74px;border:2px solid var(--line);border-radius:7px;background:var(--card2);display:grid;place-items:center;overflow:hidden}
+.sp img{max-width:88%;max-height:80%;object-fit:contain}
+.sp button{position:absolute;top:3px;right:3px;padding:2px 7px;font-size:12px;line-height:1.2}
+.sp.add{border-style:dashed;cursor:pointer;color:var(--acc);font-weight:600;font-size:12px;}
+#pvwrap{margin-top:12px;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;
+ background:repeating-conic-gradient(#1a2338 0 25%,#141b2d 0 50%) 0 0/24px 24px}
+#pvwrap iframe{border:0;width:1920px;height:1080px;transform-origin:top left;position:absolute;top:0;left:0}
+</style></head><body>
+
+<header id="top"></header>
+<main>
+  <section class="card" id="aire"></section>
+  <div class="grid2"><section class="card" id="evento"></section><section class="card" id="prev"></section></div>
+  <section class="card" id="talento"></section>
+  <section class="card" id="partidas"></section>
+</main>
+
+<script src="nav.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const P=()=>[0,1,2,3].map(()=>({name:'',photo:''}));
+const def=()=>({
+  ev:{title:'',sub:'',stage:'',logo:'',qr:'',qrLabel:'',left:'',right:''},
+  cd:{at:'',label:'EL SHOW EMPIEZA EN',end:'EMPEZAMOS PRONTO'},
+  show:{hosts:false,casters:true,analysts:false,matches:true},
+  secs:7,perPage:2,main:'video',
+  sw:{countdown:true,sponsor:true,ticker:true},
+  ticker:'BIENVENIDOS A LA TRANSMISIÓN',tickerTag:'',
+  sponsorLabels:'PATROCINADOR OFICIAL',sponsors:[],sponsorSecs:3,
+  talent:[{title:'PRESENTADORES',color:'#f0b429',people:P()},
+          {title:'NARRADORES',color:'#f0b429',people:P()},
+          {title:'ANALISTAS',color:'#f0b429',people:P()}],
+  matches:[0,1,2,3,4,5].map(i=>({on:false,label:'PARTIDA '+(i+1),time:'16:00',bo:'',
+          teams:[{name:'',logo:'',score:''},{name:'',logo:'',score:''}]}))});
+let S=def(),conectado=false,tOut;
+
+function push(){if(!puedeEditar())return;clearTimeout(tOut);tOut=setTimeout(()=>{
+  fetch('/state?k=schedule',{method:'POST',body:JSON.stringify(S)})
+   .then(()=>{conectado=true;setConn()}).catch(()=>{conectado=false;setConn()})},120)}
+function set(path,v){let o=S;for(let i=0;i<path.length-1;i++)o=o[path[i]];o[path[path.length-1]]=v;push()}
+function setConn(){const e=$('conn');if(e)e.innerHTML=`<i class="dot ${conectado?'ok':''}"></i>${conectado?'Servidor conectado':'Sin conexión con el servidor'}`}
+
+/* ---------- subida de imágenes ---------- */
+function subir(f,alGuardar,anterior){if(!f)return;
+  fetch('/api/logo?old='+encodeURIComponent((anterior||'').split('/').pop()),{method:'POST',headers:{'Content-Type':f.type},body:f})
+    .then(r=>r.json().then(j=>r.ok?j:Promise.reject(j.error||'error')))
+    .then(j=>{alGuardar(j.url);build();push()}).catch(e=>alert('No se pudo subir la imagen: '+e))}
+function borrarArchivo(u){const n=(u||'').split('/').pop();if(n)fetch('/api/logo?del='+encodeURIComponent(n),{method:'POST'})}
+function elegir(alGuardar,anterior){const i=document.createElement('input');i.type='file';
+  i.accept='image/png,image/jpeg,image/webp,image/gif';
+  i.onchange=()=>subir(i.files[0],alGuardar,anterior);i.click()}
+
+/* ---------- cuenta regresiva ---------- */
+function sumarMin(m){const c=S.cd;let [h,mi]=(c.at||'').split(':').map(Number);
+  if(isNaN(h)){const d=new Date();h=d.getHours();mi=d.getMinutes()}
+  let t=(h*60+mi+m+1440)%1440;
+  c.at=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');build();push()}
+
+/* ---------- partidas ---------- */
+function todas(v){S.matches.forEach(m=>m.on=v);build();push()}
+function invertir(i){const m=S.matches[i];m.teams.reverse();build();push()}
+function limpiar(i){S.matches[i]=def().matches[i];build();push()}
+
+/* ================= RENDER ================= */
+function renderTop(){
+  $('top').innerHTML=`
+   <div class="brand"><span class="hexmark"><i>ML</i></span><b>Control de programación</b></div>
+   <small id="conn"></small>
+   ${navHTML('/schedule.html')}
+   <div class="acts"><button class="gold" onclick="window.open('schedule-overlay.html','_blank')">Abrir pantalla</button></div>`;setConn()}
+
+function renderAire(){
+  const paneles=[['hosts','Presentadores','Panel de presentadores'],['casters','Narradores','Panel de narradores'],
+                 ['analysts','Analistas','Panel de analistas'],['matches','Partidas de hoy','Las partidas marcadas, por páginas']];
+  const sw=(k,t)=>`<label class="sw ${S.sw[k]?'on':''}" onclick="set(['sw','${k}'],!S.sw.${k});build()"><i></i>${t}</label>`;
+  $('aire').innerHTML=`<h2>En transmisión<span>Marca todo lo que debe ir rotando en el panel izquierdo</span></h2>
+   <div class="onair">${paneles.map(([k,t,d])=>`
+     <label class="oa ${S.show[k]?'on':''}"><input type="checkbox" ${S.show[k]?'checked':''} onchange="set(['show','${k}'],this.checked);build()">
+       <span><b>${t}</b><small>${d}</small></span></label>`).join('')}</div>
+   <div class="opts">
+     <label class="opt">Segundos por panel<input type="number" min="2" max="60" value="${S.secs}" oninput="set(['secs'],+this.value||7)"></label>
+     <label class="opt">Partidas por página<select onchange="set(['perPage'],+this.value)">${[1,2,3,4].map(n=>`<option ${S.perPage==n?'selected':''}>${n}</option>`).join('')}</select></label>
+     <span class="opt">Ventana principal</span>
+     <span class="seg"><button class="${S.main==='video'?'on':''}" onclick="set(['main'],'video');build()">Ventana de video</button><button class="${S.main==='featured'?'on':''}" onclick="set(['main'],'featured');build()">Partida destacada</button></span>
+     ${sw('countdown','Cuenta regresiva')}${sw('sponsor','Patrocinador')}${sw('ticker','Ticker')}
+   </div>
+   <div class="hint" style="margin:12px 0 0">Ventana de video = un hueco transparente: pon el video o la cámara <b>debajo</b> de esta fuente de navegador en OBS. Partida destacada = la primera partida marcada ocupa ese hueco.</div>`}
+
+function renderEvento(){
+  const E=S.ev,C=S.cd,ei=(k,v)=>`oninput="set(['ev','${k}'],${v})"`,ci=(k,v)=>`oninput="set(['cd','${k}'],${v})"`;
+  $('evento').innerHTML=`<h2>Evento</h2>
+   <div class="mg">
+     <label>Título<input value="${esc(E.title)}" placeholder="Ej: Copa Nacional MLBB" ${ei('title','this.value')}></label>
+     <label>Subtítulo<input value="${esc(E.sub)}" placeholder="Ej: tu organización" ${ei('sub','this.value')}></label>
+     <label>Fase / día<input value="${esc(E.stage)}" placeholder="Ej: PLAYOFFS" ${ei('stage','this.value')}></label>
+     <label>Texto de la esquina izquierda<input value="${esc(E.left||'')}" placeholder="Ej: Lamayo Esports" ${ei('left','this.value')}></label>
+     <label>Texto de la esquina derecha<input value="${esc(E.right||'')}" placeholder="Ej: ¡Vamos!" ${ei('right','this.value')}></label>
+   </div>
+   <div class="lbl">Logo del evento y código QR</div>
+   <div class="acts" style="align-items:center">
+     <div class="lgbox" style="width:70px;height:70px;border:1px solid var(--line);border-radius:8px;background:var(--input);display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--mut)">${E.logo?`<img src="${E.logo}" style="max-width:100%;max-height:100%;object-fit:contain">`:'Sin logo'}</div>
+     <button class="sm" onclick="elegir(u=>S.ev.logo=u,S.ev.logo)">${E.logo?'Cambiar logo':'Subir logo'}</button>
+     ${E.logo?'<button class="sm" onclick="borrarArchivo(S.ev.logo);S.ev.logo=\'\';build();push()">Quitar</button>':''}
+     <div class="lgbox" style="width:70px;height:70px;border:1px solid var(--line);border-radius:8px;background:var(--input);display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--mut);margin-left:18px">${E.qr?`<img src="${E.qr}" style="max-width:100%;max-height:100%;object-fit:contain">`:'Sin QR'}</div>
+     <button class="sm" onclick="elegir(u=>S.ev.qr=u,S.ev.qr)">${E.qr?'Cambiar QR':'Subir QR'}</button>
+     ${E.qr?'<button class="sm" onclick="borrarArchivo(S.ev.qr);S.ev.qr=\'\';build();push()">Quitar</button>':''}
+     <input style="width:190px" value="${esc(E.qrLabel||'')}" placeholder="Texto sobre el QR" ${ei('qrLabel','this.value')}>
+   </div>
+
+   <h2 style="margin-top:18px">Cuenta regresiva</h2>
+   <div class="mg">
+     <label>El show empieza a las<input type="time" value="${esc(C.at)}" ${ci('at','this.value')}></label>
+     <label>Etiqueta<input value="${esc(C.label)}" ${ci('label','this.value')}></label>
+     <label>Texto al terminar<input value="${esc(C.end)}" ${ci('end','this.value')}></label>
+   </div>
+   <div class="acts" style="margin-top:8px">
+     ${[5,10,15,30].map(n=>`<button class="sm" onclick="sumarMin(${n})">+${n} min</button>`).join('')}
+     <button class="sm" onclick="set(['cd','at'],'');build()">Limpiar</button>
+   </div>
+
+   <h2 style="margin-top:18px">Ticker y patrocinadores</h2>
+   <div class="mg"><label>Etiqueta negra del ticker<input value="${esc(S.tickerTag||'')}" placeholder="Ej: COPA NACIONAL" oninput="set(['tickerTag'],this.value)"></label></div>
+   <div class="lbl">Texto que se desplaza</div>
+   <input value="${esc(S.ticker)}" placeholder="Ej: ¡Bienvenidos a la transmisión!" oninput="set(['ticker'],this.value)">
+   <div class="lbl">Etiquetas de patrocinador (separadas por comas, rotan con los logos)</div>
+   <input value="${esc(S.sponsorLabels)}" placeholder="Ej: Patrocinador oficial, Auspiciante" oninput="set(['sponsorLabels'],this.value)">
+   <div class="lbl">Logos de patrocinadores</div>
+   <div class="spon">
+     ${S.sponsors.map((u,i)=>`<div class="sp"><img src="${u}"><button class="sm" onclick="borrarArchivo(S.sponsors[${i}]);S.sponsors.splice(${i},1);build();push()">×</button></div>`).join('')}
+     <div class="sp add" onclick="elegir(u=>S.sponsors.push(u))">+ Agregar</div>
+   </div>
+   <div class="mg" style="margin-top:10px"><label>Segundos por logo<input type="number" min="1" value="${S.sponsorSecs}" oninput="set(['sponsorSecs'],+this.value||3)"></label></div>`}
+
+function renderPrev(){
+  $('prev').innerHTML=`<h2>Vista previa en vivo<span>así se verá en OBS</span></h2>
+   <div id="pvwrap"><iframe id="pv" src="schedule-overlay.html" scrolling="no"></iframe></div>
+   <div class="lbl">Enlace para OBS · fuente de navegador 1920 × 1080</div>
+   <div class="urlrow"><input readonly value="${location.origin}/schedule-overlay.html" onclick="this.select()">
+     <button class="sm" onclick="navigator.clipboard.writeText('${location.origin}/schedule-overlay.html')">Copiar</button></div>`;
+  ajustarPreview()}
+function ajustarPreview(){const w=$('pvwrap');if(!w)return;const s=w.clientWidth/1920;
+  w.style.height=Math.round(1080*s)+'px';$('pv').style.transform=`scale(${s})`}
+addEventListener('resize',ajustarPreview);
+
+function renderTalento(){
+  $('talento').innerHTML=`<h2>Talento<span>Haz clic en una foto para subirla. Un PNG con fondo transparente queda mejor.</span></h2>
+   <div class="tal">${S.talent.map((t,i)=>`<div class="talp">
+     <div class="lbl" style="margin-top:0">Título del panel</div>
+     <input value="${esc(t.title)}" oninput="set(['talent',${i},'title'],this.value)">
+     <div class="acts" style="margin-top:8px;align-items:center">
+       <span class="opt">Color</span><input type="color" value="${t.color}" style="width:52px;padding:2px" oninput="set(['talent',${i},'color'],this.value)">
+     </div>
+     ${t.people.map((p,k)=>`<div class="per">
+       <div class="photo" onclick="elegir(u=>S.talent[${i}].people[${k}].photo=u,S.talent[${i}].people[${k}].photo)">${p.photo?`<img src="${p.photo}">`:'FOTO'}</div>
+       <input value="${esc(p.name)}" placeholder="Nombre ${k+1}" oninput="set(['talent',${i},'people',${k},'name'],this.value)">
+       <button class="sm" title="Borrar" onclick="borrarArchivo(S.talent[${i}].people[${k}].photo);S.talent[${i}].people[${k}]={name:'',photo:''};build();push()">×</button>
+     </div>`).join('')}
+   </div>`).join('')}</div>`}
+
+function renderPartidas(){
+  const n=S.matches.filter(m=>m.on).length;
+  $('partidas').innerHTML=`<h2>Partidas<span>${n} en transmisión</span>
+     <span style="float:right"><button class="sm" onclick="todas(true)">Marcar todas</button>
+     <button class="sm" onclick="todas(false)">Desmarcar todas</button></span></h2>
+   <div class="mts">${S.matches.map((m,i)=>`<div class="mt ${m.on?'on':''}">
+     <div class="mth"><em>${i+1}</em>
+       <label><input type="checkbox" ${m.on?'checked':''} onchange="set(['matches',${i},'on'],this.checked);build()">En transmisión</label>
+       <span class="acts"><button class="sm" title="Intercambiar equipos" onclick="invertir(${i})">⇄</button>
+       <button class="sm bad" onclick="limpiar(${i})">Limpiar</button></span></div>
+     <div class="mg" style="grid-template-columns:1fr 1fr 90px">
+       <label>Etiqueta<input value="${esc(m.label)}" oninput="set(['matches',${i},'label'],this.value)"></label>
+       <label>Hora o estado<input value="${esc(m.time)}" placeholder="16:00 o EN VIVO" oninput="set(['matches',${i},'time'],this.value)"></label>
+       <label>BO<select onchange="set(['matches',${i},'bo'],this.value)"><option value="">—</option>${[1,3,5,7].map(b=>`<option value="${b}" ${m.bo==b?'selected':''}>BO${b}</option>`).join('')}</select></label>
+     </div>
+     ${m.teams.map((t,k)=>`<div class="mrow"><i class="bar" style="--c:${k?'#ff3d55':'#2f80ff'}"></i>
+       <div class="mlogo" onclick="elegir(u=>S.matches[${i}].teams[${k}].logo=u,S.matches[${i}].teams[${k}].logo)">${t.logo?`<img src="${t.logo}">`:'LOGO'}</div>
+       <input value="${esc(t.name)}" placeholder="Equipo ${k+1}" oninput="set(['matches',${i},'teams',${k},'name'],this.value)">
+       <input class="sc" value="${esc(t.score)}" placeholder="0" oninput="set(['matches',${i},'teams',${k},'score'],this.value)">
+     </div>`).join('')}
+   </div>`).join('')}</div>`}
+
+function build(){renderTop();renderAire();renderEvento();renderPrev();renderTalento();renderPartidas();aplicarRol()}
+
+/* ---------- arranque ---------- */
+const es=new EventSource('/events?k=schedule');let primero=true;
+es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
+  const d=JSON.parse(e.data),b=def();
+  if(d&&d.matches){S=Object.assign(b,d);
+    S.ev=Object.assign(b.ev,d.ev||{});S.cd=Object.assign(b.cd,d.cd||{});
+    S.show=Object.assign(b.show,d.show||{});S.sw=Object.assign(b.sw,d.sw||{});
+    if(!Array.isArray(S.sponsors))S.sponsors=[]}
+  build();es.close()};
+es.onerror=()=>{conectado=false;setConn()};
+cargarRol(build);
+fetch('/version').then(r=>r.json()).then(v=>{document.title='Control de Programación · MLBB v'+v.version}).catch(()=>{});
+</script></body></html>

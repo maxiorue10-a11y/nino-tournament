@@ -1,0 +1,133 @@
+/* Estilos comunes de los paneles de control.
+   Hay dos temas: oscuro (por defecto) y claro. Se alternan con el botón de la barra
+   y la elección queda guardada en el navegador. */
+
+:root{
+  --bg:#101216; --card:#171a20; --card2:#1d2128; --input:#0c0e12;
+  --line:#272b33; --line2:#1e222a;
+  --tx:#e6e8ec; --tx2:#aeb4bf; --mut:#7e858f;
+  --acc:#d9a93f; --acc-tx:#1a1408; --acc-soft:#2a2418;
+  --ok:#49b97a; --bad:#e05b6b; --info:#5b9bd8;
+  --blue:#4a86d8; --red:#d8566a;
+  --sombra:0 1px 2px rgba(0,0,0,.3);
+  --r:10px;
+}
+:root[data-tema="claro"]{
+  --bg:#f5f6f8; --card:#ffffff; --card2:#f0f2f5; --input:#ffffff;
+  --line:#e0e3e9; --line2:#eceef2;
+  --tx:#1b1e24; --tx2:#4a515c; --mut:#79818d;
+  --acc:#b8862a; --acc-tx:#ffffff; --acc-soft:#fbf4e4;
+  --ok:#2f9460; --bad:#c7384a; --info:#2f6fb5;
+  --blue:#2f6fb5; --red:#c7384a;
+  --sombra:0 1px 2px rgba(16,20,28,.06);
+}
+
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--tx);padding-bottom:56px;
+  font:15px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+
+/* ---- barra superior ---- */
+#top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:12px 24px;background:var(--card);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px}
+.hexmark{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-items:center;overflow:hidden;
+  background:var(--acc) url('marca.png') center/cover no-repeat}
+.hexmark i{display:none}
+.brand b{font-size:17px;font-weight:600;letter-spacing:-.2px}
+#conn,#guardado{display:flex;align-items:center;gap:7px;color:var(--mut);font-size:13px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--bad);flex:none}
+.dot.ok{background:var(--ok)}
+
+/* ---- navegación ---- */
+.nav{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto}
+.nav a{padding:7px 13px;border-radius:7px;color:var(--mut);text-decoration:none;font-size:14px;
+  border:1px solid transparent}
+.nav a:hover{color:var(--tx);background:var(--card2)}
+.nav a.on{color:var(--tx);background:var(--card2);border-color:var(--line)}
+.tbtn{width:34px;height:34px;padding:0;flex:none;border-radius:8px;font-size:15px;line-height:1}
+/* con que permisos entro esta persona */
+.rolchip{padding:4px 11px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.3px;
+  border:1px solid var(--line);background:var(--card2);color:var(--tx2)}
+.rolchip.invitado{border-color:var(--info);color:var(--info)}
+.rolchip.colaborador{border-color:var(--acc);color:var(--acc)}
+/* lo que un colaborador no puede usar, directamente no se le muestra */
+:root[data-rol="colaborador"] .soloadmin,:root[data-rol="invitado"] .soloadmin{display:none}
+
+/* ---- botones y campos ---- */
+button{background:var(--card2);color:var(--tx);border:1px solid var(--line);border-radius:8px;
+  padding:8px 14px;font:500 14px inherit;cursor:pointer;transition:background .12s,border-color .12s}
+button:hover{border-color:var(--mut)}
+button:disabled{opacity:.45;cursor:default}
+button.ok{background:transparent;border-color:var(--ok);color:var(--ok)}
+button.ok:hover{background:var(--ok);color:#fff}
+button.bad{background:transparent;border-color:var(--bad);color:var(--bad)}
+button.bad:hover{background:var(--bad);color:#fff}
+button.gold{background:var(--acc);border-color:var(--acc);color:var(--acc-tx);font-weight:600}
+button.gold:hover{filter:brightness(1.08)}
+button.sm{padding:6px 11px;font-size:13px}
+input,select,textarea{background:var(--input);border:1px solid var(--line);border-radius:8px;color:var(--tx);
+  padding:8px 11px;font:14px inherit;width:100%}
+input:focus,select:focus{outline:2px solid var(--acc);outline-offset:-1px}
+input::placeholder{color:var(--mut);opacity:.75}
+input[type=color]{padding:3px;cursor:pointer;height:36px}
+input[type=checkbox]{width:auto;accent-color:var(--acc)}
+
+/* ---- tarjetas ---- */
+main{padding:22px 24px;display:flex;flex-direction:column;gap:18px;max-width:1800px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;
+  box-shadow:var(--sombra)}
+.card>h2{font-size:15px;font-weight:600;letter-spacing:-.1px;margin-bottom:3px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card>h2 span{color:var(--mut);font-size:13px;font-weight:400;letter-spacing:0}
+.hint{color:var(--mut);font-size:13px;margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
+
+/* ---- rejillas de campos ---- */
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.mg label{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:6px}
+.chk{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--tx);margin-top:10px}
+.chk input{width:auto}
+.lbl{font-size:12px;color:var(--mut);margin:16px 0 7px}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.filebtn{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:8px;
+  padding:8px 14px;font:500 14px inherit;cursor:pointer;text-align:center;white-space:nowrap}
+.filebtn:hover{border-color:var(--mut)}
+.urlrow{display:flex;gap:7px}
+.urlrow input{color:var(--acc);font-size:13px}
+.warnbox{font-size:13px;line-height:1.7;color:var(--tx2)}
+.warnbox b{color:var(--tx)}
+
+/* ---- fichas del orden del draft ---- */
+.chips{display:flex;flex-wrap:wrap;gap:3px;align-items:center;margin-bottom:10px}
+.chip{min-width:26px;text-align:center;padding:3px 6px;border-radius:5px;background:var(--c);opacity:.35;
+  font-size:11px;font-weight:600;color:#fff}
+.chip.done{opacity:.15}
+.chip.cur{opacity:1;box-shadow:0 0 0 2px var(--tx)}
+.sep{color:var(--line);margin:0 4px}
+
+/* ---- caja de fase (control de draft) ---- */
+.phase{display:flex;align-items:center;gap:13px;padding:7px 15px;background:var(--card2);
+  border:1px solid var(--line);border-radius:9px}
+.phase em{font-style:normal;font-size:24px;font-weight:600;color:var(--acc);min-width:40px;
+  text-align:center;font-variant-numeric:tabular-nums}
+.phase small{display:block;font-size:11px;color:var(--mut)}
+.phase b{font-size:14px;font-weight:600}
+/* banco de tiempo de reserva de cada equipo */
+.bancos{display:flex;gap:5px;border-left:1px solid var(--line);padding-left:12px;margin-left:2px}
+.banco{min-width:48px;text-align:center;padding:3px 7px;border-radius:6px;background:var(--input);
+  border:1px solid var(--line);border-bottom:2px solid var(--c);
+  font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--tx2)}
+.banco.usando{background:var(--c);color:#fff;border-color:var(--c)}
+/* atajos de teclado */
+.atajos{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:2px;
+  font-size:12px;color:var(--mut)}
+.atajos span{display:flex;align-items:center;gap:6px}
+.atajos kbd{font:600 11px inherit;padding:2px 7px;border-radius:5px;background:var(--card2);
+  border:1px solid var(--line);color:var(--tx2);white-space:nowrap}
+
+/* ---- caja de logo ---- */
+.lgbox{width:70px;height:70px;flex:none;border:1px solid var(--line);border-radius:9px;background:var(--input);
+  display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--mut);text-align:center;padding:4px}
+.lgbox img{max-width:100%;max-height:100%;object-fit:contain}

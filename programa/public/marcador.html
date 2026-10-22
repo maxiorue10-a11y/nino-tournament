@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Control del Marcador · MLBB</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="panel.css">
+<script>try{document.documentElement.dataset.tema=localStorage.getItem("tema")||"oscuro"}catch(e){}</script>
+<style>
+#pvwrap{border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;
+ background:repeating-conic-gradient(#1a2338 0 25%,#141b2d 0 50%) 0 0/24px 24px}
+#pvwrap iframe{border:0;width:1920px;height:1080px;transform-origin:top left;position:absolute;top:0;left:0}
+.spon{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;margin-top:8px}
+.sp{position:relative;width:146px;height:84px;border:2px solid var(--line);border-radius:7px;background:var(--card2);
+ display:grid;place-items:center;overflow:hidden;cursor:pointer;padding:6px}
+.sp.on{border-color:var(--acc);box-shadow:0 0 0 2px rgba(240,180,41,.25)}
+.sp img{max-width:92%;max-height:68px;object-fit:contain}
+.sp b{font-size:13px;font-weight:600;color:var(--acc)}
+.sp small{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:11px;color:var(--mut)}
+.sp .x{position:absolute;top:3px;right:3px;padding:1px 7px;font-size:12px}
+.sp.add{border-style:dashed}
+.stat{display:grid;grid-template-columns:96px 54px auto;align-items:center;gap:10px;
+ padding:7px 0;border-bottom:1px solid var(--line2)}
+.stat>span:first-child{font-size:12px;color:var(--mut)}
+.stat .cur{font-size:16px;font-weight:600;text-align:center}
+.stat .ctl{display:flex;gap:6px;align-items:center}
+.stat .ctl input{width:92px;text-align:center}
+.half2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:1000px){.half2{grid-template-columns:1fr}}
+.sidet{font-size:14px;font-weight:600;margin-bottom:8px}
+.ptab2{width:100%;border-collapse:collapse}
+.ptab2 th{font-size:12px;color:var(--mut);text-align:left;padding:0 6px 7px;font-weight:400}
+.ptab2 td{padding:3px 6px 3px 0}
+.avisos{font-size:14px;line-height:1.8}
+.avisos li{margin-left:18px}
+.ok2{color:var(--ok)}.warn2{color:var(--acc)}
+</style></head><body>
+
+<header id="top"></header>
+<main>
+  <section class="card" id="prev"></section>
+  <section class="card" id="esquina"></section>
+  <div class="grid2"><section class="card" id="reloj"></section><section class="card" id="avisos"></section></div>
+  <section class="card" id="stats"></section>
+  <section class="card" id="jug"></section>
+</main>
+
+<script src="nav.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CLAVES=[['kills','Kills'],['gold','Oro'],['turrets','Torres'],['lords','Lords']];
+/* El oro se puede escribir "12400" o "12.4k": el overlay siempre lo muestra como 12.4K */
+function oroNum(v){const t=String(v==null?'':v).trim().replace(/\s/g,'').replace(',','.');
+  if(!t)return null;const m=/^(\d+(?:\.\d+)?)(k)?$/i.exec(t);if(!m)return null;
+  return Math.round(parseFloat(m[1])*(m[2]?1000:1))}
+function oroTxt(n){if(n==null)return '—';
+  return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':String(n)}
+const EQ=()=>({name:'',logo:'',flag:'',score:'',kills:'',gold:'',turrets:'',lords:''});
+const JUG=()=>[0,1,2,3,4].map(()=>({name:'',kda:''}));
+const def=()=>({onair:true,showPlayers:false,logo:'',blue:'#2f80ff',red:'#ff3d55',
+  corner:{tournament:'',stage:'',game:'',casters:''},
+  sponsor:{mode:'none',logos:[],secs:3},
+  clock:{value:''},
+  teams:[EQ(),EQ()],players:[JUG(),JUG()]});
+let S=def(),conectado=false,tOut;
+
+function push(){if(!puedeEditar())return;clearTimeout(tOut);tOut=setTimeout(()=>{
+  fetch('/state?k=scoreboard',{method:'POST',body:JSON.stringify(S)})
+   .then(()=>{conectado=true;setConn()}).catch(()=>{conectado=false;setConn()})},120)}
+function set(path,v){let o=S;for(let i=0;i<path.length-1;i++)o=o[path[i]];o[path[path.length-1]]=v;push()}
+function setConn(){const e=$('conn');if(e)e.innerHTML=`<i class="dot ${conectado?'ok':''}"></i>${conectado?'Servidor conectado':'Sin conexión con el servidor'}`}
+
+/* ---------- imágenes ---------- */
+function subir(f,alGuardar,anterior){if(!f)return;
+  fetch('/api/logo?old='+encodeURIComponent((anterior||'').split('/').pop()),{method:'POST',headers:{'Content-Type':f.type},body:f})
+    .then(r=>r.json().then(j=>r.ok?j:Promise.reject(j.error||'error')))
+    .then(j=>{alGuardar(j.url);build();push()}).catch(e=>alert('No se pudo subir la imagen: '+e))}
+function borrarArchivo(u){const n=(u||'').split('/').pop();if(n)fetch('/api/logo?del='+encodeURIComponent(n),{method:'POST'})}
+function elegir(alGuardar,anterior){const i=document.createElement('input');i.type='file';
+  i.accept='image/png,image/jpeg,image/webp,image/gif';i.onchange=()=>subir(i.files[0],alGuardar,anterior);i.click()}
+
+/* ---------- acciones ---------- */
+function alAire(){S.onair=!S.onair;build();push()}
+function nuevaPartida(){if(!confirm('¿Reiniciar los datos de la partida? Se ponen en cero kills, oro, torres, lords y el reloj.'))return;
+  S.teams.forEach(t=>{t.kills='';t.gold='';t.turrets='';t.lords=''});
+  S.clock={value:''};S.players=[JUG(),JUG()];build();push()}
+function copiarDelDraft(){fetch('/api/state?k=draft').then(r=>r.json()).then(d=>{
+  if(!d||!d.teams)return alert('Todavía no hay datos en el control de draft.');
+  d.teams.forEach((t,i)=>{S.teams[i].name=t.name||'';S.teams[i].logo=t.logo||'';
+    S.teams[i].score=String((d.match&&d.match.wins&&d.match.wins[i])||0);
+    S.players[i]=t.players.map((n,k)=>({name:n||'',kda:(S.players[i][k]||{}).kda||''}))});
+  S.blue=d.teams[0].color||S.blue;S.red=d.teams[1].color||S.red;
+  if(d.match){S.corner.tournament=d.match.tournament||S.corner.tournament;
+    S.logo=d.match.logo||S.logo;
+    S.corner.game='Partida '+(d.match.game||1)+' · BO'+(d.match.bestOf||5)}
+  build();push();alert('Listo: se copiaron los equipos, los logos, el marcador y los jugadores del control de draft.')})
+  .catch(()=>alert('No se pudo leer el control de draft.'))}
+function ajustar(i,k,d){const t=S.teams[i],n=parseInt(t[k],10);t[k]=String(Math.max(0,(isNaN(n)?0:n)+d));build();push()}
+function borrarDato(i,k){S.teams[i][k]='';build();push()}
+function verJugadores(){S.showPlayers=!S.showPlayers;build();push()}
+
+/* ================= RENDER ================= */
+function renderTop(){
+  $('top').innerHTML=`
+   <div class="brand"><span class="hexmark"><i>ML</i></span><b>Control del marcador</b></div>
+   <small id="conn"></small>
+   <div class="acts" style="margin-left:auto">
+     <button class="${S.onair?'gold':''}" onclick="alAire()">${S.onair?'Marcador al aire':'Marcador oculto'}</button>
+     <button class="${S.showPlayers?'gold':''}" onclick="verJugadores()">${S.showPlayers?'Jugadores al aire':'Jugadores ocultos'}</button>
+     <button onclick="copiarDelDraft()">Copiar datos del draft</button>
+     <button class="bad" onclick="nuevaPartida()">Reiniciar partida</button>
+   </div>
+   ${navHTML('/marcador.html')}`;setConn()}
+
+function renderPrev(){
+  $('prev').innerHTML=`<h2>Vista previa en vivo<span>así se verá en OBS</span></h2>
+   <div id="pvwrap"><iframe id="pv" src="scoreboard.html" scrolling="no"></iframe></div>
+   <div class="lbl">Enlace para OBS · fuente de navegador 1920 × 1080</div>
+   <div class="urlrow"><input readonly value="${location.origin}/scoreboard.html" onclick="this.select()">
+     <button class="sm" onclick="navigator.clipboard.writeText('${location.origin}/scoreboard.html')">Copiar</button></div>`;
+  ajustarPreview()}
+function ajustarPreview(){const w=$('pvwrap');if(!w)return;const s=w.clientWidth/1920,alto=180;
+  w.style.height=Math.round(alto*s)+'px';$('pv').style.transform=`scale(${s})`}
+addEventListener('resize',ajustarPreview);
+
+function renderEsquina(){
+  const C=S.corner,SP=S.sponsor,ci=(k)=>`oninput="set(['corner','${k}'],this.value)"`;
+  const chip=(m,cont,etq)=>`<div class="sp ${String(SP.mode)===String(m)?'on':''}" onclick="set(['sponsor','mode'],'${m}');build()">${cont}${etq?`<small>${etq}</small>`:''}</div>`;
+  $('esquina').innerHTML=`<h2>Información de la esquina</h2>
+   <div class="mg">
+     <label>Torneo<input value="${esc(C.tournament)}" ${ci('tournament')}></label>
+     <label>Fase<input value="${esc(C.stage)}" placeholder="Ej: ELIMINACIÓN" ${ci('stage')}></label>
+     <label>Línea de partida<input value="${esc(C.game)}" placeholder="Ej: Partida 1 · BO5" ${ci('game')}></label>
+     <label>Narradores (al micrófono)<input value="${esc(C.casters)}" ${ci('casters')}></label>
+   </div>
+   <div class="lbl">Equipos y colores</div>
+   <div class="half2">${S.teams.map((t,i)=>`<div>
+     <div class="sidet" style="color:${i?S.red:S.blue}">${i?'Equipo rojo':'Equipo azul'}</div>
+     <div class="acts" style="align-items:center">
+       <div class="lgbox" style="width:58px;height:58px;border:1px solid var(--line);border-radius:6px;background:var(--input);display:grid;place-items:center;overflow:hidden;font-size:10px;color:var(--mut)">${t.logo?`<img src="${t.logo}" style="max-width:100%;max-height:100%;object-fit:contain">`:'Sin logo'}</div>
+       <input style="flex:1;min-width:150px" value="${esc(t.name)}" placeholder="Nombre del equipo" oninput="set(['teams',${i},'name'],this.value)">
+       <input style="width:74px" value="${esc(t.score)}" placeholder="0" title="Marcador de la serie" oninput="set(['teams',${i},'score'],this.value)">
+       <input type="color" style="width:52px;padding:2px" value="${i?S.red:S.blue}" oninput="set(['${i?'red':'blue'}'],this.value)">
+       <button class="sm" onclick="elegir(u=>S.teams[${i}].logo=u,S.teams[${i}].logo)">Logo</button>
+       <button class="sm" onclick="elegir(u=>S.teams[${i}].flag=u,S.teams[${i}].flag)">Bandera</button>
+       ${t.flag?`<button class="sm" onclick="borrarArchivo(S.teams[${i}].flag);S.teams[${i}].flag='';build();push()">Quitar bandera</button>`:''}
+     </div></div>`).join('')}</div>
+   <div class="lbl">Logo del torneo (hexágono central)</div>
+   <div class="acts" style="align-items:center">
+     <div class="lgbox" style="width:58px;height:58px;border:1px solid var(--line);border-radius:6px;background:var(--input);display:grid;place-items:center;overflow:hidden;font-size:10px;color:var(--mut)">${S.logo?`<img src="${S.logo}" style="max-width:100%;max-height:100%;object-fit:contain">`:'Sin logo'}</div>
+     <button class="sm" onclick="elegir(u=>S.logo=u,S.logo)">${S.logo?'Cambiar':'Subir'}</button>
+     ${S.logo?'<button class="sm" onclick="borrarArchivo(S.logo);S.logo=\'\';build();push()">Quitar</button>':''}
+   </div>
+   <div class="lbl">Patrocinador (haz clic para ponerlo al aire)</div>
+   <div class="spon">
+     ${chip('none','<b>Ninguno</b>','')}
+     ${chip('slideshow','<b>▶ Rotar</b>','todos los logos')}
+     ${SP.logos.map((u,i)=>`<div class="sp ${String(SP.mode)===String(i)?'on':''}" onclick="set(['sponsor','mode'],'${i}');build()">
+        <img src="${u}"><button class="sm x" onclick="event.stopPropagation();borrarArchivo(S.sponsor.logos[${i}]);S.sponsor.logos.splice(${i},1);if(String(S.sponsor.mode)==='${i}')S.sponsor.mode='none';build();push()">×</button></div>`).join('')}
+     <div class="sp add" onclick="elegir(u=>S.sponsor.logos.push(u))"><b>+ Agregar</b></div>
+   </div>
+   <div class="mg" style="margin-top:10px"><label>Segundos por logo al rotar<input type="number" min="1" value="${SP.secs}" oninput="set(['sponsor','secs'],+this.value||3)"></label></div>`}
+
+function renderReloj(){const C=S.clock;
+  $('reloj').innerHTML=`<h2>Reloj de la partida</h2>
+   <div class="hint">Escribe el tiempo que muestra el juego, en formato mm:ss.</div>
+   <div class="acts" style="align-items:center">
+     <span class="stat" style="display:block"><span class="cur" style="font-size:26px">${esc(C.value||'—')}</span></span>
+     <input style="width:120px" value="${esc(C.value)}" placeholder="mm:ss" oninput="set(['clock','value'],this.value);document.querySelector('#reloj .cur').textContent=this.value||'—'">
+     <button class="sm" onclick="S.clock={value:''};build();push()">Borrar</button>
+   </div>`}
+
+function renderStats(){
+  $('stats').innerHTML=`<h2>Estadísticas de equipo<span>− y + ajustan el valor; Fijar lo deja clavado hasta que lo liberes</span></h2>
+   <div class="half2">${S.teams.map((t,i)=>`<div>
+     <div class="sidet" style="color:${i?S.red:S.blue}">${esc(t.name)||(i?'Equipo rojo':'Equipo azul')}</div>
+     ${CLAVES.map(([k,et])=>`<div class="stat">
+       <span>${et}</span>
+       <span class="cur">${k==='gold'?esc(oroTxt(oroNum(t[k]))):esc(t[k]===''?'—':t[k])}</span>
+       <span class="ctl">
+         <button class="sm" onclick="ajustar(${i},'${k}',-1)">−</button>
+         <button class="sm" onclick="ajustar(${i},'${k}',1)">+</button>
+         <input value="${esc(t[k])}" placeholder="valor" oninput="set(['teams',${i},'${k}'],this.value);build()">
+         <button class="sm" onclick="borrarDato(${i},'${k}')">Borrar</button>
+       </span></div>`).join('')}
+   </div>`).join('')}</div>`}
+
+function renderJug(){
+  $('jug').innerHTML=`<h2>Jugadores<span>salen debajo del marcador con el botón "Jugadores al aire" de arriba</span></h2>
+   <div class="half2">${S.teams.map((t,i)=>`<div>
+     <div class="sidet" style="color:${i?S.red:S.blue}">${i?'Equipo rojo':'Equipo azul'}</div>
+     <table class="ptab2"><tr><th>Jugador</th><th style="width:130px">KDA</th></tr>
+     ${S.players[i].map((p,k)=>`<tr>
+       <td><input value="${esc(p.name)}" placeholder="Jugador ${k+1}" oninput="set(['players',${i},${k},'name'],this.value)"></td>
+       <td><input value="${esc(p.kda)}" placeholder="0/0/0" oninput="set(['players',${i},${k},'kda'],this.value)"></td></tr>`).join('')}
+     </table></div>`).join('')}</div>`}
+
+function renderAvisos(){
+  const a=[];
+  if(!S.onair)a.push(['warn2','El marcador está oculto: no se ve en OBS.']);
+  if(S.showPlayers&&!S.players.some(l=>l.some(p=>p.name)))a.push(['warn2','Los jugadores están al aire pero no cargaste ningún nombre.']);
+  S.teams.forEach((t,i)=>{if(!t.name)a.push(['warn2','El equipo '+(i?'rojo':'azul')+' no tiene nombre.'])});
+  if(!S.corner.tournament)a.push(['warn2','Falta el nombre del torneo en la esquina.']);
+  $('avisos').innerHTML=`<h2>Avisos</h2>
+   <ul class="avisos">${a.length?a.map(([c,t])=>`<li class="${c}">${t}</li>`).join(''):'<li class="ok2">Todo en orden.</li>'}</ul>`}
+
+function build(){renderTop();renderPrev();renderEsquina();renderReloj();renderStats();renderJug();renderAvisos();aplicarRol()}
+
+const es=new EventSource('/events?k=scoreboard');let primero=true;
+es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
+  const d=JSON.parse(e.data),b=def();
+  if(d&&d.teams){S=Object.assign(b,d);
+    S.corner=Object.assign(b.corner,d.corner||{});
+    S.sponsor=Object.assign(b.sponsor,d.sponsor||{});
+    S.clock=Object.assign(b.clock,d.clock||{});
+    S.teams=S.teams.map(t=>Object.assign(EQ(),t));
+    if(!S.players||!S.players[0])S.players=[JUG(),JUG()]}
+  build();es.close()};
+es.onerror=()=>{conectado=false;setConn()};
+cargarRol(build);
+fetch('/version').then(r=>r.json()).then(v=>{document.title='Control del Marcador · MLBB v'+v.version}).catch(()=>{});
+</script></body></html>

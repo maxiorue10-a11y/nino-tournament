@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Marcador en vivo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Montserrat:wght@700;800&display=swap">
+<style>
+:root{--gold:#e9b949;--blue:#2f80ff;--red:#ff3d55}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#fff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
+#app{position:relative;width:1920px;height:1080px}
+#sb{position:absolute;left:0;top:0;width:1920px;height:112px}
+
+.half{position:absolute;top:0;height:80px;width:620px;display:flex;align-items:center;gap:11px;padding:0 12px;
+ background:linear-gradient(90deg,var(--c),#0a1430 92%);box-shadow:inset 0 -5px 0 rgba(0,0,0,.28)}
+.half.l{left:104px;clip-path:polygon(0 0,100% 0,calc(100% - 26px) 100%,0 100%);padding-right:36px}
+.half.r{left:916px;flex-direction:row-reverse;padding-left:36px;
+ background:linear-gradient(270deg,var(--c),#0a1430 92%);clip-path:polygon(26px 0,100% 0,100% 100%,0 100%)}
+.tl{width:58px;height:58px;flex:none;display:grid;place-items:center;overflow:hidden}
+.tl img{max-width:100%;max-height:100%;object-fit:contain}
+.flag{width:38px;height:26px;flex:none;object-fit:cover;border:1px solid rgba(255,255,255,.45)}
+.tn{font-weight:800;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ max-width:158px;min-width:0;flex:1;line-height:1.1}
+.half.r .tn{text-align:right}
+.st{display:flex;align-items:center;gap:11px;flex:none}
+.half.r .st{flex-direction:row-reverse}
+.st b{display:flex;align-items:center;gap:5px;font-size:25px;font-weight:800;font-variant-numeric:tabular-nums}
+.st svg{width:20px;height:20px;fill:rgba(255,255,255,.9);flex:none}
+.scr{width:62px;height:80px;flex:none;display:grid;place-items:center;background:rgba(5,9,22,.72);
+ font-family:'Montserrat',sans-serif;font-size:38px;font-weight:800}
+
+#cen{position:absolute;left:724px;top:0;width:192px;height:112px;z-index:3}
+.clock{position:absolute;left:14px;right:14px;top:0;height:42px;line-height:42px;text-align:center;background:#060b1c;
+ font-family:'Montserrat',sans-serif;font-size:29px;font-weight:800;letter-spacing:1px;
+ clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 100%,0 100%)}
+.hexc{position:absolute;left:50%;top:28px;transform:translateX(-50%);width:88px;height:98px;
+ clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--gold);display:grid;place-items:center}
+.hexc i{position:relative;width:76px;height:86px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+ background:#0a1430;display:grid;place-items:center;font-style:normal;font-size:24px;font-weight:800;color:var(--gold)}
+.hexc img{position:absolute;inset:11px;width:calc(100% - 22px);height:calc(100% - 22px);object-fit:contain}
+
+/* diferencia de oro: la flecha apunta al equipo que va ganando */
+#gd{position:absolute;left:724px;top:128px;width:192px;display:grid;place-items:center;z-index:2}
+#gd b{display:flex;align-items:center;gap:6px;padding:3px 13px;border-radius:3px;background:#060b1c;
+ border-bottom:3px solid var(--g);font-size:19px;font-weight:800;letter-spacing:.5px;
+ font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap}
+#gd i{font-style:normal;color:var(--g);font-size:15px}
+/* jugadores con su KDA */
+#jug{position:absolute;left:0;top:118px;width:1920px}
+.jcol{position:absolute;top:0;width:430px;display:flex;flex-direction:column;gap:2px}
+.jcol.l{left:104px}.jcol.r{left:1106px}
+.jr{display:flex;align-items:center;gap:10px;height:30px;padding:0 11px;background:rgba(6,11,28,.84);
+ border-left:4px solid var(--c)}
+.jcol.r .jr{flex-direction:row-reverse;border-left:0;border-right:4px solid var(--c)}
+.jr b{flex:1;min-width:0;font-size:19px;font-weight:700;letter-spacing:.5px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jcol.r .jr b{text-align:right}
+.jr span{flex:none;font-size:18px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+#corner{position:absolute;right:0;top:0;width:384px;background:#eef1f8;color:#0a1430;
+ box-shadow:0 6px 24px rgba(0,0,0,.35)}
+#corner .cb{padding:9px 16px 8px}
+#corner .t1{font-size:18px;font-weight:800;letter-spacing:2px;line-height:1.15;color:#2b3550;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#corner .t2{font-size:26px;font-weight:800;color:#b3121f;letter-spacing:1px;line-height:1.05;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#corner .t3{font-size:15px;font-weight:700;color:#5b6684;letter-spacing:2px;margin-top:2px}
+#corner .mic{display:flex;align-items:center;gap:9px;padding:5px 16px;background:var(--gold);color:#1b1405}
+#corner .mic small{font-size:13px;font-weight:800;letter-spacing:2px;flex:none}
+#corner .mic b{font-size:16px;font-weight:800;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#corner .sp{height:62px;display:grid;place-items:center;background:#fff;border-top:1px solid #d9dfee}
+#corner .sp img{max-height:52px;max-width:80%;object-fit:contain}
+
+</style></head><body>
+<div id="app"><div id="sb"></div></div>
+<script src="theme.js"></script>
+<script>
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const IC={turrets:'<svg viewBox="0 0 24 24"><path d="M4 3h3v3h3V3h4v3h3V3h3v7l-2 2v9H6v-9l-2-2z"/></svg>',
+ kills:'<svg viewBox="0 0 24 24"><path d="M12 2 4 7v5c0 5 3.4 8.8 8 10 4.6-1.2 8-5 8-10V7z"/></svg>',
+ lords:'<svg viewBox="0 0 24 24"><path d="M3 7l4.5 3L12 4l4.5 6L21 7l-2 12H5z"/></svg>',
+ gold:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>'};
+const ORD=['turrets','kills','lords','gold'];
+let S=null,spi=0,ts=null;
+const val=v=>(v===''||v===undefined||v===null)?'-':v;
+/* El oro se puede escribir "12400" o "12.4k": siempre se muestra como 12.4K */
+function oroNum(v){const s=String(v==null?'':v).trim().replace(/\s/g,'').replace(',','.');
+  if(!s)return null;const m=/^(\d+(?:\.\d+)?)(k)?$/i.exec(s);if(!m)return null;
+  return Math.round(parseFloat(m[1])*(m[2]?1000:1))}
+function oroTxt(n){if(n==null)return '-';
+  return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':String(n)}
+const celda=(t,k)=>k==='gold'?oroTxt(oroNum(t[k])):esc(val(t[k]));
+function encoger(){document.querySelectorAll('.tn').forEach(el=>{
+  let f=32;el.style.fontSize=f+'px';
+  while(el.scrollWidth>el.clientWidth&&f>15){f-=1;el.style.fontSize=f+'px'}})}
+
+function pintar(){const sb=document.getElementById('sb');if(!S){sb.innerHTML='';return}
+  if(S.onair===false){sb.innerHTML='';return}
+  const T=S.teams||[{},{}],C=S.corner||{},A=T[0]||{},B=T[1]||{};
+  const stats=t=>ORD.map(k=>`<b>${IC[k]}${celda(t,k)}</b>`).join('');
+  const cA=colorLado(0,S.blue||'#2f80ff'),cB=colorLado(1,S.red||'#ff3d55');
+  // diferencia de oro
+  const gA=oroNum(A.gold),gB=oroNum(B.gold);
+  let gd='';
+  if(gA!=null&&gB!=null&&gA!==gB){const dif=Math.abs(gA-gB),izq=gA>gB;
+    gd=`<div id="gd" style="--g:${izq?cA:cB}"><b>${izq?'<i>&#9664;</i>':''}${oroTxt(dif)}${izq?'':'<i>&#9654;</i>'}</b></div>`}
+  // jugadores con KDA
+  const P=S.players||[[],[]];
+  const col=(i,c,cls)=>`<div class="jcol ${cls}" style="--c:${c}">${(P[i]||[]).filter(p=>p&&(p.name||p.kda))
+    .map(p=>`<div class="jr"><b>${esc(p.name||'')}</b><span>${esc(p.kda||'')}</span></div>`).join('')}</div>`;
+  const jug=S.showPlayers?`<div id="jug">${col(0,cA,'l')}${col(1,cB,'r')}</div>`:'';
+  const lado=(t,c,cls)=>`<div class="half ${cls}" style="--c:${c}">
+     <span class="tl">${t.logo?`<img src="${t.logo}">`:''}</span>
+     ${t.flag?`<img class="flag" src="${t.flag}">`:''}
+     <span class="tn">${esc(t.name||'Equipo')}</span>
+     <span class="st">${stats(t)}</span>
+     <span class="scr">${esc(val(t.score))}</span></div>`;
+  const sp=sponsorActual();
+  sb.innerHTML=
+   lado(A,cA,'l')+lado(B,cB,'r')+gd+jug+
+   `<div id="cen"><div class="clock">${esc((S.clock&&S.clock.value)||'00:00')}</div>
+      <div class="hexc"><i><span>${esc((C.tournament||'ML').slice(0,2))}</span>${S.logo?`<img src="${S.logo}">`:''}</i></div></div>
+    <div id="corner">
+      <div class="cb">${C.tournament?`<div class="t1">${esc(C.tournament)}</div>`:''}
+        ${C.stage?`<div class="t2">${esc(C.stage)}</div>`:''}
+        ${C.game?`<div class="t3">${esc(C.game)}</div>`:''}</div>
+      ${C.casters?`<div class="mic"><small>Al micrófono</small><b>${esc(C.casters)}</b></div>`:''}
+      ${sp?`<div class="sp"><img src="${sp}"></div>`:''}</div>`;
+  encoger();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(encoger)}
+
+function sponsorActual(){const P=S.sponsor||{},l=P.logos||[];
+  if(!l.length||P.mode==='none'||P.mode===undefined)return '';
+  if(P.mode==='slideshow')return l[spi%l.length];
+  const i=parseInt(P.mode,10);return isNaN(i)?'':(l[i]||'')}
+function ciclo(){clearInterval(ts);const P=S.sponsor||{};
+  if(P.mode==='slideshow'&&(P.logos||[]).length>1)ts=setInterval(()=>{spi++;pintar()},Math.max(1,P.secs||3)*1000)}
+
+document.addEventListener('tema',pintar);
+new EventSource('/events?k=scoreboard').onmessage=e=>{
+  const d=JSON.parse(e.data);if(!d||!d.teams)return;S=d;pintar();ciclo()};
+</script></body></html>

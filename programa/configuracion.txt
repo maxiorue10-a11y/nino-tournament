@@ -1,0 +1,71 @@
+# ====================================================================
+#  CONFIGURACION DEL PROGRAMA
+#
+#  Las lineas que empiezan con # son explicaciones: el programa las ignora.
+#  Vos solo escribis a la derecha del = en las lineas que NO tienen #.
+#  Cuando termines, guarda el archivo y volve a abrir INICIAR.bat.
+#
+#  SI TRANSMITIS VOS SOLO, NO TOQUES NADA DE ESTE ARCHIVO. Ya esta bien asi.
+# ====================================================================
+
+
+# --------------------------------------------------------------------
+# 1) QUIEN PUEDE ABRIR LOS PANELES DE CONTROL
+#
+#    solo-esta-pc = solo esta computadora. Nadie mas entra, ni aunque este
+#                   conectado a tu mismo WiFi. Es lo mas seguro.
+#    abierta      = ademas de esta computadora, pueden entrar desde otra
+#                   compu o desde el celular de la misma red, con una clave.
+#
+#    Escribi una de esas dos palabras despues del =
+# --------------------------------------------------------------------
+red=solo-esta-pc
+
+
+# --------------------------------------------------------------------
+# 2) LAS TRES CLAVES
+#
+#    OJO: esto SOLO sirve si arriba pusiste red=abierta.
+#    Desde esta computadora siempre entras como administrador y nunca te pide clave.
+#
+#    Una "clave" es una palabra que inventas vos. La escribis despues del =
+#    sin dejar espacios. Por ejemplo:   clave=nino2026
+#
+#    Cada clave da permisos distintos. Le das a cada persona la que le toca.
+#    LA CLAVE QUE DEJES VACIA NO EXISTE: nadie va a poder entrar con ese nivel.
+#    Las tres aparecen en la ventana negra cuando arranca el programa.
+# --------------------------------------------------------------------
+
+# ADMINISTRADOR -> puede hacer TODO.
+#   Si la dejas vacia, el programa inventa una solo y te la muestra al arrancar.
+clave=
+
+# COLABORADOR -> el que te ayuda en vivo (por ejemplo lleva el marcador
+#   mientras vos haces el draft).
+#   SI puede: cargar el draft, el marcador y la programacion.
+#   NO puede: subir ni borrar imagenes o logos, ni entrar a Personalizar.
+clave-colaborador=
+
+# INVITADO -> solo mira. Por ejemplo un narrador que quiere seguir el draft
+#   desde su compu sin tocar nada.
+#   NO puede cambiar absolutamente nada.
+clave-invitado=
+
+
+# --------------------------------------------------------------------
+# 3) ACTUALIZACIONES
+#
+#    Aca va el repositorio de GitHub desde donde el programa baja las
+#    versiones nuevas, escrito asi:   usuario/repositorio
+#    Si lo dejas vacio, el boton "Buscar actualizacion" te va a avisar
+#    que todavia no esta configurado.
+# --------------------------------------------------------------------
+actualizaciones=
+
+
+# --------------------------------------------------------------------
+# 4) ABRIR EL NAVEGADOR SOLO
+#    si = al arrancar, abre la pagina de inicio en tu navegador
+#    no = no la abre, la abris vos cuando quieras
+# --------------------------------------------------------------------
+abrir-navegador=si

@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Personalizar · MLBB</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="panel.css">
+<script>try{document.documentElement.dataset.tema=localStorage.getItem("tema")||"oscuro"}catch(e){}</script>
+<style>
+.cols{display:grid;grid-template-columns:440px 1fr;gap:16px;align-items:start}
+@media(max-width:1200px){.cols{grid-template-columns:1fr}}
+.num{display:inline-block;min-width:24px;color:var(--mut);font-size:13px}
+.temas{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tm{position:relative;border:2px solid var(--line);border-radius:8px;background:var(--input);padding:8px;cursor:pointer}
+.tm.on{border-color:var(--acc)}
+.tm .sw2{display:flex;height:48px;border-radius:5px;overflow:hidden;margin-bottom:7px}
+.tm .sw2 i{flex:1}
+.tm b{font-size:14px;font-weight:600}
+.tm .air{position:absolute;top:5px;right:5px;background:var(--acc);color:var(--acc-tx);font-weight:600;font-size:12px;
+ padding:1px 6px;border-radius:3px}
+.crow{display:grid;grid-template-columns:96px 52px minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:9px}
+.crow span{font-size:12px;color:var(--mut)}
+.crow input[type=color]{padding:2px;height:38px}
+.vs{display:flex;align-items:stretch;height:50px;margin-top:14px;border-radius:9px;overflow:hidden;font-size:15px;font-weight:600}
+.vs .a{flex:1;display:flex;align-items:center;padding:0 18px;background:linear-gradient(90deg,var(--b),#0a1430)}
+.vs .b{flex:1;display:flex;align-items:center;justify-content:flex-end;padding:0 18px;background:linear-gradient(270deg,var(--r),#0a1430)}
+.vs .m{width:74px;display:grid;place-items:center;background:var(--input);color:var(--acc);font-size:20px}
+.fbox{background:var(--input);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:10px}
+.fbox .fh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fbox small{font-size:12px;color:var(--mut)}
+.fbox .mu{color:var(--mut);text-transform:none;letter-spacing:0;font-weight:400}
+.fprev{font-size:32px;font-weight:800;margin-top:7px;line-height:1.15}
+#pvwrap{margin-top:12px;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;
+ background:repeating-conic-gradient(#1a2338 0 25%,#141b2d 0 50%) 0 0/24px 24px}
+#pvwrap iframe{border:0;width:1920px;height:1080px;transform-origin:top left;position:absolute;top:0;left:0}
+#guardado{color:var(--ok);font-size:13px}
+</style></head><body>
+
+<header id="top"></header>
+<main>
+  <div class="cols">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <section class="card" id="c1"></section>
+      <section class="card" id="c2"></section>
+      <section class="card" id="c3"></section>
+      <section class="card" id="c4"></section>
+    </div>
+    <section class="card" id="prev"></section>
+  </div>
+</main>
+
+<script src="nav.js"></script>
+<script src="theme.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const PRE={
+  gold:   {nombre:'Dorado',  accent:'#e9b949',accent2:'#f6d98a',bg1:'#0b1736',bg2:'#060d20'},
+  crimson:{nombre:'Carmesí', accent:'#ff4655',accent2:'#ffa1aa',bg1:'#2a0b14',bg2:'#120407'},
+  emerald:{nombre:'Esmeralda',accent:'#2ee6a8',accent2:'#9bf5d8',bg1:'#06281f',bg2:'#03110d'},
+  custom: {nombre:'Personalizado',accent:'#b24bff',accent2:'#dcaaff',bg1:'#1a0a33',bg2:'#0a0417'}};
+const def=()=>({preset:'gold',accent:PRE.gold.accent,accent2:PRE.gold.accent2,bg1:PRE.gold.bg1,bg2:PRE.gold.bg2,
+  blue:'#2f80ff',red:'#ff3d55',fontH:''});
+let S=def(),conectado=false,tOut,vista='draft';
+
+function push(){if(!esAdmin())return;clearTimeout(tOut);tOut=setTimeout(()=>{
+  fetch('/state?k=theme',{method:'POST',body:JSON.stringify(S)}).then(()=>{conectado=true;
+    const h=new Date().toLocaleTimeString('es');const g=$('guardado');if(g)g.textContent='Guardado '+h;
+    setConn()}).catch(()=>{conectado=false;setConn()})},120)}
+function set(k,v){S[k]=v;aplicarTema(S);push()}
+function setConn(){const e=$('conn');if(e)e.innerHTML=`<i class="dot ${conectado?'ok':''}"></i>${conectado?'Servidor conectado':'Sin conexión con el servidor'}`}
+
+function usarPreset(k){const p=PRE[k];S.preset=k;S.accent=p.accent;S.accent2=p.accent2;S.bg1=p.bg1;S.bg2=p.bg2;
+  aplicarTema(S);build();push()}
+function reiniciarTodo(){if(!confirm('¿Volver todo a los valores originales? (colores, fuentes y diseños)'))return;
+  if(S.fontH)borrarArchivo(S.fontH);
+  S=def();aplicarTema(S);build();push()}
+
+function subirFuente(cual){const i=document.createElement('input');i.type='file';i.accept='.ttf,.otf,.woff,.woff2';
+  i.onchange=()=>{const f=i.files[0];if(!f)return;
+    const ext=(f.name.split('.').pop()||'').toLowerCase();
+    if(!['ttf','otf','woff','woff2'].includes(ext))return alert('Usa un archivo TTF, OTF o WOFF.');
+    fetch('/api/logo?ext='+ext+'&old='+encodeURIComponent((S[cual]||'').split('/').pop()),
+      {method:'POST',headers:{'Content-Type':'application/octet-stream'},body:f})
+      .then(r=>r.json().then(j=>r.ok?j:Promise.reject(j.error||'error')))
+      .then(j=>{S[cual]=j.url;aplicarTema(S);build();push()})
+      .catch(e=>alert('No se pudo subir la fuente: '+e))};
+  i.click()}
+function borrarArchivo(u){const n=(u||'').split('/').pop();if(n)fetch('/api/logo?del='+encodeURIComponent(n),{method:'POST'})}
+function quitarFuente(cual){borrarArchivo(S[cual]);S[cual]='';aplicarTema(S);build();push()}
+
+/* ================= RENDER ================= */
+function renderTop(){
+  $('top').innerHTML=`<div class="brand"><span class="hexmark"><i>ML</i></span><b>Personalizar overlays</b></div>
+   <small id="conn"></small><small id="guardado"></small>
+   ${navHTML('/custom.html')}
+   <div class="acts"><button class="bad" onclick="reiniciarTodo()">Reiniciar todo</button></div>`;setConn()}
+
+function renderC1(){
+  $('c1').innerHTML=`<h2><span class="num">01</span>Tema de color</h2>
+   <div class="hint">El color de acento y el fondo de todos los overlays.</div>
+   <div class="temas">${Object.entries(PRE).map(([k,p])=>`
+     <div class="tm ${S.preset===k?'on':''}" onclick="usarPreset('${k}')">
+       ${S.preset===k?'<span class="air">Al aire</span>':''}
+       <div class="sw2"><i style="background:${p.accent}"></i><i style="background:${p.accent2}"></i><i style="background:${p.bg1}"></i><i style="background:${p.bg2}"></i></div>
+       <b>${p.nombre}</b></div>`).join('')}</div>
+   ${S.preset==='custom'?`
+   <div class="crow"><span>Acento</span><input type="color" value="${S.accent}" oninput="set('accent',this.value)"><input value="${S.accent}" oninput="set('accent',this.value)"><button class="sm" onclick="set('accent',PRE.custom.accent);build()">Original</button></div>
+   <div class="crow"><span>Acento claro</span><input type="color" value="${S.accent2}" oninput="set('accent2',this.value)"><input value="${S.accent2}" oninput="set('accent2',this.value)"><button class="sm" onclick="set('accent2',PRE.custom.accent2);build()">Original</button></div>
+   <div class="crow"><span>Fondo 1</span><input type="color" value="${S.bg1}" oninput="set('bg1',this.value)"><input value="${S.bg1}" oninput="set('bg1',this.value)"><button class="sm" onclick="set('bg1',PRE.custom.bg1);build()">Original</button></div>
+   <div class="crow"><span>Fondo 2</span><input type="color" value="${S.bg2}" oninput="set('bg2',this.value)"><input value="${S.bg2}" oninput="set('bg2',this.value)"><button class="sm" onclick="set('bg2',PRE.custom.bg2);build()">Original</button></div>`:''}`}
+
+function renderC2(){
+  $('c2').innerHTML=`<h2><span class="num">02</span>Colores de los equipos</h2>
+   <div class="hint">El lado azul y el lado rojo en el draft, el marcador y el line-up.</div>
+   <div class="crow"><span>Lado azul</span><input type="color" value="${S.blue}" oninput="set('blue',this.value);pintarVs()"><input id="hb" value="${S.blue}" oninput="set('blue',this.value);pintarVs()"><button class="sm" onclick="set('blue','#2f80ff');build()">Original</button></div>
+   <div class="crow"><span>Lado rojo</span><input type="color" value="${S.red}" oninput="set('red',this.value);pintarVs()"><input id="hr" value="${S.red}" oninput="set('red',this.value);pintarVs()"><button class="sm" onclick="set('red','#ff3d55');build()">Original</button></div>
+   <div class="vs" id="vs" style="--b:${S.blue};--r:${S.red}"><div class="a">Lado azul</div><div class="m">VS</div><div class="b">Lado rojo</div></div>`}
+function pintarVs(){const v=$('vs');if(v){v.style.setProperty('--b',S.blue);v.style.setProperty('--r',S.red)}}
+
+function renderC3(){
+  const caja=(cual,et,def2,txt,cls)=>`<div class="fbox">
+    <div class="fh"><small>${et} <span class="mu">· ${S[cual]?'fuente propia':def2}</span></small>
+      <span class="acts"><button class="sm" onclick="subirFuente('${cual}')">Subir</button>
+      ${S[cual]?`<button class="sm" onclick="quitarFuente('${cual}')">Quitar</button>`:''}</span></div>
+    <div class="fprev ${cls}" style="font-family:${S[cual]?'TemaTitulos':'inherit'}">${txt}</div></div>`;
+  $('c3').innerHTML=`<h2><span class="num">03</span>Fuentes</h2>
+   <div class="hint">Sube un archivo TTF, OTF o WOFF para cambiar la letra de todos los overlays.</div>
+   ${caja('fontH','Letra de los overlays','Barlow Condensed','Campeones 2 – 1','')}`}
+
+function renderC4(){
+  $('c4').innerHTML=`<h2><span class="num">04</span>Banderas</h2>
+   <div class="lbl">Bandera del marcador</div>
+   <div class="hint" style="margin:0">Cada equipo tiene su propia bandera, y se sube en el <a href="marcador.html" style="color:var(--acc)">control del marcador</a>.</div>`}
+
+function renderPrev(){
+  const op=[['draft','Draft pick'],['lineup','Line-up'],['previous','Draft anterior'],
+            ['stats','Estadísticas'],['scoreboard','Marcador en vivo'],['schedule','Programación']];
+  const url=vista==='scoreboard'?'scoreboard.html':vista==='schedule'?'schedule-overlay.html':'overlay.html?view='+vista;
+  $('prev').innerHTML=`<h2>Vista previa en vivo
+     <span style="float:right"><button class="sm" onclick="window.open('${url}','_blank')">Abrir</button></span></h2>
+   <select onchange="vista=this.value;renderPrev()">${op.map(([v,n])=>`<option value="${v}" ${vista===v?'selected':''}>${n}</option>`).join('')}</select>
+   <div id="pvwrap"><iframe id="pv" src="${url}" scrolling="no"></iframe></div>
+   <div class="hint" style="margin:8px 0 0">Todos los overlays abiertos en OBS cambian en cuanto tocas algo aquí.</div>`;
+  ajustarPreview()}
+function ajustarPreview(){const w=$('pvwrap');if(!w)return;const s=w.clientWidth/1920;
+  w.style.height=Math.round(1080*s)+'px';$('pv').style.transform=`scale(${s})`}
+addEventListener('resize',ajustarPreview);
+
+function build(){renderTop();renderC1();renderC2();renderC3();renderC4();renderPrev();
+  aplicarRol();
+  if(!esAdmin()){
+    document.querySelectorAll('main input,main select,main button').forEach(el=>{el.disabled=true});
+    const m=document.querySelector('main');
+    if(m&&!document.getElementById('avisorol')){const d=document.createElement('div');
+      d.id='avisorol';d.className='card';d.style.borderColor='var(--info)';
+      d.innerHTML='<h2 style="color:var(--info)">Solo el administrador puede personalizar</h2>'
+        +'<div class="hint" style="margin:0">Podés mirar cómo está configurado, pero los cambios de colores, '
+        +'fuentes y diseño los hace quien tiene la clave de administrador.</div>';
+      m.insertBefore(d,m.firstChild)}}}
+
+const es=new EventSource('/events?k=theme');let primero=true;
+es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
+  const d=JSON.parse(e.data);if(d&&d.accent)S=Object.assign(def(),d);
+  aplicarTema(S);build();es.close()};
+es.onerror=()=>{conectado=false;setConn()};
+aplicarTema(S);cargarRol(build);
+fetch('/version').then(r=>r.json()).then(v=>{document.title='Personalizar · MLBB v'+v.version}).catch(()=>{});
+</script></body></html>

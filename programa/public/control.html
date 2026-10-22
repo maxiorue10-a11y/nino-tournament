@@ -1,0 +1,733 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Control de Draft · Mobile Legends</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="panel.css">
+<script>try{document.documentElement.dataset.tema=localStorage.getItem("tema")||"oscuro"}catch(e){}</script>
+<style>/* ---- serie ---- */
+.serie{display:grid;grid-template-columns:1fr 300px 1fr;gap:14px;align-items:stretch}
+@media(max-width:1100px){.serie{grid-template-columns:1fr}}
+.tside{display:flex;align-items:center;gap:14px;padding:16px;border-radius:9px;background:var(--card2);border:1px solid var(--line);border-left:3px solid var(--blue)}
+.tside.r{flex-direction:row-reverse;border-left:1px solid var(--line);border-right:3px solid var(--red)}
+.lgbox{width:96px;height:96px;flex:none;border:1px solid var(--line);border-radius:8px;background:var(--input);
+ display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--mut);text-align:center;padding:4px}
+.lgbox img{max-width:100%;max-height:100%;object-fit:contain}
+.tside .mid{flex:1;min-width:0}
+.sidelbl{font-size:12px;font-weight:600;margin-bottom:7px}
+.tside.b .sidelbl{color:var(--blue)}.tside.r .sidelbl{color:var(--red);text-align:right}
+.tname{width:100%;background:var(--input);border:1px solid var(--line);border-radius:8px;color:var(--tx);padding:9px 11px;font-size:16px;font-weight:600}
+.tside.r .tname{text-align:right}
+.score{display:flex;align-items:center;gap:8px}
+.score b{min-width:54px;height:54px;display:grid;place-items:center;background:var(--input);border:1px solid var(--line);border-radius:9px;font-size:26px;font-weight:600}
+.center{text-align:center;padding:16px;background:var(--card2);border:1px solid var(--line);border-radius:9px}
+.center h3{font-size:12px;color:var(--mut);margin-bottom:9px}
+.bo{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+.bo button{font-weight:600;font-size:13px;padding:7px 14px}
+.bo button.on{background:var(--acc);border-color:var(--acc);color:var(--acc-tx)}
+.gameline{font-size:15px;font-weight:600;color:var(--acc);margin-bottom:11px}
+.center .acts{justify-content:center}
+/* ---- preview ---- */
+#pvwrap{margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;
+ background:repeating-conic-gradient(#1a2338 0 25%,#141b2d 0 50%) 0 0/24px 24px}
+#pvwrap iframe{border:0;width:1920px;height:1080px;transform-origin:top left;position:absolute;left:0}
+/* ---- lados ---- */
+.side h2 i{font-style:normal}
+.side.r h2{color:var(--red)}
+.ptab{width:100%;border-collapse:collapse}
+.ptab th{font-size:12px;color:var(--mut);text-align:left;padding:0 6px 7px;font-weight:400}
+.ptab td{padding:3px 6px 3px 0}
+.ptab td.n{width:24px;font-size:13px;color:var(--mut);text-align:center}
+input,select{background:var(--input);border:1px solid var(--line);border-radius:5px;color:var(--tx);
+ padding:8px 10px;font:14px 'Segoe UI',Arial;width:100%}
+input:focus,select:focus{outline:2px solid var(--acc);outline-offset:-1px}
+input.turno{outline:2px solid var(--acc);outline-offset:-1px;background:#1b1605}
+input::placeholder{color:#4a5873}
+.bans{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+.lbl{font-weight:500;font-size:12px;color:var(--mut);margin:12px 0 4px}
+.sw{padding:7px 9px;font-size:13px;line-height:1}
+.hmv{font-size:12px;padding:7px 6px;color:var(--mut)}
+/* ---- buscador de héroes ---- */
+#ac{position:absolute;z-index:60;display:none;background:var(--card);border:1px solid var(--acc);
+ border-radius:7px;box-shadow:0 14px 40px rgba(0,0,0,.6);max-height:332px;overflow:auto;min-width:252px}
+#ac .it{display:flex;align-items:center;gap:10px;padding:6px 10px;cursor:pointer;border-bottom:1px solid var(--line2)}
+#ac .it:last-child{border-bottom:0}
+#ac .it.sel{background:var(--card2)}
+#ac .it.usado{opacity:.4;cursor:not-allowed}
+#ac .mini{width:38px;height:38px;flex:none;border-radius:5px;background:#16233d;display:grid;place-items:center;
+ overflow:hidden;font-weight:600;font-size:14px;color:var(--mut)}
+#ac .mini img,#ac .mini video{width:100%;height:100%;object-fit:cover}
+#ac .nm{flex:1;min-width:0}
+#ac .nm b{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ac .nm small{color:var(--mut);font-size:12px}
+#ac .tag{font-weight:600;font-size:12px;color:var(--acc)}
+#ac .vacio{padding:12px;color:var(--mut);font-size:13px}
+/* ---- equipos guardados ---- */
+.eqs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:1250px){.eqs{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.eqs{grid-template-columns:1fr}}
+.eq{background:var(--input);border:1px solid var(--line);border-radius:9px;padding:11px}
+.eqh{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.eqh .lg{width:44px;height:44px;flex:none;border-radius:7px;background:var(--card);border:1px solid var(--line);
+ display:grid;place-items:center;overflow:hidden;cursor:pointer;font-size:9px;color:var(--mut);text-align:center}
+.eqh .lg img{max-width:100%;max-height:100%;object-fit:contain}
+.eqh input[type=text]{font-weight:600}
+.eqh input[type=color]{width:40px;flex:none;padding:2px}
+.eqj{display:grid;gap:4px;margin-bottom:9px}
+.eqj div{display:grid;grid-template-columns:34px 1fr;gap:6px;align-items:center}
+.eqj img{width:22px;height:22px;object-fit:contain;justify-self:center;opacity:.85}
+.eqj input{padding:5px 8px;font-size:13px}
+.eqj div{grid-template-columns:30px 1fr 30px}
+.cap{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--card2);color:var(--mut);font-size:12px;font-weight:600;cursor:pointer;padding:0;display:grid;place-items:center}
+.cap.on{background:var(--acc);border-color:var(--acc);color:var(--acc-tx)}
+.sub{display:grid;grid-template-columns:86px 1fr 62px;gap:5px;align-items:center;margin-bottom:4px}
+.sub select,.sub input{padding:5px 7px;font-size:12.5px}
+.sub button{padding:5px 4px;font-size:12px}
+.lblmini{font-size:11px;color:var(--mut);margin:11px 0 5px}
+.rtit{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut);margin-bottom:9px;white-space:nowrap}
+.rtit small{font-size:12px;color:var(--mut);text-transform:none}
+.eq.libre{display:flex;flex-direction:column;justify-content:center;min-height:238px;
+ border-style:dashed;border-color:var(--line)}
+.selib{padding:6px 6px;font-size:12px;width:auto;min-width:0;max-width:118px}
+.libl{display:flex;flex-wrap:wrap;gap:7px}
+.lib{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);
+ border-radius:16px;padding:4px 6px 4px 10px;font-size:13px}
+.lib img{width:20px;height:20px;object-fit:contain}
+.lib button{padding:1px 7px;font-size:13px;line-height:1.2;border-radius:50%}
+.eqb{display:flex;gap:5px;flex-wrap:wrap}
+.eqb button{flex:1;padding:7px 6px;font-size:12.5px;white-space:nowrap}
+.eqb .az{background:transparent;border-color:var(--blue);color:var(--blue)}
+.eqb .az:hover{background:var(--blue);color:#fff}
+.eqb .ro{background:transparent;border-color:var(--red);color:var(--red)}
+.eqb .ro:hover{background:var(--red);color:#fff}
+/* ---- carga de imágenes de héroes ---- */
+#zona{border:2px dashed var(--line);border-radius:10px;padding:22px 16px;text-align:center;
+ color:var(--mut);font-size:14px;cursor:pointer;transition:.12s;margin:12px 0}
+#zona:hover,#zona.on{border-color:var(--acc);background:var(--acc-soft);color:var(--tx)}
+#zona b{display:block;font-size:15px;font-weight:600;color:var(--tx);margin-bottom:5px}
+.cola{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.cf{display:grid;grid-template-columns:46px 1fr 150px 92px 30px;gap:8px;align-items:center;
+ padding:5px 9px;border-bottom:1px solid var(--line2);font-size:13px}
+.cf:last-child{border-bottom:0}
+.cf .pv{width:46px;height:38px;border-radius:5px;background:var(--card);overflow:hidden;display:block}
+.cf .pv img,.cf .pv video{width:46px;height:38px;object-fit:cover;display:block}
+.cf .ar{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--mut)}
+.cf select{padding:5px 7px;font-size:12.5px}
+.cf .es{font-size:11px;font-weight:500;text-align:center}
+.es.ok{color:var(--ok)}.es.mal{color:var(--bad)}.es.dud{color:var(--acc)}.es.esp{color:var(--mut)}
+.qt{padding:2px 7px;font-size:13px;line-height:1.2}
+.carp{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.carp button{padding:8px 14px;font-size:13px}
+.carp button.on{background:var(--acc);border-color:var(--acc);color:var(--acc-tx)}
+.carp span{font-weight:500;font-size:12px;color:var(--mut);
+ align-self:center;margin-right:4px}
+.cnt{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:13px}
+.cnt b{color:var(--acc)}
+.score{display:flex;align-items:center;gap:10px}
+.pips{display:flex;gap:4px}
+.pips i{width:16px;height:22px;border-radius:4px;border:1px solid var(--line);background:var(--input);
+ cursor:pointer;display:block;transition:background .12s}
+.pips i.on{background:var(--c);border-color:var(--c)}
+.pips i:hover{border-color:var(--mut)}
+.capsel{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--mut);white-space:nowrap}
+.capsel select{width:auto;min-width:110px;padding:6px 8px;font-size:13px}
+.ptab{table-layout:fixed}
+/* ---- nombre + tag ---- */
+.nomtag{display:flex;gap:8px}
+.tagin{width:74px;flex:none;text-align:center;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.opt2{font-size:12px;color:var(--mut);align-self:center}
+.seg2{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg2 button{border:0;border-radius:0;background:var(--card2);font-size:13px;padding:7px 13px}
+.seg2 button.on{background:var(--acc);color:var(--acc-tx)}
+</style></head><body>
+
+<header id="top"></header>
+<main>
+  <section class="card" id="serie"></section>
+  <div class="grid2"><section class="card side b" id="side0"></section><section class="card side r" id="side1"></section></div>
+  <section class="card" id="guardados"></section>
+  <div class="grid2"><section class="card" id="torneo"></section><section class="card" id="hist"></section></div>
+  <div class="grid2"><section class="card" id="links"></section><section class="card soloadmin" id="mediaBox"></section></div>
+</main>
+<div id="ac"></div>
+
+<script src="nav.js"></script>
+<script src="theme.js"></script>
+<script src="equipos.js"></script>
+<script src="heroes.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LANES=['EXP','JUNGLA','MID','GOLD','ROAM'];
+const E=()=>['','','','',''];
+const def=()=>({
+  teams:[{name:'Equipo Azul',tag:'AZU',color:'#2f80ff',logo:'',lanes:[0,1,2,3,4],cap:-1,players:E()},
+         {name:'Equipo Rojo',tag:'ROJ',color:'#ff3d55',logo:'',lanes:[0,1,2,3,4],cap:-1,players:E()}],
+  picks:[E(),E()],bans:[E(),E()],history:[],prev:-1,saved:null,lib:null,
+  match:{game:1,bestOf:5,wins:[0,0],score:'00:00',stage:'NORMAL',tournament:'',season:'',logo:'',
+         step:0,autoTimer:true,useTimer:true,draftStage:false,lineupBg:true,
+         usarReserva:true,reservaSecs:60,reserva:[60,60],
+         timer:{secs:30,left:30,endsAt:0,running:false,modo:'normal'}}});
+let S=def(),conectado=false,tOut,vistaPrev='draft';
+
+/* ---------- envío al servidor ---------- */
+function push(){if(!puedeEditar())return;clearTimeout(tOut);tOut=setTimeout(()=>{
+  fetch('/state',{method:'POST',body:JSON.stringify(S)})
+   .then(()=>{conectado=true;setConn()}).catch(()=>{conectado=false;setConn()})},120)}
+function set(path,v){let o=S;for(let i=0;i<path.length-1;i++)o=o[path[i]];o[path[path.length-1]]=v;push();markHeroes()}
+function setConn(){const e=$('conn');if(e)e.innerHTML=`<i class="dot ${conectado?'ok':''}"></i>${conectado?'Servidor conectado':'Sin conexión con el servidor'}`}
+
+/* ---------- temporizador con tiempo de reserva ----------
+   Cada equipo tiene sus segundos por turno; cuando se le acaban empieza a gastar
+   su banco de reserva, igual que en los torneos. Cuando el banco llega a cero, se queda en 0. */
+function segsRestantes(){const T=S.match.timer;return T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left}
+function bancos(){const M=S.match;if(!Array.isArray(M.reserva))M.reserva=[M.reservaSecs|0,M.reservaSecs|0];return M.reserva}
+function guardarReserva(){const M=S.match,T=M.timer,f=flowInfo(M.step);
+  if(T.modo==='reserva'&&f)bancos()[f.team]=Math.max(0,T.running?Math.ceil((T.endsAt-Date.now())/1000):T.left)}
+function tmr(a){const T=S.match.timer,now=Date.now();
+  if(a==='start'){T.endsAt=now+T.left*1000;T.running=true}
+  if(a==='pause'){if(T.running)T.left=segsRestantes();T.running=false;guardarReserva()}
+  if(a==='reset'){guardarReserva();T.modo='normal';T.left=T.secs;T.running=false}
+  renderTop();push()}
+function setSecs(v){const T=S.match.timer;T.secs=v;if(!T.running&&T.modo!=='reserva')T.left=v;push()}
+function setReserva(v){const M=S.match;M.reservaSecs=Math.max(0,v|0);M.reserva=[M.reservaSecs,M.reservaSecs];build();push()}
+function reiniciarReserva(){const M=S.match;M.reserva=[M.reservaSecs|0,M.reservaSecs|0];
+  if(M.timer.modo==='reserva'){M.timer.modo='normal';M.timer.left=M.timer.secs;M.timer.running=false}
+  build();push()}
+/* pasa de tiempo normal a reserva cuando se acaba el turno */
+function vigilarReserva(){const M=S.match,T=M.timer;
+  if(!T.running||!M.useTimer)return;
+  if(T.endsAt-Date.now()>0)return;
+  const f=flowInfo(M.step);
+  if(T.modo!=='reserva'){
+    const banco=M.usarReserva&&f?Math.max(0,bancos()[f.team]||0):0;
+    if(banco>0){T.modo='reserva';T.left=banco;T.endsAt=Date.now()+banco*1000;renderTop();push();return}
+    T.running=false;T.left=0;renderTop();push();return}
+  if(f)bancos()[f.team]=0;
+  T.running=false;T.left=0;renderTop();push()}
+
+/* ---------- flujo del draft ---------- */
+function nombreFase(step){const f=flowInfo(step);if(!f)return 'Draft completo';
+  return (f.type==='ban'?'Baneo ':'Pick ')+(f.team===0?'azul ':'rojo ')+(f.slot+1)}
+function goStep(n){const M=S.match,T=M.timer;
+  guardarReserva();T.modo='normal';
+  M.step=Math.max(0,Math.min(DRAFT_FLOW.length,n));T.left=T.secs;T.running=false;
+  if(M.autoTimer&&M.step<DRAFT_FLOW.length){T.endsAt=Date.now()+T.left*1000;T.running=true}
+  build();push();enfocarTurno()}
+
+function corregir(){const n=S.match.step-1;if(n<0)return;
+  const f=flowInfo(n);(f.type==='ban'?S.bans:S.picks)[f.team][f.slot]='';goStep(n)}
+function reiniciarDraft(){if(!confirm('¿Reiniciar el draft? Se borran los picks y los baneos. Los jugadores se mantienen.'))return;
+  S.picks=[E(),E()];S.bans=[E(),E()];goStep(0)}
+/* ---------- buscador de héroes ---------- */
+let acEl=null,acOpc=[],acSel=0;
+const AC=()=>document.getElementById('ac');
+function idDe(el){const m=/^([pb])(\d)-(\d)$/.exec(el.id||'');return m?{tipo:m[1]==='b'?'ban':'pick',i:+m[2],k:+m[3]}:null}
+function usados(excepto){const s=new Set();
+  S.bans.forEach(a=>a.forEach(h=>{if(h)s.add(_key(h))}));
+  S.picks.forEach(a=>a.forEach(h=>{if(h)s.add(_key(h))}));
+  if(excepto)s.delete(_key(excepto));return s}
+function buscar(q,excepto){const us=usados(excepto),k=_key(q);
+  let r=HEROES.map(h=>({h,k:_key(h.n)}));
+  if(k)r=r.filter(x=>x.k.includes(k)||osa(x.k.slice(0,Math.max(k.length,1)),k)<=1);
+  r.sort((a,b)=>{const A=a.k.startsWith(k)?0:1,B=b.k.startsWith(k)?0:1;
+    const UA=us.has(a.k)?1:0,UB=us.has(b.k)?1:0;
+    return UA-UB||A-B||a.k.localeCompare(b.k)});
+  return r.slice(0,40).map(x=>({n:x.h.n,r:x.h.r,usado:us.has(x.k)}))}
+function abrirAC(el){const d=idDe(el);if(!d)return;acEl=el;
+  const actual=(d.tipo==='ban'?S.bans:S.picks)[d.i][d.k];
+  acOpc=buscar(el.value,actual);acSel=0;pintarAC()}
+function pintarAC(){const a=AC();if(!acEl)return;
+  if(!acOpc.length){a.innerHTML='<div class="vacio">Ningún héroe coincide</div>'}
+  else a.innerHTML=acOpc.map((o,n)=>{const f=mediaFor(o.n),vid=/\.(webm|mp4)$/i.test(f||'');
+    return `<div class="it${n===acSel?' sel':''}${o.usado?' usado':''}" data-n="${esc(o.n)}">
+      <span class="mini">${f?(vid?`<video src="${f}" muted></video>`:`<img src="${f}">`):esc(o.n[0])}</span>
+      <span class="nm"><b>${esc(o.n)}</b><small>${esc(o.r.map(x=>ROLES_ES[x]).join(' / '))}</small></span>
+      ${o.usado?'<span class="tag">ya usado</span>':''}</div>`}).join('');
+  const r=acEl.getBoundingClientRect();
+  a.style.display='block';
+  a.style.left=Math.round(r.left+scrollX)+'px';
+  a.style.top=Math.round(r.bottom+scrollY+3)+'px';
+  a.style.minWidth=Math.max(252,Math.round(r.width))+'px';
+  const sel=a.querySelector('.it.sel');if(sel)sel.scrollIntoView({block:'nearest'})}
+function restaurar(el){const d=idDe(el);if(!d)return;
+  setTimeout(()=>{if(acEl===el)return;
+    // si la casilla ya no esta en la pagina (se redibujo el panel), su texto esta viejo:
+    // hacerle caso borraria el heroe que si quedo guardado
+    if(!el.isConnected)return;
+    const lista=d.tipo==='ban'?S.bans:S.picks,actual=lista[d.i][d.k],txt=(el.value||'').trim();
+    if(txt===''){if(actual!==''){lista[d.i][d.k]='';build();push()}return}
+    const m=HEROES.find(h=>_key(h.n)===_key(txt));
+    if(m&&!usados(actual).has(_key(m.n))){lista[d.i][d.k]=m.n;el.value=m.n;push();markHeroes()}
+    else el.value=actual},150)}
+function cerrarAC(){AC().style.display='none';acEl=null;acOpc=[]}
+function tomar(n){if(!acEl)return;const d=idDe(acEl),o=acOpc.find(x=>x.n===n);
+  if(!d||!o||o.usado)return;
+  (d.tipo==='ban'?S.bans:S.picks)[d.i][d.k]=n;acEl.value=n;
+  const f=flowInfo(S.match.step),esTurno=f&&f.type===d.tipo&&f.team===d.i&&f.slot===d.k;
+  cerrarAC();
+  if(esTurno)goStep(S.match.step+1);else{build();push()}}
+document.addEventListener('mousedown',e=>{const it=e.target.closest&&e.target.closest('#ac .it');
+  if(it){e.preventDefault();tomar(it.dataset.n);return}
+  if(!e.target.classList||!e.target.classList.contains('hin'))cerrarAC()});
+document.addEventListener('keydown',e=>{if(!acEl||AC().style.display==='none')return;
+  if(e.key==='ArrowDown'){e.preventDefault();acSel=Math.min(acOpc.length-1,acSel+1);pintarAC()}
+  else if(e.key==='ArrowUp'){e.preventDefault();acSel=Math.max(0,acSel-1);pintarAC()}
+  else if(e.key==='Enter'){e.preventDefault();const o=acOpc[acSel];if(o&&!o.usado)tomar(o.n)}
+  else if(e.key==='Escape'){cerrarAC()}
+  else if(e.key==='Tab'){cerrarAC()}});
+addEventListener('scroll',()=>{if(acEl&&AC().style.display!=='none')pintarAC()},true);
+
+/* ---------- atajos de teclado ----------
+   Todos van con Ctrl para que nunca molesten mientras escribis el nombre de un heroe. */
+const ATAJOS=[['Ctrl + Espacio','iniciar o detener el tiempo'],
+              ['Ctrl + →','pasar a la fase siguiente'],
+              ['Ctrl + ←','corregir: borra el último y vuelve atrás'],
+              ['Ctrl + 0','reiniciar el tiempo de este turno']];
+addEventListener('keydown',e=>{
+  if(!e.ctrlKey||e.altKey||e.metaKey||!puedeEditar())return;
+  const T=S.match.timer;
+  if(e.code==='Space'){e.preventDefault();tmr(T.running?'pause':'start')}
+  else if(e.key==='ArrowRight'){e.preventDefault();goStep(S.match.step+1)}
+  else if(e.key==='ArrowLeft'){e.preventDefault();corregir()}
+  else if(e.key==='0'){e.preventDefault();tmr('reset')}});
+
+function enfocarTurno(){setTimeout(()=>{const el=document.querySelector('input.turno');
+  if(el&&(document.activeElement===document.body||document.activeElement.classList.contains('hin'))){el.focus();abrirAC(el)}},30)}
+
+/* ---------- acciones de serie ---------- */
+function marcador(i,d){const w=S.match.wins;w[i]=Math.max(0,Math.min(9,w[i]+d));build();push()}
+function intercambiarLados(){
+  // El orden del draft no es simetrico (el azul banea primero), asi que si ya empezo
+  // hay que volver a arrancarlo: si no, el turno le queda apuntando al equipo equivocado.
+  if(S.match.step>0&&!confirm('El draft ya empezó.\n\nAl cambiar de lado hay que reiniciarlo, porque el orden de baneos y picks no es igual para los dos lados.\n\n¿Cambiar de lado y reiniciar el draft?'))return;
+  const reiniciar=S.match.step>0;
+  S.match.wins.reverse();S.teams.reverse();
+  if(reiniciar){S.picks=[E(),E()];S.bans=[E(),E()];S.match.reserva=[S.match.reservaSecs|0,S.match.reservaSecs|0];goStep(0);return}
+  S.picks.reverse();S.bans.reverse();build();push()}
+function intercambiarLogos(){const a=S.teams[0].logo;S.teams[0].logo=S.teams[1].logo;S.teams[1].logo=a;build();push()}
+function reiniciarMarcador(){S.match.wins=[0,0];build();push()}
+function reiniciarNombres(){const d=def();S.teams.forEach((t,i)=>{t.name=d.teams[i].name;t.players=E()});
+  S.match.wins=[0,0];build();push()}
+function quitarLogosEquipos(){S.teams.forEach((t,i)=>{if(t.logo)borrarArchivo(t.logo);t.logo=''});build();push()}
+function moverFila(i,k){const n=(k+1)%5,T=S.teams[i];
+  [T.players[k],T.players[n]]=[T.players[n],T.players[k]];
+  [T.lanes[k],T.lanes[n]]=[T.lanes[n],T.lanes[k]];
+  [S.picks[i][k],S.picks[i][n]]=[S.picks[i][n],S.picks[i][k]];build();push()}
+// pasa SOLO el heroe de un jugador a otro (los nicks y las lineas no se mueven)
+function moverHeroe(i,k,n){n=+n;
+  if(!(n>=0&&n<5)||n===k)return build();
+  [S.picks[i][k],S.picks[i][n]]=[S.picks[i][n],S.picks[i][k]];build();push()}
+function moverBan(i,k){const n=(k+1)%5;[S.bans[i][k],S.bans[i][n]]=[S.bans[i][n],S.bans[i][k]];build();push()}
+
+/* ---------- historial ---------- */
+const TOPE_HIST=7; // una serie no pasa de BO7: guardamos las ultimas 7 y tiramos las viejas
+/* ganador: 0 = lado azul, 1 = lado rojo, -1 = sin anotar. Se usa en las estadisticas de la serie. */
+function guardarPartida(ganador){
+  S.history.push(JSON.parse(JSON.stringify({teams:S.teams,picks:S.picks,bans:S.bans,
+    ganador:(ganador===0||ganador===1)?ganador:-1})));
+  if(S.history.length>TOPE_HIST)S.history=S.history.slice(-TOPE_HIST);
+  S.prev=S.history.length-1;build();push()}
+function borrarHistorial(){if(!confirm('¿Borrar todas las partidas guardadas?'))return;S.history=[];S.prev=-1;build();push()}
+
+/* ---------- logos ---------- */
+function subirLogo(f,alGuardar,anterior){if(!f)return;
+  const old=(anterior||'').split('/').pop();
+  fetch('/api/logo?old='+encodeURIComponent(old),{method:'POST',headers:{'Content-Type':f.type},body:f})
+    .then(r=>r.json().then(j=>r.ok?j:Promise.reject(j.error||'error')))
+    .then(j=>{alGuardar(j.url);build();push()})
+    .catch(e=>alert('No se pudo subir el logo: '+e))}
+function borrarArchivo(url){const n=(url||'').split('/').pop();if(n)fetch('/api/logo?del='+encodeURIComponent(n),{method:'POST'})}
+function quitarLogoEquipo(i){borrarArchivo(S.teams[i].logo);S.teams[i].logo='';build();push()}
+function quitarLogoTorneo(){borrarArchivo(S.match.logo);S.match.logo='';build();push()}
+
+/* ---------- avisos de héroes ---------- */
+function markHeroes(){document.querySelectorAll('input.hin').forEach(inp=>{
+  const v=inp.value.trim();if(inp.classList.contains('turno'))return;
+  inp.style.outline='';inp.title='';if(!v)return;
+  if(!HEROES.some(h=>_key(h.n)===_key(v))){const sg=suggestHero(v);
+    inp.style.outline='2px solid '+(sg?'#f0b429':'#ff8c42');
+    inp.title=sg?'No está en la lista. ¿Quisiste decir '+sg+'?':'No está en la lista de héroes';return}
+  const esBan=inp.id&&inp.id[0]==='b';
+ if(!mediaFor(v,esBan?'ban':'pick')){inp.style.outline='2px solid #ff4d4d';inp.title='Este héroe no tiene '+(esBan?'retrato de baneo':'arte de pick')+' ni imagen general'}})}
+document.addEventListener('change',e=>{const el=e.target;
+  if(!el.classList||!el.classList.contains('hin'))return;
+  const v=el.value.trim();if(!v||HEROES.some(h=>_key(h.n)===_key(v)))return;
+  const s=suggestHero(v,1);if(s){el.value=s;el.dispatchEvent(new Event('input',{bubbles:true}))}});
+
+/* ================= RENDER ================= */
+/* ---------- equipos guardados ---------- */
+function vacio(){return{n:'',tag:'',c:'#8a93a8',logo:'',j:['','','','',''],cap:-1,s:[['',0],['',0],['',0]]}}
+function norm(e){if(!e||typeof e!=='object')return vacio();
+  const v=vacio();v.n=e.n||'';v.tag=e.tag||'';v.c=e.c||v.c;v.logo=e.logo||'';
+  v.j=(Array.isArray(e.j)?e.j.slice(0,5):[]);while(v.j.length<5)v.j.push('');
+  v.cap=(e.cap===undefined?-1:e.cap);
+  v.s=(Array.isArray(e.s)?e.s.slice(0,3).map(x=>[x[0]||'',+x[1]||0]):[]);
+  while(v.s.length<3)v.s.push(['',0]);return v}
+function vacia(e){return !e||(!String(e.n).trim()&&!e.j.some(x=>String(x).trim()))}
+
+/* ---------- las 8 ranuras ---------- */
+function guardados(){if(!Array.isArray(S.saved)||S.saved.length!==8)
+   S.saved=EQUIPOS_BASE.map(norm);
+  S.saved=S.saved.map(norm);return S.saved}
+/* ---------- biblioteca de equipos ya hechos ---------- */
+function biblio(){if(!Array.isArray(S.lib))S.lib=EQUIPOS_BASE.map(norm);
+  S.lib=S.lib.map(norm);return S.lib}
+
+function marcarCap(n,k){const e=guardados()[n];e.cap=(e.cap===k?-1:k);build();push()}
+function meter(n,k){const e=guardados()[n],nom=String(e.s[k][0]||'').trim(),l=+e.s[k][1]||0;
+  if(!nom)return alert('Escribe primero el nombre del suplente.');
+  const sale=e.j[l]||'';
+  if(!confirm('¿Entra '+nom+' por '+(sale||'el jugador de '+LANES[l])+'?'))return;
+  e.j[l]=nom;e.s[k][0]=sale;
+  if(e.cap===l&&sale)e.cap=-1;
+  build();push()}
+
+function cargarEquipo(n,lado){const e=guardados()[n],T=S.teams[lado];
+  if(vacia(e))return alert('Esta ranura está vacía. Carga un equipo primero.');
+  T.name=e.n;T.tag=e.tag||'';T.logo=e.logo||'';T.color=e.c||T.color;T.players=e.j.slice(0,5);
+  while(T.players.length<5)T.players.push('');T.lanes=[0,1,2,3,4];
+  T.cap=(e.cap===undefined?-1:e.cap);build();push()}
+function guardarEquipo(n,lado){const T=S.teams[lado],e=guardados()[n];
+  if(!confirm('¿Poner "'+(T.name||'el equipo')+'" en la ranura '+(n+1)+'?'+(vacia(e)?'':' Se reemplaza "'+e.n+'".')))return;
+  e.n=T.name;e.tag=T.tag||'';e.c=T.color;e.logo=T.logo||'';e.j=T.players.slice(0,5);
+  e.cap=(T.cap===undefined?-1:T.cap);build();push()}
+
+function vaciarRanura(n){const e=guardados()[n];
+  if(vacia(e))return;
+  if(!confirm('¿Vaciar la ranura '+(n+1)+' ("'+e.n+'")? El equipo sigue en la lista de equipos hechos si lo guardaste ahí.'))return;
+  S.saved[n]=vacio();build();push()}
+function cargarDeLib(n,i){if(i==='')return;const L=biblio()[+i];if(!L)return;
+  S.saved[n]=norm(L);build();push()}
+function guardarEnLib(n){const e=guardados()[n];
+  if(vacia(e))return alert('La ranura está vacía.');
+  const L=biblio(),y=L.findIndex(x=>x.n.toLowerCase()===e.n.toLowerCase());
+  if(y>=0){if(!confirm('"'+e.n+'" ya está en la lista. ¿Reemplazarlo?'))return;L[y]=norm(e)}
+  else L.push(norm(e));
+  build();push();alert('Listo: "'+e.n+'" quedó en la lista de equipos hechos.')}
+function borrarDeLib(i){const L=biblio(),e=L[i];if(!e)return;
+  if(!confirm('¿Borrar "'+e.n+'" de la lista de equipos hechos? Las ranuras que ya lo tengan no cambian.'))return;
+  L.splice(i,1);build();push()}
+function vaciarTodas(){if(!confirm('¿Vaciar las ocho ranuras?'))return;
+  S.saved=[0,1,2,3,4,5,6,7].map(vacio);build();push()}
+function restaurarEquipos(){if(!confirm('¿Volver a los ocho equipos que vienen con el programa? También se restaura la lista.'))return;
+  S.saved=EQUIPOS_BASE.map(norm);S.lib=EQUIPOS_BASE.map(norm);build();push()}
+
+function elegirLogoEq(n){const i=document.createElement('input');i.type='file';
+  i.accept='image/png,image/jpeg,image/webp,image/gif';
+  i.onchange=()=>{const f=i.files[0];if(!f)return;
+   fetch('/api/logo',{method:'POST',headers:{'Content-Type':f.type},body:f})
+    .then(r=>r.json().then(j=>r.ok?j:Promise.reject(j.error||'error')))
+    .then(j=>{guardados()[n].logo=j.url;build();push()}).catch(e=>alert('No se pudo subir el logo: '+e))};
+  i.click()}
+
+function renderGuardados(){const G=guardados(),L=biblio();
+  const opc=n=>`<select class="selib" onchange="cargarDeLib(${n},this.value);this.value=''">
+     <option value="">Cargar equipo…</option>
+     ${L.map((x,i)=>`<option value="${i}">${esc(x.n||'(sin nombre)')}</option>`).join('')}</select>`;
+  const llenas=G.filter(e=>!vacia(e)).length;
+  $('guardados').innerHTML=`<h2>Ranuras de equipos<span>${llenas} de 8 ocupadas · cárgalos en el lado azul o en el rojo con un clic</span>
+   <span style="float:right"><button class="sm" onclick="vaciarTodas()">Vaciar todas</button>
+   <button class="sm" onclick="restaurarEquipos()">Restaurar los de fábrica</button></span></h2>
+   <div class="eqs">${G.map((e,n)=>vacia(e)?`<div class="eq libre">
+     <div class="rtit">Ranura ${n+1}<small>vacía</small></div>
+     ${opc(n)}
+     <div class="eqb" style="margin-top:8px"><button class="sm" onclick="guardarEquipo(${n},0)">Poner el azul</button>
+       <button class="sm" onclick="guardarEquipo(${n},1)">Poner el rojo</button></div>
+   </div>`:`<div class="eq">
+     <div class="rtit">Ranura ${n+1}
+       <span style="margin-left:auto;display:flex;gap:5px">${opc(n)}
+       <button class="sm" title="Vaciar esta ranura" onclick="vaciarRanura(${n})">Vaciar</button></span></div>
+     <div class="eqh">
+       <div class="lg" title="Cambiar logo" onclick="elegirLogoEq(${n})">${e.logo?`<img src="${e.logo}">`:'Sin logo'}</div>
+       <input type="text" value="${esc(e.n)}" placeholder="Nombre del equipo" oninput="guardados()[${n}].n=this.value;push()">
+       <input class="tagin" value="${esc(e.tag||'')}" maxlength="4" placeholder="TAG" title="Sigla de hasta 4 letras"
+         oninput="this.value=this.value.toUpperCase();guardados()[${n}].tag=this.value;push()">
+       <input type="color" value="${e.c||'#888888'}" title="Color del equipo" oninput="guardados()[${n}].c=this.value;push()">
+     </div>
+     <div class="lblmini">Titulares · C = capitán</div>
+     <div class="eqj">${[0,1,2,3,4].map(k=>`<div><img src="${LANE_ICON[k]}" title="${LANES[k]}" onerror="this.remove()">
+       <input value="${esc(e.j[k]||'')}" placeholder="${LANES[k]}" oninput="guardados()[${n}].j[${k}]=this.value;push()">
+       <button class="cap${e.cap===k?' on':''}" title="Marcar como capitán" onclick="marcarCap(${n},${k})">C</button></div>`).join('')}</div>
+     <div class="lblmini">Suplentes · "Entra" lo cambia por el titular</div>
+     ${e.s.map((sp,k)=>`<div class="sub">
+       <select onchange="guardados()[${n}].s[${k}][1]=+this.value;push()">${LANES.map((l,x)=>`<option value="${x}" ${(+sp[1]||0)===x?'selected':''}>${l}</option>`).join('')}</select>
+       <input value="${esc(sp[0]||'')}" placeholder="Suplente ${k+1}" oninput="guardados()[${n}].s[${k}][0]=this.value;push()">
+       <button class="sm" onclick="meter(${n},${k})">Entra</button></div>`).join('')}
+     <div class="eqb" style="margin-top:9px"><button class="az" onclick="cargarEquipo(${n},0)">→ Azul</button>
+       <button class="ro" onclick="cargarEquipo(${n},1)">→ Rojo</button></div>
+     <div class="eqb" style="margin-top:5px"><button class="sm" onclick="guardarEquipo(${n},0)">Poner el azul</button>
+       <button class="sm" onclick="guardarEquipo(${n},1)">Poner el rojo</button></div>
+     <div class="eqb" style="margin-top:5px"><button class="sm" onclick="guardarEnLib(${n})">Guardar en la lista</button></div>
+   </div>`).join('')}</div>
+   <div class="lbl">Equipos hechos (${L.length}) · se cargan en cualquier ranura con "Cargar equipo…"</div>
+   <div class="libl">${L.length?L.map((x,i)=>`<span class="lib">${x.logo?`<img src="${x.logo}">`:''}${esc(x.n||'(sin nombre)')}
+     <button class="sm" title="Borrar de la lista" onclick="borrarDeLib(${i})">×</button></span>`).join(''):'<span style="color:var(--mut);font-size:13px">La lista está vacía.</span>'}</div>`}
+
+function mmss(n){n=Math.max(0,n|0);return Math.floor(n/60)+':'+String(n%60).padStart(2,'0')}
+function htmlBancos(){const M=S.match,T=M.timer,f=flowInfo(M.step);
+  if(!M.usarReserva)return '';
+  return [0,1].map(i=>{const enUso=T.modo==='reserva'&&f&&f.team===i;
+    const q=enUso?(T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left):(bancos()[i]||0);
+    return `<span class="banco${enUso?' usando':''}" style="--c:${S.teams[i].color}" title="Tiempo de reserva de ${esc(S.teams[i].name)}">${mmss(q)}</span>`}).join('')}
+function renderTop(){
+  const M=S.match,f=flowInfo(M.step);
+  $('top').innerHTML=`
+   <div class="brand"><span class="hexmark"><i>ML</i></span><b>Control de draft</b></div>
+   <small id="conn"></small>
+   <div class="phase" style="margin-left:0"><em id="reloj">${M.useTimer?segsRestantes():'—'}</em>
+     <div><small>${M.timer.modo==='reserva'?'TIEMPO DE RESERVA':'Fase'}</small><b id="fase" style="color:${f?S.teams[f.team].color:'#9aa8c6'}">${esc(nombreFase(M.step))}</b></div>
+     ${M.usarReserva?`<span id="bancos" class="bancos">${htmlBancos()}</span>`:''}</div>
+   ${navHTML('/control.html')}
+   <div class="acts">
+     <button class="ok" onclick="tmr('start')">Iniciar</button>
+     <button onclick="tmr('pause')">Detener</button>
+     <button onclick="tmr('reset')">Reiniciar tiempo</button>
+     <button onclick="goStep(S.match.step+1)">Forzar siguiente fase</button>
+     <button onclick="corregir()">Corregir</button>
+     <button class="bad" onclick="reiniciarDraft()">Reiniciar draft</button>
+   </div>
+   <div class="atajos">${ATAJOS.map(([k,q])=>`<span><kbd>${k}</kbd>${q}</span>`).join('')}</div>`;
+  setConn()}
+
+function renderSerie(){
+  const M=S.match;
+  const lado=(i,c)=>{const T=S.teams[i];return `
+   <div class="tside ${c}">
+     <div class="lgbox">${T.logo?`<img src="${T.logo}">`:'Sin logo'}</div>
+     <div class="mid">
+       <div class="sidelbl">${c==='b'?'Lado azul':'Lado rojo'}</div>
+       <div class="nomtag"><input class="tname" value="${esc(T.name)}" placeholder="Nombre del equipo" oninput="set(['teams',${i},'name'],this.value)">
+         <input class="tagin" value="${esc(T.tag||'')}" maxlength="4" placeholder="TAG" title="Sigla de hasta 4 letras: sale en la franja del centro del draft"
+           oninput="set(['teams',${i},'tag'],this.value.toUpperCase());this.value=this.value.toUpperCase()"></div>
+       <div class="acts" style="margin-top:8px;align-items:center">
+         <label class="filebtn">${T.logo?'Cambiar logo':'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="subirLogo(this.files[0],u=>S.teams[${i}].logo=u,S.teams[${i}].logo)"></label>
+         ${T.logo?`<button class="sm" onclick="quitarLogoEquipo(${i})">Quitar</button>`:''}
+         <label class="capsel">Capitán
+           <select onchange="set(['teams',${i},'cap'],+this.value);build()">
+             <option value="-1" ${T.cap===-1||T.cap===undefined?'selected':''}>— ninguno —</option>
+             ${[0,1,2,3,4].map(k=>`<option value="${k}" ${T.cap===k?'selected':''}>${esc(T.players[k])||LANES[k]}</option>`).join('')}
+           </select></label>
+       </div>
+     </div>
+     <div class="score">
+       <button onclick="marcador(${i},-1)">−</button>
+       <span class="pips" title="Partidas ganadas">${Array.from({length:Math.max(1,Math.ceil(M.bestOf/2))},(_,p)=>
+         `<i class="${p<M.wins[i]?'on':''}" style="--c:${T.color}" onclick="set(['match','wins',${i}],S.match.wins[${i}]===${p+1}?${p}:${p+1});build()"></i>`).join('')}</span>
+       <button onclick="marcador(${i},1)">+</button></div>
+   </div>`};
+  $('serie').innerHTML=`<h2>Serie</h2>
+   <div class="hint">El marcador y la cantidad de partidas se actualizan al instante en los overlays. Los colores del lado azul y del lado rojo se eligen en <a href="custom.html" style="color:var(--acc)">Personalizar</a>.</div>
+   <div class="serie">${lado(0,'b')}
+     <div class="center"><h3>Cantidad de partidas</h3>
+       <div class="bo">${[1,3,5,7].map(n=>`<button class="${M.bestOf==n?'on':''}" onclick="set(['match','bestOf'],${n});build()">BO${n}</button>`).join('')}</div>
+       <div class="gameline">Partida ${M.game} · BO${M.bestOf}</div>
+       <div class="acts" style="margin-bottom:8px">
+         <button class="sm" onclick="set(['match','game'],Math.max(1,S.match.game-1));build()">− partida</button>
+         <button class="sm" onclick="set(['match','game'],S.match.game+1);build()">+ partida</button></div>
+       <div class="acts">
+         <button class="sm" onclick="intercambiarLados()">Intercambiar lados</button>
+         <button class="sm" onclick="intercambiarLogos()">Intercambiar logos</button>
+         <button class="sm" onclick="reiniciarMarcador()">Reiniciar marcador</button></div>
+     </div>
+     ${lado(1,'r')}</div>
+   <div class="acts" style="margin:14px 0 0">
+     <span class="opt2">Vista previa</span>
+     <span class="seg2">${[['draft','Draft pick'],['lineup','Post-Draft Line-up']].map(([v,n])=>
+       `<button class="${vistaPrev===v?'on':''}" onclick="vistaPrev='${v}';build()">${n}</button>`).join('')}</span>
+     <button class="sm" onclick="window.open('overlay.html?view='+vistaPrev,'_blank')">Abrir aparte</button></div>
+   <div id="pvwrap"><iframe id="pv" src="overlay.html?view=${vistaPrev}" scrolling="no"></iframe></div>
+   <div class="hint" style="margin:8px 0 0">Así se verá en OBS. Los dos usan los mismos datos del draft.</div>`;
+  ajustarPreview()}
+
+function ajustarPreview(){const w=$('pvwrap');if(!w)return;
+  /* el Draft pick es solo la barra de abajo; el Line-up ocupa toda la pantalla */
+  const s=w.clientWidth/1920,alto=(vistaPrev==='lineup'?1080:276);
+  w.style.height=Math.round(alto*s)+'px';
+  const f=$('pv');f.style.transform=`scale(${s})`;f.style.top=Math.round(-(1080-alto)*s)+'px'}
+addEventListener('resize',ajustarPreview);
+
+function renderLado(i){
+  const T=S.teams[i],f=flowInfo(S.match.step),c=i===0?'Lado azul':'Lado rojo';
+  const act=(tipo,k)=>f&&f.type===tipo&&f.team===i&&f.slot===k?' turno':'';
+  const filas=[0,1,2,3,4].map(k=>`<tr>
+    <td class="n">${k+1}</td>
+    <td><input value="${esc(T.players[k])}" placeholder="Nick del jugador ${k+1}" oninput="set(['teams',${i},'players',${k}],this.value)"></td>
+    <td style="width:34px"><button class="cap${T.cap===k?' on':''}" title="Marcar como capitán" onclick="set(['teams',${i},'cap'],S.teams[${i}].cap===${k}?-1:${k});build()">C</button></td>
+    <td style="width:120px"><select onchange="set(['teams',${i},'lanes',${k}],+this.value)">${LANES.map((l,n)=>`<option value="${n}" ${(T.lanes||[0,1,2,3,4])[k]===n?'selected':''}>${l}</option>`).join('')}</select></td>
+    <td><input id="p${i}-${k}" class="hin${act('pick',k)}" autocomplete="off" value="${esc(S.picks[i][k])}" placeholder="Pick ${k+1}"
+        oninput="abrirAC(this)" onfocus="abrirAC(this)" onblur="restaurar(this)"></td>
+    <td style="width:132px"><select class="hmv" title="Pasarle este héroe a otro jugador"
+        onchange="moverHeroe(${i},${k},this.value)">
+      <option value="">⇅ elegir</option>
+      ${[0,1,2,3,4].filter(n=>n!==k).map(n=>`<option value="${n}">${esc(T.players[n])||'Jugador '+(n+1)} · ${LANES[(T.lanes||[0,1,2,3,4])[n]]}</option>`).join('')}
+    </select></td>
+    <td style="width:40px"><button class="sw" title="Intercambiar toda la fila con la de abajo" onclick="moverFila(${i},${k})">⇄</button></td></tr>`).join('');
+  $('side'+i).innerHTML=`<h2><i>${c}</i><span>Jugadores · picks · baneos</span></h2>
+   <table class="ptab"><tr><th></th><th>Nick</th><th>C</th><th>Línea</th><th>Héroe (pick)</th><th>Pasar héroe</th><th></th></tr>${filas}</table>
+   <div class="lbl">Baneos</div>
+   <div class="bans">${[0,1,2,3,4].map(k=>`<input id="b${i}-${k}" class="hin${act('ban',k)}" autocomplete="off" value="${esc(S.bans[i][k])}" placeholder="Baneo ${k+1}"
+     oninput="abrirAC(this)" onfocus="abrirAC(this)" onblur="restaurar(this)">`).join('')}</div>
+   <div class="acts" style="margin-top:8px">${[0,1,2,3,4].map(k=>`<button class="sw" title="Intercambiar baneo ${k+1} con el siguiente" onclick="moverBan(${i},${k})">⇄ ${k+1}</button>`).join('')}</div>`}
+
+function renderTorneo(){
+  const M=S.match,mi=(k,v)=>`oninput="set(['match','${k}'],${v})"`;
+  $('torneo').innerHTML=`<h2>Torneo<span>Textos y logo que se ven en los overlays</span></h2>
+   <div class="mg">
+     <label>Nombre del torneo<input value="${esc(M.tournament)}" ${mi('tournament','this.value')}></label>
+     <label>Subtítulo (ej. Season 5)<input value="${esc(M.season)}" ${mi('season','this.value')}></label>
+     <label>Texto inferior central<input value="${esc(M.stage)}" placeholder="Ej: NORMAL" ${mi('stage','this.value')}></label>
+     <label>Texto fijo del reloj (sin temporizador)<input value="${esc(M.score)}" ${mi('score','this.value')}></label>
+     <label>Segundos por turno<input type="number" min="1" value="${M.timer.secs}" oninput="setSecs(+this.value)"></label>
+     <label>Tiempo de reserva por equipo (segundos)<input type="number" min="0" value="${M.reservaSecs|0}" onchange="setReserva(+this.value)"></label>
+     <label>Pie del Line-up · izquierda<input value="${esc(M.lemaIzq||'')}" placeholder="Ej: Lamayo Esports" ${mi('lemaIzq','this.value')}></label>
+     <label>Pie del Line-up · derecha<input value="${esc(M.lemaDer||'')}" placeholder="Ej: ¡Vamos!" ${mi('lemaDer','this.value')}></label>
+   </div>
+   <label class="chk"><input type="checkbox" ${M.useTimer?'checked':''} onchange="set(['match','useTimer'],this.checked);renderTop()">Mostrar el temporizador en el overlay</label>
+   <label class="chk"><input type="checkbox" ${M.autoTimer?'checked':''} onchange="set(['match','autoTimer'],this.checked)">Arrancar el temporizador solo en cada turno</label>
+   <label class="chk"><input type="checkbox" ${M.usarReserva?'checked':''} onchange="set(['match','usarReserva'],this.checked);build()">Usar tiempo de reserva: cuando a un equipo se le acaban los segundos del turno, empieza a gastar su banco
+     <button class="sm" style="margin-left:8px" onclick="event.preventDefault();reiniciarReserva()">Reiniciar los bancos</button></label>
+   <label class="chk"><input type="checkbox" ${M.draftStage?'checked':''} onchange="set(['match','draftStage'],this.checked)">Mostrar el texto inferior central también en el Draft</label>
+   <label class="chk"><input type="checkbox" ${M.lineupBg!==false?'checked':''} onchange="set(['match','lineupBg'],this.checked)">Fondo morado en el Line-up</label>
+   <div class="lbl">Logo del torneo</div>
+   <div class="acts" style="align-items:center">
+     <div class="lgbox" style="width:76px;height:76px">${M.logo?`<img src="${M.logo}">`:'Sin logo'}</div>
+     <label class="filebtn">${M.logo?'Cambiar logo':'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="subirLogo(this.files[0],u=>S.match.logo=u,S.match.logo)"></label>
+     ${M.logo?'<button class="sm" onclick="quitarLogoTorneo()">Quitar logo</button>':''}
+   </div>
+   <div class="hint" style="margin-top:8px">Un PNG con fondo transparente es lo que mejor queda.</div>`}
+
+function renderHist(){
+  const M=S.match;
+  const chips=DRAFT_FLOW.map((x,i)=>(i&&DRAFT_FLOW[i-1][0]!==x[0]?'<span class="sep">|</span>':'')+
+    `<span class="chip${i===M.step?' cur':''}${i<M.step?' done':''}" style="--c:${S.teams[x[1]].color}" title="${esc(S.teams[x[1]].name)} · ${x[0]==='ban'?'baneo':'pick'}">${x[0]==='ban'?'B':'P'}</span>`).join('');
+  $('hist').innerHTML=`<h2>Orden del draft<span>${flowCount('ban',0)} baneos y ${flowCount('pick',0)} picks por equipo</span></h2>
+   <div class="chips">${chips}</div>
+   <div class="hint">B = baneo · P = pick · el color indica el equipo. Escribe en la casilla iluminada y elige el héroe de la lista: se coloca y pasa solo al siguiente turno.</div>
+   <div class="lbl">Partidas guardadas</div>
+   <div class="hint" style="margin:4px 0 6px">Guarda el draft de la partida que termina. Marca quién ganó y el overlay de
+     estadísticas podrá mostrar cuántas se ganaron desde cada lado.</div>
+   <div class="acts">
+     <button class="ok" onclick="guardarPartida(0)">Guardar · ganó ${esc(S.teams[0].name)||'el azul'}</button>
+     <button class="ok" onclick="guardarPartida(1)">Guardar · ganó ${esc(S.teams[1].name)||'el rojo'}</button>
+     <button class="sm" onclick="guardarPartida(-1)">Guardar sin anotar</button>
+     <button class="bad" onclick="borrarHistorial()">Borrar historial</button></div>
+   <div style="margin-top:8px"><select onchange="S.prev=+this.value;push()">
+     <option value="-1">Mostrar en "Draft anterior": (ninguna)</option>
+     ${S.history.map((g,i)=>`<option value="${i}" ${S.prev===i?'selected':''}>Partida ${i+1}: ${esc(g.teams[0].name)} vs ${esc(g.teams[1].name)}</option>`).join('')}
+   </select></div>
+   <div class="lbl">Reiniciar</div>
+   <div class="acts">
+     <button onclick="reiniciarNombres()">Nombres y marcador</button>
+     <button onclick="quitarLogosEquipos()">Logos de los equipos</button></div>`}
+
+function renderLinks(){
+  const base=location.origin;
+  $('links').innerHTML=`<h2>Enlaces para OBS<span>Fuente de navegador · 1920 × 1080</span></h2>
+   ${[['Draft pick','draft'],['Post-Draft Line-up','lineup'],['Draft anterior','previous'],
+      ['Estadísticas de la serie','stats']].map(([n,v])=>`
+     <div class="lbl">${n}</div><div class="urlrow">
+       <input readonly value="${base}/overlay.html?view=${v}" onclick="this.select()">
+       <button class="sm" onclick="navigator.clipboard.writeText('${base}/overlay.html?view=${v}')">Copiar</button></div>`).join('')}`}
+
+/* ---------- carga de imágenes y videos de héroes ---------- */
+let cola=[],destino='picks';
+const EXTOK=['png','jpg','jpeg','webp','gif','webm','mp4'];
+function sumarArchivos(lista){[...lista].forEach(f=>{
+  const ext=(f.name.split('.').pop()||'').toLowerCase();
+  if(!EXTOK.includes(ext))return;
+  const base=f.name.replace(/\.[^.]+$/,''),k=_key(base);
+  let h=HEROES.find(x=>_key(x.n)===k),estado='ok';
+  if(!h){const sg=suggestHero(base,2);if(sg){h={n:sg};estado='dud'}else{h=null;estado='mal'}}
+  cola.push({f,ext,heroe:h?h.n:'',estado,dir:destino})});
+  renderCola()}
+function renderCola(){const z=$('cola');if(!z)return;
+  const et={ok:'Reconocido',dud:'¿Es este?',mal:'Elige el héroe',sub:'Guardando…',hecho:'Listo',err:'Falló'};
+  if(!cola.length){z.innerHTML='';$('accs').innerHTML='';return}
+  z.innerHTML='<div class="cola">'+cola.map((x,i)=>`<div class="cf">
+    <span class="pv" id="pv${i}"></span>
+    <span class="ar" title="${esc(x.f.name)}">${esc(x.f.name)}</span>
+    <select onchange="cola[${i}].heroe=this.value;cola[${i}].estado=this.value?'ok':'mal';renderCola()">
+      <option value="">— sin héroe —</option>
+      ${HEROES.map(h=>`<option value="${esc(h.n)}" ${x.heroe===h.n?'selected':''}>${esc(h.n)}</option>`).join('')}
+    </select>
+    <span class="es ${x.estado==='hecho'?'ok':(x.estado==='err'||x.estado==='mal')?'mal':x.estado==='dud'?'dud':'esp'}">${et[x.estado]||''}</span>
+    <button class="qt" title="Quitar de la lista" onclick="cola.splice(${i},1);renderCola()">×</button></div>`).join('')+'</div>';
+  const listos=cola.filter(x=>x.heroe&&x.estado!=='hecho').length;
+  $('accs').innerHTML=`<button class="gold" ${listos?'':'disabled'} onclick="subirCola()">Guardar ${listos} archivo${listos===1?'':'s'}</button>
+    <button class="sm" onclick="cola=[];renderCola()">Vaciar la lista</button>`;
+  cola.forEach((x,i)=>{const p=$('pv'+i);if(!p||p.dataset.l)return;p.dataset.l='1';
+    const u=URL.createObjectURL(x.f);
+    p.innerHTML=/webm|mp4/.test(x.ext)?`<video src="${u}" muted></video>`:`<img src="${u}">`})}
+async function subirCola(){
+  for(const x of cola){
+    if(!x.heroe||x.estado==='hecho')continue;
+    x.estado='sub';renderCola();
+    try{const r=await fetch('/api/heroimg?dir='+(x.dir||destino)+'&name='+encodeURIComponent(_key(x.heroe))+'&ext='+x.ext,
+        {method:'POST',headers:{'Content-Type':'application/octet-stream'},body:x.f});
+      x.estado=r.ok?'hecho':'err'}
+    catch(e){x.estado='err'}
+    renderCola()}
+  await loadMedia();renderMedia();markHeroes()}
+function borrarHeroImg(carp,f){if(!confirm('¿Borrar '+carp+'/'+f+'?'))return;
+  fetch('/api/heroimg?dir='+carp+'&file='+encodeURIComponent(f),{method:'DELETE'}).then(()=>refrescarMedia())}
+function verCarpeta(d){destino=d;cola.forEach(x=>x.dir=d);renderMedia()}
+
+function renderMedia(){
+  const NOM={picks:'Picks',bans:'Baneos',heroes:'General'};
+  const n=d=>Object.keys(MEDIA[d]||{}).length;
+  const ents=Object.entries(MEDIA[destino]||{}),mal=ents.filter(([k])=>!HEROES.some(h=>_key(h.n)===k));
+  const faltan=HEROES.filter(h=>!mediaFor(h.n,destino==='bans'?'ban':'pick')).length;
+  $('mediaBox').innerHTML=`<h2>Imágenes y videos de héroes<span>tres carpetas: picks, baneos y general</span></h2>
+   <div class="cnt"><span>Picks: <b>${n('picks')}</b></span><span>Baneos: <b>${n('bans')}</b></span>
+     <span>General: <b>${n('heroes')}</b></span></div>
+   <div class="carp"><span>Carpeta</span>
+     ${['picks','bans','heroes'].map(d=>`<button class="${destino===d?'on':''}" onclick="verCarpeta('${d}')">${NOM[d]}</button>`).join('')}</div>
+   <div class="warnbox">${destino==='picks'?'El arte grande que se ve en las tarjetas del draft y en el line-up.'
+     :destino==='bans'?'El retrato pequeño que se ve en los baneos del draft y del line-up.'
+     :'Respaldo: se usa cuando un héroe no tiene imagen en picks o en baneos.'}
+   <div style="margin-top:6px"><b>${ents.length}</b> archivos en esta carpeta${destino!=='heroes'?`, faltan <b>${faltan}</b> héroes (contando el respaldo)`:''}.
+   ${mal.length?' Estos no coinciden con ningún héroe:':''}</div>
+   ${mal.map(([k,f])=>{const s=suggestHero(k);return `<div>• <b>${esc(f)}</b>${s?` → parece ${esc(s)}`:''}
+     <button class="qt" onclick="borrarHeroImg('${destino}','${esc(f)}')">borrar</button></div>`}).join('')}
+   <div style="margin-top:8px">Casilla con borde rojo: el héroe no tiene imagen ni video. Borde amarillo: el nombre no está en la lista.</div></div>
+   <div id="zona" onclick="document.getElementById('finp').click()">
+     <b>Arrastra aquí tus imágenes y videos</b>
+     Se guardan en <span style="color:var(--acc);font-weight:700">${NOM[destino]}</span> y el programa los renombra solo según el héroe.<br>
+     Formatos: PNG, JPG, WEBP, GIF, WEBM y MP4.</div>
+   <input type="file" id="finp" multiple accept=".png,.jpg,.jpeg,.webp,.gif,.webm,.mp4" style="display:none"
+     onchange="sumarArchivos(this.files);this.value=''">
+   <div id="cola"></div>
+   <div class="acts" id="accs" style="margin-top:10px"></div>
+   <div class="acts" style="margin-top:10px"><button class="sm" onclick="refrescarMedia()">Volver a revisar</button></div>`;
+   const z=$('zona');
+   ['dragenter','dragover'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.add('on')}));
+   ['dragleave','drop'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.remove('on')}));
+   z.addEventListener('drop',e=>sumarArchivos(e.dataTransfer.files));
+   renderCola()}
+function refrescarMedia(){loadMedia().then(()=>{renderMedia();markHeroes()})}
+
+function build(){S.teams.forEach((t,i)=>t.color=colorLado(i,t.color));renderTop();renderGuardados();renderSerie();renderLado(0);renderLado(1);renderTorneo();renderHist();renderLinks();renderMedia();
+  aplicarRol();setTimeout(markHeroes,0)}
+
+/* ---------- reloj de la barra superior ---------- */
+setInterval(()=>{vigilarReserva();
+  const r=$('reloj');if(r){r.textContent=S.match.useTimer?segsRestantes():'—';
+    r.style.color=S.match.timer.modo==='reserva'?'var(--bad)':''}
+  const b=$('bancos');if(b&&S.match.timer.modo==='reserva')b.innerHTML=htmlBancos()},250);
+
+/* ---------- arranque ---------- */
+const es=new EventSource('/events');let primero=true;
+es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
+  const d=JSON.parse(e.data);
+  if(d&&d.teams){const base=def();
+    S=Object.assign(base,d);
+    S.match=Object.assign(base.match,d.match||{});
+    S.match.timer=Object.assign(def().match.timer,S.match.timer||{});
+    S.teams.forEach((t,i)=>{if(!t.lanes)t.lanes=[0,1,2,3,4];if(t.logo===undefined)t.logo='';if(t.cap===undefined)t.cap=-1;if(t.tag===undefined)t.tag=''});
+    if(!Array.isArray(S.saved)||S.saved.length!==8)S.saved=null;
+    if(!Array.isArray(S.lib))S.lib=null}
+  loadMedia().then(build);es.close()};
+es.onerror=()=>{conectado=false;setConn()};
+cargarRol(()=>loadMedia().then(build));
+fetch('/version').then(r=>r.json()).then(v=>{document.title='Control de Draft · MLBB v'+v.version}).catch(()=>{});
+</script></body></html>

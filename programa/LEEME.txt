@@ -1,0 +1,157 @@
+NINO TOURNAMENT - como usarlo
+
+1) Instala Node.js (https://nodejs.org, version LTS). Solo la primera vez.
+2) Haz doble clic en INICIAR.bat (se abre una ventana negra; dejala abierta mientras transmites).
+3) Abre en tu navegador: http://localhost:3000
+   Esa es la pagina de inicio: desde ahi entras a los cuatro paneles con un clic
+   y copias los enlaces para OBS.
+
+RANURAS DE EQUIPOS
+El control de draft tiene 8 ranuras, con 8 equipos ya cargados (logo, cinco jugadores y capitan).
+  TAG                 sigla de hasta 4 letras que sale en la franja del centro del Draft pick
+  -> Azul / -> Rojo   carga ese equipo en ese lado del draft
+  Vaciar              deja la ranura libre
+  Cargar equipo...    trae cualquier equipo de la lista de equipos hechos
+  Guardar en la lista mete el equipo de esa ranura en la lista, para reusarlo en otro torneo
+  Poner el azul/rojo  guarda en la ranura el equipo que tienes cargado en el draft
+Debajo de las ranuras esta la lista completa de equipos hechos; cada uno se borra con la x.
+Capitan: el boton "C" al lado de un titular lo marca como capitan; la C sale en el Draft y en el Line-up.
+Suplentes: cada equipo tiene tres espacios. Elige la linea, escribe el nombre y pulsa "Entra": el suplente
+pasa a titular y el que salia queda en el banco (puede volver a entrar con el mismo boton).
+Los logos estan en public/logos/equipos/ y los iconos de linea en public/lanes/.
+
+COMO SE HACE EL DRAFT
+En el control de draft, la casilla del turno queda iluminada en amarillo. Escribe dos o tres letras del heroe,
+elige de la lista (clic, Enter, o flechas y Enter) y pasa solo al siguiente turno.
+Los heroes ya baneados o pickeados no aparecen en la lista.
+
+PASAR UN HEROE A OTRO JUGADOR
+Al lado de cada pick hay una lista "Pasar heroe". Elegis a que companiero se lo pasas y los dos heroes
+se intercambian al instante (tambien en los overlays). Los nicks, las lineas y el capitan quedan donde estan.
+Es para cuando un jugador pickea el heroe de otra linea y despues se lo pasa al que lo va a jugar.
+El boton de las flechas (cambio) que esta al final de la fila sigue moviendo la fila entera
+(nick + linea + heroe) con la de abajo.
+
+LAS IMAGENES DE LOS HEROES
+Los 133 heroes ya vienen con el programa, en public/heroes. No hay que cargar nada para empezar,
+y al actualizar a una version nueva siguen ahi.
+Los baneos tambien vienen con su propia imagen, en public/bans (los 133 heroes).
+Si queres arte distinto, hay una carpeta mas:
+  public/picks  el arte grande del Draft pick y del Post-Draft Line-up
+  public/bans   la imagen chica de los baneos (sale en blanco y negro)
+Si una de esas carpetas no tiene al heroe, se usa igual la imagen de public/heroes.
+Lo mas comodo es arrastrar los archivos al final del control de draft eligiendo la carpeta,
+y el programa les pone el nombre correcto solo. Acepta PNG, JPG, WEBP, GIF y tambien videos WEBM o MP4.
+
+LOS CUATRO PANELES
+  Pagina de inicio         http://localhost:3000/
+  Control de draft         http://localhost:3000/control.html
+  Control de programacion  http://localhost:3000/schedule.html
+  Control del marcador     http://localhost:3000/marcador.html
+  Personalizar             http://localhost:3000/custom.html
+Se pasa de uno a otro con la barra de arriba a la derecha.
+El boton redondo del final de esa barra cambia entre modo claro y modo oscuro.
+
+ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
+  Draft pick          http://localhost:3000/overlay.html?view=draft
+  Post-Draft Line-up  http://localhost:3000/overlay.html?view=lineup
+                      (usa los mismos datos del draft; el arte sale de la carpeta public/picks/)
+  Draft anterior      http://localhost:3000/overlay.html?view=previous
+  Estadisticas        http://localhost:3000/overlay.html?view=stats
+  Programacion        http://localhost:3000/schedule-overlay.html
+  Marcador en vivo    http://localhost:3000/scoreboard.html
+Cada panel tiene los enlaces con un boton para copiarlos.
+
+IMAGENES Y VIDEOS DE HEROES
+Hay tres carpetas:
+  public/picks/   el arte grande de los picks (draft y line-up)
+  public/bans/    el retrato chico de los baneos (draft y line-up)
+  public/heroes/  respaldo, por si un heroe no tiene imagen en picks o en bans
+Lo mas facil: en el control de draft, abajo del todo, elige la carpeta y arrastra todos tus archivos
+a la zona punteada. El programa reconoce el heroe por el nombre del archivo y los renombra solo.
+Si no reconoce alguno, lo eliges de una lista. Despues pulsa "Guardar".
+Tambien puedes ponerlos a mano, con el nombre del heroe en minusculas, sin espacios ni simbolos.
+Ej: layla.webm, yisunshin.mp4, popolandkupa.png, change.jpg
+Formatos: .webm (recomendado), .mp4, .png, .jpg, .jpeg, .webp, .gif. Si hay varios del mismo heroe se usa el video.
+El panel avisa (borde rojo) si un heroe no tiene archivo y lista abajo los archivos con el nombre equivocado.
+
+LOGOS Y FOTOS
+Se suben desde los paneles con el boton correspondiente; no hace falta nombrar archivos a mano.
+
+VENTANA DE VIDEO DE LA PROGRAMACION
+El recuadro grande es un hueco transparente: pon el video o la camara DEBAJO de esa fuente de navegador en OBS.
+
+QUIEN PUEDE ABRIR LOS PANELES (configuracion.txt)
+Por defecto SOLO esta computadora puede abrirlos: nadie de tu red puede tocarte el draft en vivo.
+Los overlays de OBS funcionan igual, porque corren en la misma maquina.
+Si queres controlar el draft desde otra compu o del celular, abri configuracion.txt y pone:
+  red=abierta
+Guarda el archivo y volve a abrir INICIAR.bat para que tome el cambio.
+
+TRES NIVELES DE ACCESO
+Cuando la red esta abierta hay tres claves distintas, cada una da permisos distintos:
+
+  ADMINISTRADOR   clave=              Puede todo.
+  COLABORADOR     clave-colaborador=  Carga el draft, el marcador y la programacion.
+                                      NO puede subir ni borrar imagenes ni logos.
+                                      NO puede entrar a Personalizar.
+  INVITADO        clave-invitado=     Solo mira los paneles. No puede cambiar nada.
+
+Las claves las elegis vos en configuracion.txt. La que dejes vacia simplemente no existe:
+nadie va a poder entrar con ese nivel. Si dejas vacia la de administrador, el programa inventa
+una y te la muestra en la ventana negra cada vez que arranca.
+Las tres se muestran en la ventana negra al iniciar, para que sepas cual pasarle a cada uno.
+
+El colaborador es para el que te ayuda en vivo: por ejemplo lleva el marcador mientras vos haces
+el draft. No puede borrarte archivos ni cambiarte los colores del torneo, que es lo que no se deshace.
+El invitado es para un narrador que quiere seguir el draft desde su compu sin tocar nada.
+
+Arriba a la izquierda de cada panel se ve con que nivel entro esa persona.
+El permiso lo decide el servidor: aunque alguien toque el navegador, no puede hacer nada mas
+de lo que su clave permite.
+
+TIEMPO DE RESERVA DEL DRAFT
+Cada equipo tiene sus segundos por turno y ademas un banco de reserva, como en los torneos.
+Cuando a un equipo se le acaban los segundos del turno, empieza a gastar su banco: el reloj se pone
+rojo y dice RESERVA. Lo que no gasta se le queda para los turnos siguientes.
+Los dos bancos se ven arriba en el panel y tambien en el overlay, al lado del nombre de cada equipo.
+Se configura en "Datos del torneo" y se reinician con el boton "Reiniciar los bancos".
+
+ATAJOS DE TECLADO (control de draft)
+  Ctrl + Espacio   arranca o para el tiempo
+  Ctrl + flecha derecha   pasa a la fase siguiente
+  Ctrl + flecha izquierda corrige: borra el ultimo y vuelve atras
+  Ctrl + 0         reinicia el tiempo de este turno
+Van todos con Ctrl para que no molesten mientras escribis el nombre de un heroe.
+
+ESTADISTICAS DE LA SERIE
+Es un overlay aparte que muestra los mas baneados, los mas elegidos y cuantas partidas gano cada
+lado. Se arma solo con las partidas guardadas: cuando termina una, en el control de draft pulsa
+"Guardar - gano <equipo>". Si no marcas el ganador igual cuenta los baneos y los picks.
+
+MARCADOR EN VIVO
+Los datos se cargan a mano desde el control del marcador. El oro se puede escribir 12400 o 12.4k:
+el overlay siempre lo muestra como 12.4K y calcula solo la diferencia entre los dos equipos.
+Con el boton "Jugadores al aire" salen los diez jugadores con su KDA debajo del marcador.
+
+ACTUALIZAR EL PROGRAMA
+En la pagina de inicio, abajo, hay una tarjeta "Actualizaciones".
+Pulsas "Buscar actualizacion" y, si hay una version nueva, te muestra que trae y un boton
+para instalarla. Cuando termina, otro boton reinicia el programa y listo.
+
+Que NO se toca al actualizar: tus imagenes de heroes, picks y baneos, los logos, los equipos
+guardados, los datos del torneo y tu configuracion.txt. Solo se reemplazan los archivos
+del programa, y antes se guarda una copia de los viejos en la carpeta "respaldos".
+Si algo saliera mal, podes volver atras copiando esa carpeta encima.
+
+Solo el administrador puede actualizar.
+
+Para que funcione tiene que estar puesto el repositorio en configuracion.txt:
+  actualizaciones=usuario/repositorio
+Si esta vacio, el boton te avisa que falta configurarlo.
+
+MARCA DEL PROGRAMA
+La imagen que sale en la barra y en la pagina de inicio esta en public/marca.png,
+y el icono de la pestania del navegador en public/favicon.png.
+Para cambiarla, reemplaza esos dos archivos sin cambiarles el nombre.
+El titulo "Nino Tournament" esta en public/index.html.

@@ -1,0 +1,274 @@
+HISTORIAL DE VERSIONES
+Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
+ - PARCHE (el ultimo numero): arreglos o ajustes pequenos
+ - MENOR (el del medio): una funcion nueva
+ - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
+
+0.18.1 - Si faltan las carpetas con tus imagenes, ahora el programa lo dice claramente:
+         un aviso en rojo en la pagina de inicio y otro en la ventana negra, diciendo
+         que carpeta falta y desde donde se esta ejecutando. Antes simplemente no se veia
+         ninguna imagen y no habia forma de saber por que.
+
+0.18.0 - NUEVO: el programa se actualiza solo. En la pagina de inicio hay una tarjeta
+         "Actualizaciones" con un boton: busca si hay version nueva, te muestra las novedades,
+         la instala y reinicia el programa. Se acabo lo de descargar un zip y copiar archivos.
+       - Antes de instalar guarda una copia de la version actual en la carpeta "respaldos".
+       - Solo reemplaza archivos de codigo. Tus imagenes, tus logos, tus equipos guardados,
+         tu configuracion y los datos del torneo NO se tocan nunca.
+       - De donde baja las actualizaciones se elige en configuracion.txt (actualizaciones=usuario/repositorio).
+       - Solo el administrador puede actualizar.
+       - El programa abre la pagina de inicio en el navegador al arrancar. Se puede apagar con
+         abrir-navegador=no en configuracion.txt.
+       - INICIAR.bat ya volvia a levantar el programa solo: eso es lo que hace que el boton
+         "Reiniciar" funcione de una.
+       - QUITADO: los videos en bucle de la pantalla de espera. El recuadro vuelve a ser el hueco
+         transparente de siempre, para poner el video por debajo en OBS.
+
+0.16.0 - NUEVO: tres niveles de acceso cuando el programa esta abierto a la red.
+         Cada nivel tiene su propia clave, en configuracion.txt:
+           ADMINISTRADOR (clave)             puede todo
+           COLABORADOR   (clave-colaborador) carga draft, marcador y programacion,
+                                             pero NO sube ni borra imagenes y NO entra a Personalizar
+           INVITADO      (clave-invitado)    solo mira, no puede cambiar nada
+         La clave que dejas vacia no existe: nadie puede entrar con ese nivel.
+         Desde esta computadora siempre entras como administrador, sin clave.
+       - Los paneles se adaptan solos: al colaborador se le esconde lo que no puede usar y al
+         invitado le quedan apagadas todas las casillas y botones. Arriba se ve con que nivel entro.
+       - El permiso lo decide el servidor, no la pantalla: aunque alguien toque el navegador,
+         no puede hacer nada que su clave no permita.
+
+0.15.0 - Repaso general del programa. Lo mas importante:
+
+       SEGURIDAD
+       - Antes el programa quedaba abierto a toda la red: cualquiera en tu mismo WiFi podia abrir
+         los paneles y cambiarte el draft en vivo. Ahora, por defecto, SOLO esta computadora entra.
+       - Si queres controlarlo desde otra compu o del celular, abri configuracion.txt y poné
+         red=abierta. Al entrar desde afuera pide una clave que se muestra en la ventana negra.
+
+       MARCADOR EN VIVO
+       - NUEVO: los jugadores con su KDA salen debajo del marcador. Se prenden y apagan con el
+         boton "Jugadores al aire" del panel.
+       - NUEVO: la diferencia de oro, con la flecha apuntando al equipo que va ganando.
+       - El oro se puede escribir 12400 o 12.4k y siempre se muestra como 12.4K.
+       - QUITADO: los candados de "Fijar / Liberar" y el cartel del OCR. Servian solo para una
+         lectura automatica del juego que no existe, asi que eran botones que no hacian nada.
+       - El panel pasa a llamarse marcador.html (el enlace viejo ocr.html sigue funcionando).
+
+       DRAFT
+       - NUEVO: tiempo de reserva por equipo, como en los torneos. Cuando a un equipo se le acaban
+         los segundos del turno empieza a gastar su banco; se ve en el panel y en el overlay.
+       - NUEVO: atajos de teclado. Ctrl+Espacio arranca o para el tiempo, Ctrl+flechas pasa de fase
+         o corrige, Ctrl+0 reinicia el tiempo del turno.
+       - ARREGLO: si el panel se redibujaba con una casilla de heroe enfocada, se borraba el heroe
+         que ya estaba guardado.
+       - ARREGLO: cambiar de lado a mitad del draft dejaba el turno apuntando al equipo equivocado.
+         Ahora avisa y reinicia el draft, porque el orden de baneos no es igual para los dos lados.
+       - El historial se queda con las ultimas 7 partidas en vez de crecer para siempre.
+
+       OVERLAYS
+       - NUEVO: "Estadisticas de la serie": mas baneados, mas elegidos y cuantas partidas se
+         ganaron desde cada lado. Sale del historial, hay que marcar quien gano al guardar cada draft.
+       - "Draft anterior" rediseniado con el mismo estilo claro que el Line-up.
+
+       LIMPIEZA
+       - Se fueron los tres "skins" (apenas cambiaban un color), la segunda fuente de Personalizar
+         (no la usaba ningun overlay) y codigo que ya no llamaba nadie.
+
+0.14.2 - ARREGLO IMPORTANTE: una direccion mal escrita en el navegador (por ejemplo con un % suelto)
+         cerraba el servidor y se apagaban TODOS los overlays al mismo tiempo. Ya no pasa.
+       - El programa aguanta cualquier error sin cerrarse, e INICIAR.bat lo vuelve a levantar
+         solo a los 3 segundos si llegara a caerse igual.
+       - Se limita el tamanio de lo que mandan los paneles, para que nada llene la memoria.
+
+0.14.1 - Se agregaron las imagenes de ban de Cici y Paquito: ya estan los 133 heroes.
+
+0.14.0 - Draft pick con el diseno nuevo que pediste:
+       - La franja de arriba queda toda en negro: se fueron las rayas amarillas y azules.
+       - Los nombres de los equipos van en blanco sobre el negro, con el logo al costado
+         y los cuadritos del marcador al lado (uno por partida que hay que ganar).
+       - La caja blanca del logo del torneo ahora tiene el mismo ancho y queda alineada
+         con el panel blanco del centro, formando una sola columna.
+       - NUEVO: las 131 imagenes de los baneos ya vienen incluidas (carpeta public/bans).
+         Faltan solo Cici y Paquito: esos dos usan la imagen de public/heroes.
+
+0.13.0 - Las 133 imagenes de heroes ahora VIENEN INCLUIDAS en el programa (carpeta public/heroes).
+         Ya no hay que volver a cargarlas al actualizar: con descomprimir y abrir INICIAR.bat alcanza.
+         Las carpetas picks/ y bans/ siguen ahi por si queres arte distinto (o videos) para cada caso:
+         si una esta vacia, se usa igual la imagen de heroes/.
+       - Draft pick: el heroe se ve mas grande dentro de la tarjeta (se agranda y se centra en la cara).
+       - Post-Draft Line-up: el heroe se ve mas chico y entra entero; atras queda la misma imagen
+         borrosa y aclarada para rellenar la tarjeta, sin cortes ni bordes.
+       - NUEVO: "Pasar heroe" en el control de draft. En cada fila de pick hay una lista para pasarle
+         ese heroe a otro jugador del mismo equipo (se intercambian los dos heroes).
+         Sirve cuando un jugador pickea el heroe de otra linea y despues se lo pasa al companiero.
+         Los nicks, las lineas y el capitan NO se mueven: solo cambia el heroe.
+       - QUITADO: el reproductor de musica de los paneles de control (y la carpeta public/musica).
+
+0.12.1 - El reproductor pasa a ser un widget con el diseno de vidrio esmerilado:
+         - Caratula de color (sacado del nombre de la cancion), titulo y artista separados por el guion del archivo
+           ("Twice - What is Love.mp3" -> titulo "What is Love", artista "Twice").
+         - Barra de progreso con el tiempo transcurrido y el que falta; se puede hacer clic para saltar.
+         - Botones: aleatorio, anterior, play/pausa redondo, siguiente y repetir (sin repetir / toda la lista / una sola).
+         - Ondas animadas mientras suena, volumen y boton para volver a leer la carpeta.
+         - Se abre y se cierra con el boton de la barra de arriba, y se cierra al hacer clic afuera.
+0.12.0 - NUEVO: mini reproductor de musica en la barra de los paneles de control.
+         - Reproducir y pausar, anterior, siguiente, orden aleatorio y volumen.
+         - Lee los archivos de la carpeta public/musica (MP3, M4A, OGG, WAV, OPUS o FLAC).
+           El nombre del archivo es el que se muestra.
+         - Recuerda la cancion, el volumen y el modo aleatorio al cambiar de panel.
+         - IMPORTANTE: el programa NO trae musica. Pon tus propios archivos en esa carpeta.
+         - Solo suena en tu panel de control: no entra en la transmision ni en los overlays.
+0.11.0 - Post-Draft Line-up rediseniado con el estilo claro de MPL, conectado al Draft pick:
+         - Usa los mismos datos del control de draft (equipos, picks, jugadores, lineas, capitan y marcador).
+         - Arriba: cinta con el torneo, cabecera de cada equipo con su logo, su TAG en el color del equipo
+           y las barras de partidas ganadas; el logo del torneo en el centro con los dos chips debajo.
+         - Diez tarjetas altas con el arte del heroe sacado de la carpeta picks/, el nombre del heroe,
+           el nick del jugador en una barra del color del equipo y el icono de linea en la esquina.
+         - Como no hay fotos de jugadores, la tarjeta es solo el personaje, con un degradado suave hacia abajo.
+         - Textos opcionales en las dos esquinas de abajo (se escriben en la tarjeta Torneo del panel).
+       - El panel de draft tiene ahora un selector de vista previa: Draft pick o Post-Draft Line-up,
+         mas un boton para abrir el overlay en otra pestania.
+0.10.6 - Las rayas doradas y azules ya no tienen fondo blanco: entre raya y raya se ve el fondo oscuro de la barra,
+         igual que en los baneos. El blanco queda solo en el recuadro del logo del torneo.
+       - El recuadro dorado del centro (BANEANDO / ELIGIENDO y el numero) pasa de trapecio a rectangulo.
+0.10.5 - La marca del programa es ahora la imagen de Nino, y la pagina de inicio se llama "Nino Tournament".
+         - La imagen sale en el cuadrito de la barra de los cinco paneles y en grande en la pagina de inicio.
+         - Tambien es el icono de la pestania del navegador.
+         - Los archivos son public/marca.png (la grande) y public/favicon.png (la del navegador):
+           para cambiarla, reemplaza esos dos archivos sin cambiarles el nombre.
+0.10.4 - Las rayas doradas y azules ahora llenan todo el espacio entre los baneos y el logo del torneo.
+         Antes quedaban dos zonas blancas lisas a los costados del logo.
+0.10.3 - Fila de arriba del Draft pick, sin huecos oscuros:
+         - Las casillas blancas del nombre de cada equipo ahora son rectangulos, sin el corte en diagonal.
+         - Los baneos quedaron pegados a esas casillas, uno a cada extremo.
+         - El centro es un bloque blanco que rellena todo el espacio entre los baneos (antes era un trapecio
+           mas angosto y quedaban dos huecos oscuros a los costados).
+         - Las diagonales doradas y azules se acercaron para enmarcar el logo del torneo.
+0.10.2 - NUEVO: campo TAG al lado del nombre del equipo, de hasta 4 letras.
+         - Esta en la tarjeta Serie (los dos lados) y tambien en cada ranura de equipo guardado.
+         - Se escribe en minusculas y pasa solo a mayusculas.
+         - Ese TAG es el que sale en la franja del centro del Draft pick, debajo de los logos.
+         - Si lo dejas vacio, se sigue usando la primera palabra del nombre, como hasta ahora.
+       - Los ocho equipos de fabrica ya vienen con su tag: APBR, AUR, OMG, ONIC, FLCN, TL, TNC y TM.
+0.10.1 - ARREGLADO: una comilla suelta en los estilos rompia el marcador de la tarjeta Serie. Por eso se veia
+         un solo cuadro por lado en vez de los cuadritos de partidas ganadas.
+       - La tarjeta Serie muestra ahora un cuadrito por victoria necesaria: BO1 uno, BO3 dos, BO5 tres y BO7 cuatro.
+         Se encienden con el color del equipo al subir el marcador con + y -, y tambien se puede hacer clic
+         directamente en un cuadrito para poner el marcador ahi.
+       - Los mismos cuadritos salen al lado del nombre de cada equipo en el overlay del Draft pick.
+       - Selector de capitan en los dos lados de la tarjeta Serie, ademas del boton C de cada fila.
+       - Los paneles del lado azul y del lado rojo (baneos y picks) quedaron arriba de las ranuras de equipos.
+0.10.0 - Paneles de control rediseniados: mas limpios y sobrios.
+         - Tipografia normal en vez de mayusculas y letras espaciadas, bordes de 1 px, espacios mas amplios,
+           botones planos y acentos mas apagados. Lo mismo en los cinco paneles.
+       - NUEVO: modo claro y modo oscuro. El boton redondo de la barra de arriba (sol / luna) los alterna,
+         y la eleccion queda guardada en el navegador: al volver a abrir cualquier panel sigue como lo dejaste.
+       - Los overlays de OBS no cambian: su aspecto se sigue eligiendo en Personalizar.
+0.9.0  - Tres carpetas separadas para las imagenes de heroes:
+           public/picks/  el arte grande que sale en las tarjetas del draft y en el line-up
+           public/bans/   el retrato chico que sale en los baneos del draft y del line-up
+           public/heroes/ respaldo: se usa cuando un heroe no tiene imagen en picks o en bans
+         Asi se puede tener un recorte vertical para los picks y uno cuadrado para los baneos.
+       - En el panel se elige la carpeta antes de arrastrar los archivos, y se ve cuantos hay en cada una
+         y cuantos heroes faltan todavia.
+       - El aviso de "falta imagen" ahora distingue: una casilla de baneo se marca si falta el retrato de baneo.
+0.8.1  - NUEVO: cargar las imagenes y videos de heroes arrastrandolos al panel.
+         - Se sueltan todos juntos (o se eligen con un clic) y el programa los renombra solo segun el heroe:
+           "Yi Sun-shin.png" -> yisunshin.png, "popol and kupa.jpg" -> popolandkupa.jpg, "Chang'e.webp" -> change.webp.
+         - Tolera errores de escritura: "alduos.png" lo reconoce como Aldous y lo marca para que lo confirmes.
+         - Si no reconoce el nombre, eliges el heroe en una lista. Cada archivo muestra su miniatura antes de guardar.
+         - Solo queda un archivo por heroe: al guardar uno nuevo se borra el anterior aunque tuviera otra extension.
+         - Los archivos que no coinciden con ningun heroe ahora se pueden borrar desde el panel.
+       - ARREGLADO: una llave sin cerrar en los estilos rompia el diseno de la lista de equipos hechos y del
+         selector "Cargar equipo..." en la version 0.8.0.
+0.8.0  - Las 8 ranuras de equipo ahora se pueden VACIAR y volver a llenar.
+         - "Vaciar" deja la ranura libre; "Vaciar todas" las limpia de una vez.
+         - "Cargar equipo..." en cada ranura trae cualquier equipo de la lista de equipos hechos.
+         - "Guardar en la lista" mete el equipo de esa ranura en la lista, para usarlo en otro torneo.
+         - Debajo de las ranuras esta la lista completa, y cada equipo se puede borrar de ahi con la x.
+         - "Restaurar los de fabrica" vuelve a dejar los ocho equipos originales en las ranuras y en la lista.
+0.7.1  - Los equipos guardados ahora tienen CAPITAN y SUPLENTES.
+         - El boton "C" al lado de cada titular lo marca como capitan (se pulsa de nuevo para quitarlo).
+           La C sale en el Draft pick y en el Line-up, al lado del nick.
+         - Tres espacios de suplentes por equipo: eliges la linea, escribes el nombre y pulsas "Entra".
+           El suplente pasa a titular y el que salia queda en el banco, listo para volver a entrar.
+         - El capitan tambien se puede marcar directamente en el lado azul o rojo, sin tocar el equipo guardado.
+0.7.0  - Draft pick rediseniado con el estilo MPL: arriba el NOMBRE DE CADA EQUIPO con su logo (antes iban los narradores),
+         los 5 baneos en gris con el circulo tachado cuando faltan, el logo del torneo al centro entre diagonales,
+         celdas de pick doradas con el icono de la linea mientras no hay heroe, el arte del heroe con su nombre en vertical,
+         el nick en una barra del color del equipo y al centro el rombo dorado con la fase, el numero y la flecha de turno.
+       - NUEVO: 8 equipos guardados en el panel (4 arriba y 4 abajo). Un clic en "Azul" o "Rojo" carga nombre, logo,
+         color y los 5 jugadores con sus lineas. Tambien se puede guardar el equipo actual en una ranura, editar los
+         jugadores o cambiar el logo, y volver a la lista original.
+       - Vienen cargados: AP.Bren, Aurora PH, Omega Esports, ONIC Philippines, Team Falcons PH, Team Liquid PH,
+         TNC Pro Team y Twisted Minds PH, con sus logos y sus cinco jugadores.
+       - Iconos de linea (EXP, JUNGLA, MID, GOLD, ROAM) en public/lanes/.
+       - Los nombres y nicks largos se achican solos para que nunca se corten.
+0.6.0  - Pantalla de programacion rediseniada con el estilo claro de MPL (blanco, negro y dorado):
+         cinta superior, encabezado con logo y titulo dorado, chips de temporada y fase, codigo QR,
+         bloque de patrocinador que rota, panel de talento con foto grupal y nombres en barra dorada,
+         cuenta regresiva grande, ticker con etiqueta negra y textos en las dos esquinas de abajo.
+       - El hueco transparente para el video ahora se calcula solo (antes tapaba la ventana).
+       - Campos nuevos en el panel: QR con su texto, etiqueta negra del ticker y los dos textos de esquina.
+0.5.0  - NUEVA pagina de inicio (el "hub"): al abrir http://localhost:3000/ aparecen las cuatro tarjetas de control
+         y se entra a cada panel con un clic. Abajo estan los cinco enlaces para OBS, con botones Copiar y Ver.
+       - Barra de navegacion en todos los paneles (Inicio, Draft, Programacion, Marcador, Personalizar),
+         con el panel actual resaltado.
+       - El control de draft pasa a http://localhost:3000/control.html
+0.4.2  - El draft ahora avanza SOLO: escribes en la casilla iluminada, eliges el heroe de la lista y pasa al siguiente turno.
+         Se elige con clic, con Enter o con las flechas. Ya no hay que confirmar a mano.
+       - La lista muestra la miniatura del heroe y su rol, y oculta los heroes que ya estan baneados o pickeados,
+         asi no se puede repetir uno por error.
+       - Lo que escribes ya no se guarda a medias: el overlay solo cambia cuando eliges un heroe de la lista.
+0.4.1  - Si el puerto 3000 ya esta ocupado (quedo abierta una ventana del programa anterior), ahora lo dice claramente
+         en vez de cerrarse sin explicacion. La pagina "no encontrada" ahora lista los cuatro paneles.
+       - INICIAR.bat avisa si falta Node.js y muestra la version que esta arrancando.
+0.4.0  - Panel de control rediseñado por completo (barra de control arriba, SERIE con los dos lados, paneles azul/rojo,
+         vista previa en vivo). El draft se maneja escribiendo el heroe en la casilla iluminada y pulsando Enter.
+       - NUEVO Control de programacion (schedule.html): paneles rotativos de presentadores/narradores/analistas,
+         partidas del dia, cuenta regresiva, ticker, patrocinadores y pantalla de espera (schedule-overlay.html).
+       - NUEVO Control del marcador (ocr.html) + marcador en vivo (scoreboard.html): info de esquina, reloj,
+         kills/oro/torres/lords con - + Fijar y Liberar, jugadores con KDA y patrocinadores. La lectura automatica
+         del juego (OCR) todavia NO esta hecha: por ahora los datos se cargan a mano.
+       - NUEVO Personalizar (custom.html): tema de color, colores de los lados azul/rojo, fuentes propias (TTF/OTF/WOFF)
+         y tres disenos (Clasico / Medianoche / Choque) para el marcador y el draft.
+       - Los colores de equipo ahora se eligen en Personalizar y valen para todos los overlays.
+0.3.0  - Subir el logo de cada equipo desde el panel (boton "Subir logo", PNG/JPG/WEBP/GIF hasta 5 MB). Queda ligado al equipo, asi que puedes
+         cambiar el nombre cuando quieras. Ya no hace falta nombrar archivos en public/logos (aunque sigue funcionando como respaldo).
+         - Draft: se quito la palabra de fase de fondo (BANEANDO/PICKEANDO) y el texto inferior central ya no sale por defecto
+           (se activa con una casilla; el Line-up sigue mostrandolo).
+0.2.2  - Los nombres de equipo y los nicks largos se achican solos para que no se corten (Draft y Line-up).
+0.2.1  - Nuevo Post-Draft Line-up a pantalla completa (fondo morado, se puede apagar en el panel): banners con nombre y victorias de cada equipo,
+         5 tarjetas altas por equipo con nombre del jugador e icono de linea, los 5 baneos de cada equipo abajo y el texto central (ej. NORMAL).
+0.2.0  - Draft completo 5/5 (20 turnos). Fase 2: baneos Rojo-Azul-Rojo-Azul y luego picks Rojo 1, Azul 2, Rojo 1.
+         - Ya no hay casillas apagadas: los 5 baneos y los 5 picks de cada equipo se usan.
+0.1.1  - "Al mejor de N" ahora se muestra como "BO N" (ej. BO5).
+         - Se quitaron las siglas (tags): solo se muestran los nombres de equipo. Los logos ahora se buscan por nombre del equipo:
+           public/logos/<nombre del equipo sin espacios ni simbolos, en minusculas>.png (ej. "Gen G" -> geng.png). Sin logo no se dibuja el circulo.
+         - Picks con fondo limpio: ya no aparecen los numeros 1-5 en las casillas vacias.
+0.1.0  - Draft pick estilo "barra morada": baneos en los extremos, banners de equipo con logo, circulos de victorias,
+         temporizador mm:ss con flecha hacia el equipo en turno, palabra de fase (BANEANDO / PICKEANDO / DRAFT LISTO) y nicks abajo.
+         - Draft paso a paso 3/5: bans Azul-Rojo-Azul-Rojo-Azul-Rojo; picks Azul 1, Rojo 2, Azul 2, Rojo 1.
+         - Panel: escribe el heroe del turno + Enter (confirma y avanza), saltar turno, deshacer, reiniciar. El temporizador arranca solo en cada turno (se puede apagar).
+         - Las casillas 4 y 5 de baneos/picks se ven apagadas hasta que se amplie a 5/5 (DRAFT_FLOW en public/heroes.js).
+0.0.8  - Nuevo Post-Draft Line-up: dos paneles con nombre del equipo, linea (EXP/JUNGLA/MID/GOLD/ROAM), arte vertical del heroe y nick.
+         - Los archivos de heroes ahora aceptan .webm .mp4 .png .jpg .jpeg .webp .gif y toleran errores pequenos de nombre (ej. alduos = aldous).
+         - El panel marca en rojo los heroes sin imagen/video, en amarillo los nombres que no existen (y los corrige solo si es un error de 1 letra),
+           y lista los archivos de public/heroes que no coinciden con ningun heroe.
+0.0.7  - Draft pick estilo "barra ancha roja": baneos arriba a los lados, picks que se llenan desde afuera hacia el centro,
+         nombre del torneo, fase, capitan/coach con icono de audifonos, flechas de turno y TEMPORIZADOR (iniciar/pausar/reiniciar).
+         - Logos: public/logos/torneo.png (torneo) y public/logos/<sigla>.png (equipos).
+0.0.6  - Draft pick mas horizontal y compacto: barra mas baja, tarjetas inclinadas, circulo central con aro dorado.
+0.0.5  - Nuevo diseno de Draft pick: barra inferior con baneos, picks en tarjetas verticales y centro con logos, marcador y estado.
+         - Panel: sigla del equipo, numero de partida, al mejor de, victorias, textos centrales y evento del mapa.
+         - Logos opcionales: public/logos/<sigla en minusculas>.png (ej. lp.png)
+0.0.4  - El rol "Luchador" ahora se muestra como "Exp".
+0.0.3  - Lista completa de 133 heroes (hasta Hirara y Marcel) con sus roles.
+         - El panel muestra el rol al elegir heroe; el overlay de Draft pick lo muestra bajo el nombre.
+0.0.2  - Los heroes pueden mostrarse con video (.webm / .mp4) ademas de imagen.
+         - Se muestra la version en el panel y en la ventana negra.
+0.0.1  - Primera version: Draft pick, Post-Draft Line-up y Previous Draft para OBS.
+         - Panel de control con equipos, jugadores, picks y bans.
+
+PROXIMAMENTE (ideas)
+ 0.1.0  - Cambio automatico de escena en OBS (OBS WebSocket)

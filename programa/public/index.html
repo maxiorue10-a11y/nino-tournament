@@ -1,0 +1,145 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nino Tournament</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="panel.css">
+<script>try{document.documentElement.dataset.tema=localStorage.getItem("tema")||"oscuro"}catch(e){}</script>
+<style>
+.hero{text-align:center;padding:30px 20px 6px}
+.hero .hexmark{width:46px;height:46px;border-radius:12px;margin:0 auto 16px}
+.hero .hexmark i{font-size:16px}
+.hero h1{font-size:34px;font-weight:600;letter-spacing:-.6px;color:var(--tx);line-height:1.15}
+.hero p{color:var(--mut);margin-top:8px;font-size:15px}
+.hero .est{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--mut)}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:26px}
+@media(max-width:900px){.tiles{grid-template-columns:1fr}}
+.tile{display:flex;gap:18px;align-items:flex-start;padding:22px;background:var(--card);border:1px solid var(--line);
+ border-radius:12px;text-decoration:none;color:var(--tx);transition:.12s}
+.tile:hover{border-color:var(--acc);background:#121d33;transform:translateY(-2px)}
+.tile .ic{width:58px;height:58px;flex:none;border-radius:11px;display:grid;place-items:center;background:var(--c)}
+.tile .ic svg{width:30px;height:30px;fill:var(--card)}
+.tile h3{font-size:17px;font-weight:600;letter-spacing:-.2px;margin-bottom:5px}
+.tile p{color:var(--mut);font-size:14px;line-height:1.5}
+.tile .ir{margin-top:10px;font-size:13px;font-weight:500;color:var(--acc)}
+.obs{margin-top:22px}
+.obsg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:900px){.obsg{grid-template-columns:1fr}}
+.pie{text-align:center;color:var(--mut);font-size:12px;margin-top:26px}
+</style></head><body>
+
+<header id="top"></header>
+<main style="max-width:1180px">
+  <div class="hero">
+    <span class="hexmark"><i>ML</i></span>
+    <h1>Nino Tournament</h1>
+    <p>Todo lo que necesitas para transmitir un torneo de Mobile Legends.</p>
+    <span class="est" id="conn2"></span>
+  </div>
+
+  <div class="tiles">
+    <a class="tile" href="control.html"><span class="ic" style="--c:#4da3ff">
+      <svg viewBox="0 0 24 24"><path d="M3 4h7v7H3zm11 0h7v7h-7zM3 13h7v7H3zm11 0h7v7h-7z"/></svg></span>
+      <span><h3>Control de draft</h3>
+        <p>Baneos y picks turno por turno, equipos, jugadores y líneas. De aquí salen el Draft pick, el Line-up y el draft anterior.</p>
+        <span class="ir">Abrir &rarr;</span></span></a>
+
+    <a class="tile" href="schedule.html"><span class="ic" style="--c:#f0b429">
+      <svg viewBox="0 0 24 24"><path d="M7 2v3M17 2v3M3 8h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" fill="none" stroke="#0a1120" stroke-width="2"/></svg></span>
+      <span><h3>Programación</h3>
+        <p>La pantalla de espera: cuenta regresiva, partidas del día, presentadores y narradores, ticker y patrocinadores.</p>
+        <span class="ir">Abrir &rarr;</span></span></a>
+
+    <a class="tile" href="marcador.html"><span class="ic" style="--c:#ff6b81">
+      <svg viewBox="0 0 24 24"><path d="M3 5h18v4H3zm0 6h8v8H3zm10 0h8v8h-8z"/></svg></span>
+      <span><h3>Control del marcador</h3>
+        <p>El marcador en vivo durante la partida: kills, oro, torres, lords, reloj, narradores y patrocinador en la esquina.</p>
+        <span class="ir">Abrir &rarr;</span></span></a>
+
+    <a class="tile" href="custom.html"><span class="ic" style="--c:#b27bff">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.6-1.3-.3-.4-.5-.8-.5-1.2 0-1 .8-1.8 1.8-1.8H17a5 5 0 0 0 5-5c0-4.4-4.5-8-10-8zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3.5-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3.5 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></span>
+      <span><h3>Personalizar</h3>
+        <p>Colores del torneo y de los lados azul y rojo, tus propias fuentes y el diseño de los overlays.</p>
+        <span class="ir">Abrir &rarr;</span></span></a>
+  </div>
+
+  <section class="card" id="act">
+    <h2>Actualizaciones<span id="actver">&nbsp;</span></h2>
+    <div class="hint" id="acthint">El programa puede buscar la versión nueva solo e instalarla, sin tocar tus imágenes ni tu configuración.</div>
+    <div class="acts"><button class="sm" id="actbtn" onclick="buscarAct()">Buscar actualización</button></div>
+    <div id="actres" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card obs">
+    <h2>Enlaces para OBS<span>Fuentes → + → Fuente de navegador · ancho 1920 · alto 1080</span></h2>
+    <div class="obsg" id="links"></div>
+  </section>
+  <div class="pie" id="pie"></div>
+</main>
+
+<script src="nav.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+$('top').innerHTML=`<div class="brand"><span class="hexmark"><i>ML</i></span><b>Nino Tournament</b></div>`+navHTML('/');
+
+const OV=[['Draft pick','overlay.html?view=draft'],['Post-Draft Line-up','overlay.html?view=lineup'],
+          ['Draft anterior','overlay.html?view=previous'],
+          ['Estadísticas de la serie','overlay.html?view=stats'],['Programación','schedule-overlay.html'],
+          ['Marcador en vivo','scoreboard.html']];
+$('links').innerHTML=OV.map(([n,u])=>{const full=location.origin+'/'+u;
+  return `<div><div class="lbl" style="margin-top:0">${n}</div><div class="urlrow">
+    <input readonly value="${full}" onclick="this.select()">
+    <button class="sm" onclick="navigator.clipboard.writeText('${full}')">Copiar</button>
+    <button class="sm" onclick="window.open('${u}','_blank')">Ver</button></div></div>`}).join('');
+
+/* ---------- actualizaciones ---------- */
+const $a=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const msg=(t,c)=>{$a('actres').innerHTML=`<div class="warnbox" style="border-left:3px solid ${c};padding-left:12px">${t}</div>`};
+function buscarAct(){
+  $a('actbtn').disabled=true;$a('actbtn').textContent='Buscando…';
+  fetch('/api/actualizacion').then(r=>r.json()).then(d=>{
+    $a('actbtn').disabled=false;$a('actbtn').textContent='Buscar actualización';
+    if(!d.ok)return msg('No se pudo buscar: <b>'+esc(d.error||'error desconocido')+'</b>','var(--bad)');
+    if(!d.hayNueva)return msg('Ya tenés la última versión (<b>'+esc(d.instalada)+'</b>).','var(--ok)');
+    msg('Hay una versión nueva: <b>'+esc(d.disponible)+'</b> (tenés la '+esc(d.instalada)+').'
+      +(d.notas?'<div style="margin-top:8px;white-space:pre-line">'+esc(d.notas)+'</div>':'')
+      +'<div style="margin-top:6px;color:var(--mut)">Tus imágenes, tus equipos y tu configuración no se tocan. Se guarda una copia de la versión actual en la carpeta <b>respaldos</b>.</div>'
+      +'<div class="acts" style="margin-top:10px"><button class="gold sm" onclick="instalarAct()">Instalar ahora</button></div>','var(--acc)')})
+   .catch(()=>{$a('actbtn').disabled=false;$a('actbtn').textContent='Buscar actualización';
+     msg('No se pudo hablar con el programa.','var(--bad)')})}
+function instalarAct(){
+  if(!confirm('¿Instalar la versión nueva?\n\nSi estás transmitiendo en este momento, los overlays se cortan unos segundos al reiniciar.'))return;
+  msg('Instalando…','var(--acc)');
+  fetch('/api/actualizacion',{method:'POST'}).then(r=>r.json()).then(d=>{
+    if(!d.ok)return msg('No se pudo instalar: <b>'+esc(d.error||'error')+'</b>','var(--bad)');
+    msg('Instalada la versión <b>'+esc(d.version)+'</b>. Copia de seguridad en <b>'+esc(d.respaldo)+'</b>.'
+      +'<div class="acts" style="margin-top:10px"><button class="gold sm" onclick="reiniciarAct()">Reiniciar el programa</button></div>'
+      +'<div style="margin-top:6px;color:var(--mut)">Si el botón no funciona, cerrá la ventana negra y volvé a abrir INICIAR.bat.</div>','var(--ok)')})
+   .catch(()=>msg('Se cortó la conexión mientras instalaba.','var(--bad)'))}
+function reiniciarAct(){
+  msg('Reiniciando… la página se recarga sola en unos segundos.','var(--acc)');
+  fetch('/api/reiniciar',{method:'POST'}).catch(()=>{});
+  let intentos=0;
+  const esperar=()=>{intentos++;
+    fetch('/version',{cache:'no-store'}).then(r=>r.json()).then(()=>location.reload())
+     .catch(()=>{if(intentos<40)setTimeout(esperar,1000);
+       else msg('No volvió solo. Cerrá la ventana negra y abrí INICIAR.bat.','var(--bad)')})};
+  setTimeout(esperar,2500)}
+
+fetch('/version').then(r=>r.json()).then(v=>{
+  $a('actver').textContent='tenés la versión '+v.version;
+  if(v.faltan&&v.faltan.length){
+    const d=document.createElement('section');d.className='card';
+    d.style.borderColor='var(--bad)';d.style.marginBottom='18px';
+    d.innerHTML='<h2 style="color:var(--bad)">Faltan las carpetas con tus imágenes</h2>'
+      +'<div class="hint" style="margin-bottom:10px">Por eso no ves los héroes, los iconos de línea ni los logos.</div>'
+      +'<div class="warnbox">No encontré: '+v.faltan.map(f=>'<b>'+esc(f.carpeta)+'</b> ('+esc(f.que)+')').join(', ')
+      +'<div style="margin-top:8px">Lo más probable es que estés abriendo el programa desde la carpeta de la actualización, '
+      +'que trae solo el código. Copiá esos archivos dentro de tu carpeta de siempre (la que tiene <b>public/heroes</b>) '
+      +'y abrí <b>INICIAR.bat</b> desde ahí.</div>'
+      +'<div style="margin-top:8px;color:var(--mut)">Está corriendo desde: '+esc(v.carpeta)+'</div></div>';
+    const m=document.querySelector('main');m.insertBefore(d,m.firstChild)}
+  $('conn2').innerHTML='<i class="dot ok"></i>Servidor conectado · versión '+v.version;
+  $('pie').textContent='Nino Tournament · v'+v.version+' · deja abierta la ventana negra mientras transmites';})
+ .catch(()=>{$('conn2').innerHTML='<i class="dot"></i>Sin conexión con el servidor'});
+</script></body></html>
