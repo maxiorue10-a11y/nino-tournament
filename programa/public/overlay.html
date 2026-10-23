@@ -107,35 +107,33 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
  justify-content:center;gap:7px}
 .lhead .wins i{width:9px;height:42px;background:#d6d9df;display:block}
 .lhead .wins i.on{background:var(--c)}
-.ltor{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:300px;height:250px;
- display:grid;place-items:center;z-index:3}
-.ltor img{max-width:100%;max-height:100%;object-fit:contain}
+/* El nombre (o el logo) del torneo y la ficha de la partida van en una sola columna
+   centrada, asi la ficha queda siempre pegada abajo del nombre y no flotando lejos. */
+.lcen{position:absolute;left:50%;top:20px;transform:translateX(-50%);z-index:3;
+ display:flex;flex-direction:column;align-items:center;gap:14px}
+.ltor{width:320px;display:grid;place-items:center}
+.ltor img{max-width:100%;max-height:196px;object-fit:contain}
 .ltor b{font-size:46px;font-weight:800;color:#e9b949;text-transform:uppercase;text-align:center;line-height:1}
-.lchips{position:absolute;left:50%;top:272px;transform:translateX(-50%);display:flex;height:40px}
+.lchips{display:flex;height:40px}
 .lchips b{display:flex;align-items:center;padding:0 26px;font-size:24px;font-weight:800;letter-spacing:1px;
  text-transform:uppercase;white-space:nowrap}
 .lchips .c1{background:#fff;border:1px solid #e4e6ea;clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
 .lchips .c2{background:linear-gradient(90deg,#f0cf78,#e9b949);color:#141821;margin-left:-14px;padding-left:34px;
  clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
-.lgrid{position:absolute;top:330px;height:600px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+/* la banda del arte va justa al alto del heroe, asi no queda un hueco grande arriba */
+.lgrid{position:absolute;top:352px;height:520px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
 .lgrid.l{left:52px;width:890px}.lgrid.r{right:52px;width:890px}
 .lcard{position:relative;overflow:hidden;background:linear-gradient(#e9ecf0,#d8dce2)}
-.lcard .art{position:absolute;left:0;right:0;top:0;bottom:44px;overflow:hidden}
-/* el heroe entra entero (mas chico) y atras queda la misma imagen borrosa para rellenar */
-.lcard .art>.bg{position:absolute;inset:-10%;filter:blur(22px) saturate(1.1);opacity:.85}
-.lcard .art>.bg img,.lcard .art>.bg video{width:100%;height:100%;object-fit:cover;object-position:center top}
-.lcard .art:before{content:'';position:absolute;inset:0;z-index:1;
- background:linear-gradient(rgba(237,239,242,.9),rgba(237,239,242,.32) 50%,rgba(237,239,242,0) 76%)}
+/* El heroe entra entero y centrado en su banda, sin fondo borroso ni degradados
+   encima: lo que sobra a los costados queda del color liso de la carta. */
+.lcard .art{position:absolute;left:0;right:0;top:0;bottom:84px;overflow:hidden}
 .lcard .art>img,.lcard .art>video{position:absolute;left:-18%;width:136%;height:100%;z-index:2;
- object-fit:contain;object-position:center bottom;
- -webkit-mask-image:linear-gradient(to bottom,transparent 29%,#000 48%);
- mask-image:linear-gradient(to bottom,transparent 29%,#000 48%)}
-.lcard .art:after{content:'';position:absolute;left:0;right:0;bottom:0;height:46%;z-index:3;
- background:linear-gradient(transparent,rgba(236,238,241,.25) 45%,rgba(236,238,241,.85))}
-.lcard .hname{position:absolute;left:0;right:0;bottom:52px;text-align:center;font-size:23px;font-weight:700;
+ object-fit:contain;object-position:center}
+.lcard .hname{position:absolute;left:0;right:0;bottom:44px;height:40px;display:flex;align-items:center;
+ justify-content:center;font-size:23px;font-weight:700;
  letter-spacing:1px;text-transform:uppercase;color:#2a2f3a;z-index:4;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px}
-.lcard .vacio{position:absolute;inset:0 0 44px 0;display:grid;place-items:center}
+.lcard .vacio{position:absolute;inset:0 0 84px 0;display:grid;place-items:center}
 .lcard .vacio img{width:76px;height:76px;object-fit:contain;opacity:.3}
 .lcard .nk{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
  justify-content:center;gap:7px;background:var(--c);color:#fff;font-size:24px;font-weight:700;
@@ -270,10 +268,6 @@ const $=document.getElementById('app'),prevSeen={};
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 // Busca primero el video .webm, luego .mp4, luego la imagen .png; si no hay nada, queda la inicial
 const vid=(h,tipo)=>{const f=mediaFor(h,tipo);if(!f)return '';return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`:`<img src="${f}" onerror="this.remove()">`};
-/* Para el fondo borroso de las cartas: va la imagen quieta si existe. Esta tapado por
-   el arte y encima desenfocado, asi que animarlo no se ve y duplica el gasto. */
-const vidQuieto=(h,tipo)=>{const f=mediaFor(h,tipo,1);if(!f)return '';
-  return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`:`<img src="${f}" onerror="this.remove()">`};
 const pop=(k,h)=>{const n=prevSeen[k]!==h&&h;prevSeen[k]=h;return n?' pop':''};
 const FL='<svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21z"/></svg>';
 function numText(M){const T=M.timer;if(M.useTimer&&T){const n=T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left;
@@ -351,7 +345,7 @@ function lineup(s){const[A,B]=s.teams;
    const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
    return `<div class="lgrid ${c}">${ord.map(k=>{const h=s.picks[i][k],ln=lanes[k];
      return `<div class="lcard${pop('lu'+i+k,h)}" style="--c:${T.color}">
-       ${h?`<div class="art"><div class="bg">${vidQuieto(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
+       ${h?`<div class="art">${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
           :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
        <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
@@ -362,8 +356,10 @@ function lineup(s){const[A,B]=s.teams;
   <div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
     <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>
   ${cab(A,0,'l')}${cab(B,1,'r')}
-  <div class="ltor">${M.logo?`<img src="${M.logo}">`:`<b>${esc(M.tournament||'')}</b>`}</div>
-  <div class="lchips">${M.stage?`<b class="c1">${esc(M.stage)}</b>`:''}<b class="c2">Partida ${esc(M.game)} &middot; BO${esc(M.bestOf)}</b></div>
+  <div class="lcen">
+    <div class="ltor">${M.logo?`<img src="${M.logo}">`:`<b>${esc(M.tournament||'')}</b>`}</div>
+    <div class="lchips">${M.stage?`<b class="c1">${esc(M.stage)}</b>`:''}<b class="c2">Partida ${esc(M.game)} &middot; BO${esc(M.bestOf)}</b></div>
+  </div>
   ${tarjetas(0,A,'l')}${tarjetas(1,B,'r')}
   ${M.lemaIzq?`<div class="lpie l">&#10006; <b>${esc(M.lemaIzq)}</b></div>`:''}
   ${M.lemaDer?`<div class="lpie r"><b>${esc(M.lemaDer)}</b> ${FL2}</div>`:''}
@@ -386,7 +382,7 @@ function previous(s){const g=s.history&&s.history[s.prev];
    const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
    return `<div class="pvgrid ${c}">${ord.map(k=>{const h=g.picks[i][k],ln=lanes[k];
      return `<div class="lcard" style="--c:${T.color}">
-       ${h?`<div class="art"><div class="bg">${vidQuieto(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
+       ${h?`<div class="art">${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
           :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
        <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>

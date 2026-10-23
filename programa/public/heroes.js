@@ -144,17 +144,11 @@ function osa(a,b){const m=a.length,n=b.length,d=[];for(let i=0;i<=m;i++)d[i]=[i]
  if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[m][n]}
 function suggestHero(v,max=2){const k=_key(v);let best='',bd=max+1;HEROES.forEach(x=>{const d=osa(k,_key(x.n));if(d<bd){bd=d;best=x.n}});return best}
 let MEDIA={heroes:{},picks:{},bans:{}};
-/* Las mismas carpetas pero solo con las imagenes quietas. Sirve para los adornos
-   (como el fondo borroso de las cartas del line-up), donde animar no se nota y
-   en cambio duplica el trabajo de la computadora. */
-let MEDIA_Q={heroes:{},picks:{},bans:{}};
 /* Tres carpetas: picks/ para el arte de los picks, bans/ para los retratos de baneo
    y heroes/ como respaldo de las dos. */
 /* Si un heroe tiene varios archivos, gana el que se mueve: primero el video (.webm, .mp4),
    despues el .gif animado y al final la imagen quieta (.png, .jpg, .webp). */
-const _ANIMADO=/\.(webm|mp4|gif)$/i;
-function _indexar(lista,soloQuietas){
-  if(soloQuietas)lista=(lista||[]).filter(f=>!_ANIMADO.test(f));
+function _indexar(lista){
   const pr=f=>/\.webm$/i.test(f)?0:/\.mp4$/i.test(f)?1:/\.gif$/i.test(f)?2:3;
   const l=(lista||[]).slice().sort((a,b)=>pr(a)-pr(b)),m={};
   /* El archivo puede venir dentro de una subcarpeta ("HeroPick/chou.gif"): para
@@ -163,21 +157,16 @@ function _indexar(lista,soloQuietas){
     const k=_key(n.replace(/\.[^.]+$/,''));if(!m[k])m[k]=f});return m}
 function loadMedia(){return fetch('/api/media',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   if(Array.isArray(d))d={heroes:d,picks:[],bans:[]};
-  MEDIA={heroes:_indexar(d.heroes),picks:_indexar(d.picks),bans:_indexar(d.bans)};
-  MEDIA_Q={heroes:_indexar(d.heroes,1),picks:_indexar(d.picks,1),bans:_indexar(d.bans,1)}}).catch(()=>{})}
-function _buscar(carpeta,k,quietas){const m=(quietas?MEDIA_Q:MEDIA)[carpeta]||{};let f=m[k];
+  MEDIA={heroes:_indexar(d.heroes),picks:_indexar(d.picks),bans:_indexar(d.bans)}}).catch(()=>{})}
+function _buscar(carpeta,k){const m=MEDIA[carpeta]||{};let f=m[k];
   if(!f&&k.length>=5){const c=Object.keys(m).filter(x=>osa(x,k)<=1);if(c.length===1)f=m[c[0]]}
   /* cada pedazo de la ruta se codifica por separado, para no romper las barras */
   return f?'/'+carpeta+'/'+String(f).split('/').map(encodeURIComponent).join('/'):''}
-/* tipo: 'pick', 'ban' o nada (solo la carpeta general)
-   quietas: pide la version que no se mueve; si el heroe solo tiene animacion, la devuelve igual */
-function mediaFor(name,tipo,quietas){const k=_key(name);if(!k)return '';
-  const b=(c)=>_buscar(c,k,quietas);
-  let r;
-  if(tipo==='pick')r=b('picks')||b('heroes');
-  else if(tipo==='ban')r=b('bans')||b('heroes');
-  else r=b('heroes')||b('picks')||b('bans');
-  return r||(quietas?mediaFor(name,tipo):'')}
+/* tipo: 'pick', 'ban' o nada (solo la carpeta general) */
+function mediaFor(name,tipo){const k=_key(name);if(!k)return '';
+  if(tipo==='pick')return _buscar('picks',k)||_buscar('heroes',k);
+  if(tipo==='ban')return _buscar('bans',k)||_buscar('heroes',k);
+  return _buscar('heroes',k)||_buscar('picks',k)||_buscar('bans',k)}
 
 // --- Flujo del draft 5/5. Cada paso: [tipo, equipo]   0 = equipo azul (1), 1 = equipo rojo (2)
 // Fase 1: baneos A-R-A-R-A-R, picks A | R R | A A | R        (3/5)

@@ -4,6 +4,26 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.24.0 - EL POST-DRAFT LINE-UP, RETOCADO (y con el de siempre tambien cambia el
+         "Draft anterior", que usa las mismas tarjetas):
+       - FUERA EL DIFUMINADO: arriba de cada heroe habia una franja borrosa, que era la
+         misma imagen del heroe ampliada y desenfocada para rellenar, con un velo blanco
+         encima. Se saco: ahora lo que sobra queda del color liso de la tarjeta.
+       - LOS HEROES, CENTRADOS: el arte estaba pegado abajo y tapado a medias por el
+         nombre. Ahora el heroe va centrado en su banda, el nombre del heroe tiene su
+         propio renglon debajo y despues viene el del jugador, sin encimarse.
+         La banda tambien se ajusto al alto del heroe, asi no queda un hueco grande.
+       - LA FICHA DE LA PARTIDA, PEGADA AL TORNEO: "PLAYOFFS | PARTIDA 1 - BO3" quedaba
+         flotando lejos abajo del nombre del torneo. Ahora van juntos en una sola
+         columna centrada, asi que la ficha queda siempre justo debajo del nombre,
+         tengas logo o solo texto.
+       - MIDNIGHT TAMBIEN EN EL LINE-UP: si elegis el diseño Midnight, el line-up y el
+         draft anterior pasan a vidrio oscuro, con las tarjetas redondeadas, el filo de
+         neon del color de cada equipo y los textos claros. Con Clasico y con Clash
+         siguen viendose claros como hasta ahora.
+       - De paso, al no haber mas fondo borroso, cada tarjeta carga UNA sola imagen en
+         vez de dos.
+
 0.23.1 - ARREGLO: si copiabas la CARPETA entera adentro de public/picks/ (por ejemplo
          public/picks/HeroPick/) en vez de los archivos sueltos, el programa no
          encontraba nada y seguia mostrando las imagenes quietas de public/heroes/.
