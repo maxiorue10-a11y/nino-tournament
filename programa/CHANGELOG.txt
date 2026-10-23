@@ -4,6 +4,11 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.24.2 - El nombre del heroe pasa a ir DENTRO del recuadro, apoyado abajo del arte, en
+         vez de tener un renglon propio debajo. Lleva una sombra degradada atras, asi
+         se lee bien sobre cualquier imagen, sea clara u oscura. Vale para el line-up
+         y para el "draft anterior", y en los tres diseños.
+
 0.24.1 - Tres retoques mas del line-up (y del "draft anterior", que usa las mismas
          tarjetas):
        - LOS HEROES LLENAN LA TARJETA: todavia quedaban dos franjas vacias, una arriba

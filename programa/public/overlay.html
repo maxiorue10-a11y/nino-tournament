@@ -127,15 +127,19 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .lcard{position:relative;overflow:hidden;background:linear-gradient(#e9ecf0,#d8dce2)}
 /* El heroe entra entero y centrado en su banda, sin fondo borroso ni degradados
    encima: lo que sobra a los costados queda del color liso de la carta. */
-.lcard .art{position:absolute;left:0;right:0;top:0;bottom:84px;overflow:hidden}
+.lcard .art{position:absolute;left:0;right:0;top:0;bottom:44px;overflow:hidden}
 /* el heroe llena la tarjeta entera: sin franjas vacias arriba ni abajo */
 .lcard .art>img,.lcard .art>video{position:absolute;inset:0;width:100%;height:100%;z-index:2;
  object-fit:cover;object-position:center top}
-.lcard .hname{position:absolute;left:0;right:0;bottom:44px;height:40px;display:flex;align-items:center;
+/* El nombre del heroe va DENTRO del recuadro, apoyado abajo del arte. Lleva una
+   sombra degradada atras para que se lea sobre cualquier imagen. */
+.lcard .hname{position:absolute;left:0;right:0;bottom:44px;height:76px;display:flex;align-items:flex-end;
  justify-content:center;font-size:23px;font-weight:700;
- letter-spacing:1px;text-transform:uppercase;color:#2a2f3a;z-index:4;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px}
-.lcard .vacio{position:absolute;inset:0 0 84px 0;display:grid;place-items:center}
+ letter-spacing:1px;text-transform:uppercase;color:#fff;z-index:4;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 7px 9px;
+ background:linear-gradient(transparent,rgba(8,12,22,.5) 45%,rgba(8,12,22,.84));
+ text-shadow:0 2px 5px rgba(0,0,0,.8)}
+.lcard .vacio{position:absolute;inset:0 0 44px 0;display:grid;place-items:center}
 .lcard .vacio img{width:76px;height:76px;object-fit:contain;opacity:.3}
 .lcard .nk{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
  justify-content:center;gap:7px;background:var(--c);color:#fff;font-size:24px;font-weight:700;
