@@ -4,6 +4,20 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.20.2 - ARREGLO: la lista de heroes de los baneos y los picks no se podia bajar. Apenas
+         movias la rueda del mouse, la lista volvia sola al principio, asi que nunca se
+         pasaba de los primeros heroes y habia que escribir el nombre si o si. El
+         programa reacomodaba la lista cada vez que algo se movia en la pantalla, y
+         bajar dentro de la lista contaba como "algo se movio", asi que se redibujaba
+         sola y se iba arriba de nuevo. Ahora, cuando bajas dentro de la lista, no se
+         redibuja nada y se queda donde la dejaste.
+       - Ademas la lista ahora trae los 133 heroes en vez de los primeros 40, asi que
+         se puede llegar a cualquiera bajando, sin escribir. Los dibujitos de cada
+         heroe se cargan recien cuando se asoman, asi que abrir la lista sigue siendo
+         instantaneo.
+       - Escribir sigue funcionando igual: al filtrar, la lista arranca de arriba.
+         Las flechas del teclado tambien siguen arrastrando la lista.
+
 0.20.1 - ARREGLO IMPORTANTE DEL ACTUALIZADOR: cuando una version nueva traia una pantalla
          que antes no existia (como public/cierre.html), el actualizador la rechazaba
          entera con el mensaje "la actualizacion quiere tocar un archivo que no

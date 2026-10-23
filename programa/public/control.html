@@ -232,23 +232,36 @@ function buscar(q,excepto){const us=usados(excepto),k=_key(q);
   r.sort((a,b)=>{const A=a.k.startsWith(k)?0:1,B=b.k.startsWith(k)?0:1;
     const UA=us.has(a.k)?1:0,UB=us.has(b.k)?1:0;
     return UA-UB||A-B||a.k.localeCompare(b.k)});
-  return r.slice(0,40).map(x=>({n:x.h.n,r:x.h.r,usado:us.has(x.k)}))}
+  /* la lista va entera: se baja con la rueda del mouse o con las flechas del teclado.
+     Las imagenes se cargan recien cuando se asoman, asi abrir la lista sigue siendo instantaneo. */
+  return r.map(x=>({n:x.h.n,r:x.h.r,usado:us.has(x.k)}))}
 function abrirAC(el){const d=idDe(el);if(!d)return;acEl=el;
   const actual=(d.tipo==='ban'?S.bans:S.picks)[d.i][d.k];
   acOpc=buscar(el.value,actual);acSel=0;pintarAC()}
-function pintarAC(){const a=AC();if(!acEl)return;
-  if(!acOpc.length){a.innerHTML='<div class="vacio">Ningún héroe coincide</div>'}
-  else a.innerHTML=acOpc.map((o,n)=>{const f=mediaFor(o.n),vid=/\.(webm|mp4)$/i.test(f||'');
-    return `<div class="it${n===acSel?' sel':''}${o.usado?' usado':''}" data-n="${esc(o.n)}">
-      <span class="mini">${f?(vid?`<video src="${f}" muted></video>`:`<img src="${f}">`):esc(o.n[0])}</span>
-      <span class="nm"><b>${esc(o.n)}</b><small>${esc(o.r.map(x=>ROLES_ES[x]).join(' / '))}</small></span>
-      ${o.usado?'<span class="tag">ya usado</span>':''}</div>`}).join('');
+/* Deja la lista pegada debajo de la casilla. No toca el contenido, asi que se puede
+   llamar todas las veces que haga falta sin perder hasta donde bajo el usuario. */
+function ubicarAC(){const a=AC();if(!acEl)return;
   const r=acEl.getBoundingClientRect();
   a.style.display='block';
   a.style.left=Math.round(r.left+scrollX)+'px';
   a.style.top=Math.round(r.bottom+scrollY+3)+'px';
-  a.style.minWidth=Math.max(252,Math.round(r.width))+'px';
-  const sel=a.querySelector('.it.sel');if(sel)sel.scrollIntoView({block:'nearest'})}
+  a.style.minWidth=Math.max(252,Math.round(r.width))+'px'}
+/* Dibuja la lista. moverSel=true solo cuando se mueve con las flechas del teclado:
+   ahi si hay que arrastrar la lista hasta el renglon elegido. */
+function pintarAC(moverSel){const a=AC();if(!acEl)return;
+  const firma=acOpc.map(o=>o.n).join('|'),mismas=a.dataset.firma===firma,alto=a.scrollTop;
+  if(!acOpc.length){a.innerHTML='<div class="vacio">Ningún héroe coincide</div>'}
+  else a.innerHTML=acOpc.map((o,n)=>{const f=mediaFor(o.n),vid=/\.(webm|mp4)$/i.test(f||'');
+    return `<div class="it${n===acSel?' sel':''}${o.usado?' usado':''}" data-n="${esc(o.n)}">
+      <span class="mini">${f?(vid?`<video src="${f}" muted preload="none"></video>`
+        :`<img src="${f}" loading="lazy" decoding="async">`):esc(o.n[0])}</span>
+      <span class="nm"><b>${esc(o.n)}</b><small>${esc(o.r.map(x=>ROLES_ES[x]).join(' / '))}</small></span>
+      ${o.usado?'<span class="tag">ya usado</span>':''}</div>`}).join('');
+  a.dataset.firma=firma;
+  /* si la lista es la misma de antes, se queda donde estaba; si cambio (escribiste algo), arranca de arriba */
+  a.scrollTop=mismas?alto:0;
+  ubicarAC();
+  if(moverSel){const sel=a.querySelector('.it.sel');if(sel)sel.scrollIntoView({block:'nearest'})}}
 function restaurar(el){const d=idDe(el);if(!d)return;
   setTimeout(()=>{if(acEl===el)return;
     // si la casilla ya no esta en la pagina (se redibujo el panel), su texto esta viejo:
@@ -270,12 +283,17 @@ document.addEventListener('mousedown',e=>{const it=e.target.closest&&e.target.cl
   if(it){e.preventDefault();tomar(it.dataset.n);return}
   if(!e.target.classList||!e.target.classList.contains('hin'))cerrarAC()});
 document.addEventListener('keydown',e=>{if(!acEl||AC().style.display==='none')return;
-  if(e.key==='ArrowDown'){e.preventDefault();acSel=Math.min(acOpc.length-1,acSel+1);pintarAC()}
-  else if(e.key==='ArrowUp'){e.preventDefault();acSel=Math.max(0,acSel-1);pintarAC()}
+  if(e.key==='ArrowDown'){e.preventDefault();acSel=Math.min(acOpc.length-1,acSel+1);pintarAC(true)}
+  else if(e.key==='ArrowUp'){e.preventDefault();acSel=Math.max(0,acSel-1);pintarAC(true)}
   else if(e.key==='Enter'){e.preventDefault();const o=acOpc[acSel];if(o&&!o.usado)tomar(o.n)}
   else if(e.key==='Escape'){cerrarAC()}
   else if(e.key==='Tab'){cerrarAC()}});
-addEventListener('scroll',()=>{if(acEl&&AC().style.display!=='none')pintarAC()},true);
+/* Si se mueve la pagina, la lista la sigue. OJO: bajar DENTRO de la lista tambien dispara
+   este evento, y antes aca se volvia a dibujar todo, asi que la lista saltaba de nuevo
+   arriba y no se podia pasar de los primeros heroes. Ahora solo se reubica, nunca se redibuja. */
+addEventListener('scroll',e=>{if(!acEl||AC().style.display==='none')return;
+  const t=e.target;if(t&&t.closest&&t.closest('#ac'))return;
+  ubicarAC()},true);
 
 /* ---------- atajos de teclado ----------
    Todos van con Ctrl para que nunca molesten mientras escribis el nombre de un heroe. */
