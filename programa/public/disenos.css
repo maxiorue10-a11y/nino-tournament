@@ -31,8 +31,9 @@
 
 /* nombres de los equipos: placa solida del color del equipo */
 :root[data-diseno="clash"] .eqn{
-  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 62%),var(--c,#1f6feb);
-  box-shadow:inset 0 -5px 0 #fff}
+  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 62%),var(--c,#1f6feb)}
+/* la franja blanca de abajo marca al equipo al que le toca elegir */
+:root[data-diseno="clash"] .eqn.turno{box-shadow:inset 0 -5px 0 #fff}
 :root[data-diseno="clash"] .eqn b{text-shadow:0 3px 0 rgba(0,0,0,.25)}
 :root[data-diseno="clash"] .eqn .pips i{background:rgba(255,255,255,.25);box-shadow:none}
 :root[data-diseno="clash"] .eqn .pips i.on{background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8)}
@@ -67,8 +68,10 @@
   position:absolute;left:50%;bottom:-28px;transform:translateX(-50%);z-index:2;white-space:nowrap;
   background:#fff;color:#0b0e18;padding:4px 20px 2px;font-size:17px}
 :root[data-diseno="clash"] .rombo b{position:relative;z-index:2}
-:root[data-diseno="clash"] .rombo.rsv:before{background:linear-gradient(160deg,#ff8a92,#e03a4d 50%,#6b0d16)}
-:root[data-diseno="clash"] .rombo.rsv b{color:#ff8a92}
+:root[data-diseno="clash"] .rombo.rsv:before,
+:root[data-diseno="clash"] .rombo.hot:before{background:linear-gradient(160deg,#ff8a92,#e03a4d 50%,#6b0d16)}
+:root[data-diseno="clash"] .rombo.rsv b,
+:root[data-diseno="clash"] .rombo.hot b{color:#ff5a63}
 :root[data-diseno="clash"] .flech svg{fill:#fff}
 
 /* ===========================================================================
@@ -83,10 +86,19 @@
   background:
     repeating-linear-gradient(-60deg,rgba(255,255,255,.06) 0 2px,transparent 2px 14px),
     linear-gradient(270deg,rgba(0,0,0,.45),transparent 55%),var(--c,#e5262f)}
+/* la linea blanca de abajo sigue de punta a punta y se vuelve dorada en el centro */
+:root[data-diseno="clash"] #cen:after{content:'';position:absolute;left:0;right:0;top:76px;height:4px;
+  background:var(--gold,#e9b949);z-index:-1}
+/* el nombre del equipo va en una placa blanca, con la letra del color del equipo */
+:root[data-diseno="clash"] .tn{background:#fff;color:var(--c,#1f6feb);padding:1px 11px 0;border-radius:2px;
+  flex:0 1 auto;box-shadow:inset 0 -4px 0 var(--c,#1f6feb)}
+:root[data-diseno="clash"] .half.l .tn{margin-right:auto}
+:root[data-diseno="clash"] .half.r .tn{margin-left:auto}
 :root[data-diseno="clash"] .st svg{fill:#fff}
 :root[data-diseno="clash"] .scr{background:linear-gradient(180deg,#fff,#e4eaf7);color:var(--c,#1f6feb)}
-:root[data-diseno="clash"] #gd b{background:#fff;color:#0b0e18;border-bottom-color:var(--g)}
-:root[data-diseno="clash"] #gd i{color:#0b0e18;opacity:.6}
+/* la ventaja de oro, con el numero del color del equipo que va ganando */
+:root[data-diseno="clash"] #gd b{background:#fff;color:var(--g);border-bottom-color:var(--g)}
+:root[data-diseno="clash"] #gd i{color:var(--g);opacity:.75}
 :root[data-diseno="clash"] .clock{background:#0b0e18;color:#fff}
 :root[data-diseno="clash"] .jr{background:rgba(11,14,24,.9)}
 /* esquina: bloque negro, auspiciante blanco, franja dorada */
@@ -95,6 +107,9 @@
 :root[data-diseno="clash"] #corner .t2{color:var(--gold,#e9b949)}
 :root[data-diseno="clash"] #corner .t3{color:#a7afc8}
 :root[data-diseno="clash"] #corner .sp{background:#fff;border-top:0;box-shadow:inset 6px 0 0 var(--gold,#e9b949)}
+:root[data-diseno="clash"] #corner .mic{
+  background:linear-gradient(90deg,var(--gold,#e9b949),var(--gold2,#f6d98a));color:#0b0e18}
+:root[data-diseno="clash"] #corner .mic small{opacity:.65}
 
 /* ===========================================================================
    MIDNIGHT  ·  draft
@@ -148,8 +163,13 @@
   box-shadow:inset 0 0 0 2px rgba(233,185,73,.75),0 0 28px -6px var(--gold,#e9b949)}
 :root[data-diseno="midnight"] .rombo b{text-shadow:0 0 22px rgba(233,185,73,.7)}
 :root[data-diseno="midnight"] .rombo small{letter-spacing:5px;color:var(--gold2,#f6d98a)}
-:root[data-diseno="midnight"] .rombo.rsv{
+:root[data-diseno="midnight"] .rombo.rsv,
+:root[data-diseno="midnight"] .rombo.hot{
   background:rgba(40,8,16,.9);box-shadow:inset 0 0 0 2px rgba(255,90,110,.8),0 0 28px -6px #ff5a6e}
+:root[data-diseno="midnight"] .rombo.hot b{text-shadow:0 0 22px rgba(255,90,110,.8)}
+:root[data-diseno="midnight"] .rombo.hot small{color:#ff8a92}
+/* tambien aca la franja encendida marca de quien es el turno */
+:root[data-diseno="midnight"] .eqn.turno b{text-shadow:0 0 22px var(--c),0 0 40px var(--c)}
 :root[data-diseno="midnight"] .flech svg{fill:var(--c,#4fb3ff)}
 :root[data-diseno="midnight"] .mcen .pie span{box-shadow:inset 0 2px 0 rgba(255,255,255,.18)}
 

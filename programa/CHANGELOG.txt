@@ -4,6 +4,22 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.21.0 - Detalles que faltaban del diseño Clash, mas dos cosas que ahora funcionan en los
+         tres diseños:
+       - ULTIMOS 10 SEGUNDOS EN ROJO: cuando al equipo que esta eligiendo le quedan 10
+         segundos o menos, el reloj del draft se pone rojo. Anda en Clasico, Clash y
+         Midnight (en Clash se pone rojo el hexagono entero).
+       - DE QUIEN ES EL TURNO: en Clash, el equipo al que le toca elegir queda subrayado
+         con una franja blanca abajo del nombre; en Midnight se le enciende el nombre.
+         (En Clasico ya se sabia por la flecha verde, que sigue igual.)
+       - CLASH, barra del draft: la franja blanca de abajo del nombre ahora marca el
+         turno en vez de estar siempre prendida en los dos equipos.
+       - CLASH, marcador en vivo: el nombre del equipo va en una placa blanca con la
+         letra del color del equipo; la linea de abajo sigue de punta a punta y se
+         vuelve dorada al pasar por el centro; el numero de la ventaja de oro toma el
+         color del equipo que va ganando; y la franja de "al microfono" queda en
+         degrade dorado.
+
 0.20.2 - ARREGLO: la lista de heroes de los baneos y los picks no se podia bajar. Apenas
          movias la rueda del mouse, la lista volvia sola al principio, asi que nunca se
          pasaba de los primeros heroes y habia que escribir el nombre si o si. El
