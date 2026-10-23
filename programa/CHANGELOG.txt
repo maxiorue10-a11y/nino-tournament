@@ -4,6 +4,28 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.22.0 - Se saca el tiempo de reserva de la barra, se pulen los detalles que faltaban del
+         diseño Midnight y se arregla un error que venia de la 0.20.0:
+       - FUERA EL RELOJITO DE AL LADO DEL NOMBRE: el "1:00" que aparecia pegado al nombre
+         de cada equipo cuando usabas tiempo de reserva ya no se muestra, en los tres
+         diseños. La reserva sigue funcionando igual: se controla desde el panel y,
+         mientras un equipo la esta gastando, el reloj del centro dice "Reserva" y
+         cuenta ese tiempo.
+       - ARREGLO (venia de la 0.20.0): los diseños Clash y Midnight no estaban usando de
+         verdad el "Lado azul" y el "Lado rojo" de Personalizar en las placas de los
+         nombres ni en la flecha del turno. Como por casualidad los colores de fabrica
+         son parecidos, no se notaba, pero si los cambiabas no pasaba nada. Ahora si.
+       - MIDNIGHT, barra del draft: las placas de los nombres quedan redondeadas arriba;
+         las fichas de partidas ganadas pasan a ser barritas finas; las tarjetas de los
+         picks quedan mas sueltas (mas aire entre ellas y margen a los costados); el
+         centro queda como una sola pastilla redondeada con filo dorado y los escudos
+         de los equipos un poco mas grandes.
+       - MIDNIGHT, marcador en vivo: el nombre del equipo va en una placa de vidrio con
+         el filo encendido; la linea de abajo sigue por el centro en dorado uniendo las
+         dos mitades; el escudo del centro queda dorado con el fondo en degrade; y la
+         franja de "al microfono" en degrade dorado.
+       - CLASH: la flecha del turno toma el color del equipo en vez de ser blanca.
+
 0.21.0 - Detalles que faltaban del diseño Clash, mas dos cosas que ahora funcionan en los
          tres diseños:
        - ULTIMOS 10 SEGUNDOS EN ROJO: cuando al equipo que esta eligiendo le quedan 10

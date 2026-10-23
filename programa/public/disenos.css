@@ -37,8 +37,6 @@
 :root[data-diseno="clash"] .eqn b{text-shadow:0 3px 0 rgba(0,0,0,.25)}
 :root[data-diseno="clash"] .eqn .pips i{background:rgba(255,255,255,.25);box-shadow:none}
 :root[data-diseno="clash"] .eqn .pips i.on{background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8)}
-:root[data-diseno="clash"] .eqn .bk{background:rgba(255,255,255,.2);color:#fff}
-:root[data-diseno="clash"] .eqn .bk.usando{background:#fff;color:#0b0e18}
 
 /* baneos: bandeja blanca */
 :root[data-diseno="clash"] .mban{
@@ -72,7 +70,7 @@
 :root[data-diseno="clash"] .rombo.hot:before{background:linear-gradient(160deg,#ff8a92,#e03a4d 50%,#6b0d16)}
 :root[data-diseno="clash"] .rombo.rsv b,
 :root[data-diseno="clash"] .rombo.hot b{color:#ff5a63}
-:root[data-diseno="clash"] .flech svg{fill:#fff}
+:root[data-diseno="clash"] .flech svg{fill:var(--c);filter:drop-shadow(0 0 7px var(--c))}
 
 /* ===========================================================================
    CLASH  ·  marcador en vivo
@@ -120,17 +118,20 @@
 :root[data-diseno="midnight"] #mb .r1{border-top:1px solid rgba(233,185,73,.7)}
 :root[data-diseno="midnight"] #mb{box-shadow:0 -18px 50px rgba(0,0,0,.55)}
 
-/* nombres: vidrio con un filo encendido del lado de afuera */
+/* nombres: placa de vidrio redondeada arriba, con un filo encendido del lado de afuera */
+:root[data-diseno="midnight"] .eqn{border-radius:12px 12px 0 0}
 :root[data-diseno="midnight"] .eqn.l{
   background:linear-gradient(90deg,rgba(255,255,255,.14),transparent 85%),
-             linear-gradient(90deg,var(--c,#4fb3ff),transparent 70%);
-  box-shadow:inset 4px 0 0 var(--c,#4fb3ff)}
+             linear-gradient(90deg,var(--c),transparent 70%);
+  box-shadow:inset 4px 0 0 var(--c)}
 :root[data-diseno="midnight"] .eqn.r{
   background:linear-gradient(270deg,rgba(255,255,255,.14),transparent 85%),
-             linear-gradient(270deg,var(--c,#ff5a6e),transparent 70%);
-  box-shadow:inset -4px 0 0 var(--c,#ff5a6e)}
-:root[data-diseno="midnight"] .eqn b{letter-spacing:1.5px;text-shadow:0 0 18px var(--c,#4fb3ff)}
-:root[data-diseno="midnight"] .eqn .pips i{background:rgba(255,255,255,.14);box-shadow:none;border-radius:4px}
+             linear-gradient(270deg,var(--c),transparent 70%);
+  box-shadow:inset -4px 0 0 var(--c)}
+:root[data-diseno="midnight"] .eqn b{letter-spacing:1.5px;text-shadow:0 0 18px var(--c)}
+/* las fichas de partidas ganadas quedan como barritas finas */
+:root[data-diseno="midnight"] .eqn .pips i{background:rgba(255,255,255,.14);box-shadow:none;
+  border-radius:4px;width:17px;height:6px}
 :root[data-diseno="midnight"] .eqn .pips i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
 
 /* baneos: bandeja de vidrio con fichas redondeadas */
@@ -139,24 +140,29 @@
   border-radius:12px;padding:4px 6px;gap:3px}
 :root[data-diseno="midnight"] .mban .bx{width:56px;height:48px;border-radius:8px;background:#121a2e}
 
-/* picks: tarjetas redondeadas con una linea fina del equipo arriba */
-:root[data-diseno="midnight"] .mpk{gap:6px}
+/* picks: tarjetas sueltas y redondeadas, con una linea fina del equipo arriba */
+:root[data-diseno="midnight"] .mpk{gap:10px;padding:0 8px}
 :root[data-diseno="midnight"] .pcel{
   border-radius:14px;
   background:linear-gradient(180deg,rgba(30,43,87,.9),rgba(7,10,18,.96));
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 3px 0 var(--c,#4fb3ff),
-             0 0 16px -4px var(--c,#4fb3ff)}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 3px 0 var(--c),
+             0 0 16px -4px var(--c)}
 :root[data-diseno="midnight"] .pcel .nk{
   background:rgba(7,10,18,.92);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
 :root[data-diseno="midnight"] .pcel .hn span{letter-spacing:2px}
 :root[data-diseno="midnight"] .pcel.act{
   box-shadow:inset 0 0 0 2px var(--gold,#e9b949),0 0 26px -2px var(--gold,#e9b949)}
 
-/* centro: vidrio oscuro, rombo con aro dorado */
+/* centro: una sola pastilla de vidrio oscuro con filo dorado, rombo con aro */
 :root[data-diseno="midnight"] .mlogo{
-  background:rgba(7,10,18,.9);box-shadow:inset 0 0 0 1px rgba(233,185,73,.45)}
+  background:rgba(7,10,18,.9);box-shadow:inset 0 0 0 1px rgba(233,185,73,.45);
+  border-radius:16px 16px 0 0}
 :root[data-diseno="midnight"] .mlogo span{color:#fff}
-:root[data-diseno="midnight"] .mcen{background:rgba(7,10,18,.9);color:#fff}
+:root[data-diseno="midnight"] .mcen{background:rgba(7,10,18,.9);color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(233,185,73,.45);border-radius:0 0 16px 16px}
+:root[data-diseno="midnight"] .mcen .tl{width:100px;height:100px}
+:root[data-diseno="midnight"] .mcen .pie span:first-child{border-bottom-left-radius:16px}
+:root[data-diseno="midnight"] .mcen .pie span:last-child{border-bottom-right-radius:16px}
 :root[data-diseno="midnight"] .mcen .mg i{color:#8d96b5}
 :root[data-diseno="midnight"] .rombo{
   background:rgba(7,10,18,.85);color:#fff;border-radius:16px;
@@ -170,7 +176,7 @@
 :root[data-diseno="midnight"] .rombo.hot small{color:#ff8a92}
 /* tambien aca la franja encendida marca de quien es el turno */
 :root[data-diseno="midnight"] .eqn.turno b{text-shadow:0 0 22px var(--c),0 0 40px var(--c)}
-:root[data-diseno="midnight"] .flech svg{fill:var(--c,#4fb3ff)}
+:root[data-diseno="midnight"] .flech svg{fill:var(--c)}
 :root[data-diseno="midnight"] .mcen .pie span{box-shadow:inset 0 2px 0 rgba(255,255,255,.18)}
 
 /* ===========================================================================
@@ -183,14 +189,26 @@
   box-shadow:inset 4px 0 0 var(--c,#4fb3ff),inset 0 -3px 0 var(--c,#4fb3ff),0 6px 20px rgba(0,0,0,.6)}
 :root[data-diseno="midnight"] .half.r{
   box-shadow:inset -4px 0 0 var(--c,#ff5a6e),inset 0 -3px 0 var(--c,#ff5a6e),0 6px 20px rgba(0,0,0,.6)}
-:root[data-diseno="midnight"] .tn{text-shadow:0 0 14px var(--c,#4fb3ff)}
+/* la linea de abajo sigue por el centro, en dorado, uniendo las dos mitades */
+:root[data-diseno="midnight"] #cen:after{content:'';position:absolute;left:0;right:0;top:77px;height:3px;
+  background:var(--gold,#e9b949);box-shadow:0 0 12px rgba(233,185,73,.55);z-index:-1}
+/* el nombre del equipo, en una placa de vidrio con el filo encendido */
+:root[data-diseno="midnight"] .tn{color:#fff;text-shadow:0 0 14px var(--c);
+  padding:1px 11px 0;border-radius:3px;flex:0 1 auto;
+  background:linear-gradient(90deg,var(--c),transparent 92%);box-shadow:inset 4px 0 0 var(--c)}
+:root[data-diseno="midnight"] .half.l .tn{margin-right:auto}
+:root[data-diseno="midnight"] .half.r .tn{margin-left:auto;
+  background:linear-gradient(270deg,var(--c),transparent 92%);box-shadow:inset -4px 0 0 var(--c)}
 :root[data-diseno="midnight"] .st svg{fill:var(--gold2,#f6d98a)}
 :root[data-diseno="midnight"] .scr{
   background:linear-gradient(180deg,rgba(30,43,87,.95),rgba(7,10,18,.95));
   color:#fff;box-shadow:inset 0 -4px 0 var(--c,#4fb3ff),0 0 20px -6px var(--c,#4fb3ff)}
 :root[data-diseno="midnight"] #gd b{background:rgba(7,10,18,.92)}
 :root[data-diseno="midnight"] .clock{background:#070a12;text-shadow:0 0 10px rgba(233,185,73,.6)}
-:root[data-diseno="midnight"] .hexc{box-shadow:0 0 22px rgba(233,185,73,.5)}
+:root[data-diseno="midnight"] .hexc{
+  background:linear-gradient(160deg,var(--gold2,#f6d98a),var(--gold,#e9b949) 50%,#b9862a);
+  box-shadow:0 0 22px rgba(233,185,73,.5)}
+:root[data-diseno="midnight"] .hexc i{background:radial-gradient(circle at 50% 30%,#1e2b57,#070a12 75%)}
 :root[data-diseno="midnight"] .jr{background:rgba(7,10,18,.88)}
 :root[data-diseno="midnight"] #corner{
   background:linear-gradient(180deg,#0e1530,#070a12);color:#eef2ff;box-shadow:0 6px 20px rgba(0,0,0,.6)}
@@ -200,3 +218,6 @@
 :root[data-diseno="midnight"] #corner .sp{
   background:linear-gradient(180deg,#151e3d,#070a12);border-top:0;
   box-shadow:inset 0 0 0 2px rgba(233,185,73,.55)}
+:root[data-diseno="midnight"] #corner .mic{
+  background:linear-gradient(90deg,#b9862a,var(--gold,#e9b949));color:#070a12}
+:root[data-diseno="midnight"] #corner .mic small{opacity:.7}

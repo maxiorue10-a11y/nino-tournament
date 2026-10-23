@@ -68,10 +68,6 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .rombo.rsv{background:linear-gradient(180deg,#ff8f9b,#e03a4d);color:#fff}
 /* ultimos 10 segundos del turno */
 .rombo.hot{background:linear-gradient(180deg,#ff8f9b,#e03a4d);color:#fff}
-.eqn .bk{flex:none;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.12);
- font-size:15px;font-weight:700;letter-spacing:.5px;font-variant-numeric:tabular-nums;color:#cfd6e6}
-.eqn .bk.usando{background:var(--c);color:#fff}
-.eqn .bk.cero{opacity:.35}
 .rombo b{font-size:52px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
 .flech{position:absolute;top:118px;width:34px;height:34px;display:grid;place-items:center}
 .flech svg{width:30px;height:30px;fill:#2fbf5f}
@@ -278,7 +274,6 @@ const pop=(k,h)=>{const n=prevSeen[k]!==h&&h;prevSeen[k]=h;return n?' pop':''};
 const FL='<svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21z"/></svg>';
 function numText(M){const T=M.timer;if(M.useTimer&&T){const n=T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left;
   return String(n)}return M.score}
-const mmss=n=>{n=Math.max(0,n|0);return Math.floor(n/60)+':'+String(n%60).padStart(2,'0')};
 /* ultimos 10 segundos: el reloj se pone en rojo */
 const enRojo=M=>{const T=M&&M.timer;
   return !!(M.useTimer&&T&&T.running&&Math.ceil((T.endsAt-Date.now())/1000)<=10)};
@@ -296,13 +291,12 @@ function draft(s){const[A,B]=s.teams,S2=s;
  const pips=i=>`<span class="pips" style="--c:${S2.teams[i].color}">${Array.from({length:need},(_,p)=>
    `<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</span>`;
  const T0=M.timer||{},enRsv=T0.modo==='reserva'&&act;
- const bancoDe=i=>{const r=Array.isArray(M.reserva)?M.reserva:[0,0];
-   if(enRsv&&act.team===i)return T0.running?Math.max(0,Math.ceil((T0.endsAt-Date.now())/1000)):(T0.left||0);
-   return Math.max(0,r[i]||0)};
- const banco=i=>{if(!M.usarReserva)return '';const q=bancoDe(i);
-   return `<span class="bk${enRsv&&act.team===i?' usando':''}${q?'':' cero'}" style="--c:${S2.teams[i].color}">${mmss(q)}</span>`};
+ /* El tiempo de reserva ya NO se muestra al lado del nombre del equipo: ensuciaba la barra.
+    Sigue funcionando igual, se ve en el panel de control, y mientras un equipo lo esta
+    gastando el reloj del centro dice "Reserva" y cuenta ese tiempo. */
  /* "turno" marca al equipo que esta eligiendo; los diseños lo usan para subrayarlo */
- const cab=(T,c,i)=>`<div class="eqn ${c}${act&&act.team===i?' turno':''}"><span class="lg">${logo(T)}</span><b>${esc(T.name)}</b>${banco(i)}${pips(i)}</div>`;
+ /* --c es el color del equipo: los diseños lo usan para las placas y los filos */
+ const cab=(T,c,i)=>`<div class="eqn ${c}${act&&act.team===i?' turno':''}" style="--c:${T.color}"><span class="lg">${logo(T)}</span><b>${esc(T.name)}</b>${pips(i)}</div>`;
  const ban=(i,k,h)=>`<div class="bx${h?'':' vac'}${esAct('ban',i,k)?' act':''}${pop('b'+i+k,h)}">${h?vid(h,'ban'):''}</div>`;
  const cel=(i,k,T,h)=>`<div class="pcel${esAct('pick',i,k)?' act':''}${pop('p'+i+k,h)}" style="--c:${T.color}">
    ${h?`<div class="art">${vid(h,'pick')}</div><div class="hn"><span>${esc(h)}</span></div>`
@@ -329,8 +323,8 @@ function draft(s){const[A,B]=s.teams,S2=s;
        <span class="tl">${logo(A)}</span>
        <span class="rombo${enRsv?' rsv':''}${enRojo(M)?' hot':''}"><small>${fase}</small><b id="num">${esc(numText(M))}</b></span>
        <span class="tl">${logo(B)}</span>
-       ${act&&act.team===0?`<span class="flech l">${FL}</span>`:''}
-       ${act&&act.team===1?`<span class="flech r">${FL}</span>`:''}
+       ${act&&act.team===0?`<span class="flech l" style="--c:${A.color}">${FL}</span>`:''}
+       ${act&&act.team===1?`<span class="flech r" style="--c:${B.color}">${FL}</span>`:''}
      </div>
      <div class="pie"><span style="background:${A.color}">${esc(corto(A))}</span>
        <span style="background:${B.color}">${esc(corto(B))}</span></div>
