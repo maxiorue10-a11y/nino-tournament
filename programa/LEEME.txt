@@ -85,7 +85,13 @@ a la zona punteada. El programa reconoce el heroe por el nombre del archivo y lo
 Si no reconoce alguno, lo eliges de una lista. Despues pulsa "Guardar".
 Tambien puedes ponerlos a mano, con el nombre del heroe en minusculas, sin espacios ni simbolos.
 Ej: layla.webm, yisunshin.mp4, popolandkupa.png, change.jpg
-Formatos: .webm (recomendado), .mp4, .png, .jpg, .jpeg, .webp, .gif. Si hay varios del mismo heroe se usa el video.
+Formatos: .webm (recomendado), .mp4, .gif, .png, .jpg, .jpeg, .webp.
+Si un heroe tiene varios archivos gana el que se mueve, en este orden:
+  .webm  ->  .mp4  ->  .gif  ->  imagen quieta (.png, .jpg, .webp)
+Asi que podes dejar el .gif y el .png del mismo heroe juntos en picks/: se muestra el
+.gif, y el .png queda de respaldo para el fondo borroso de las cartas del line-up.
+El nombre del archivo no tiene que ser exacto: no importan mayusculas, espacios ni
+guiones, y aguanta una letra de diferencia (arlot.gif encuentra a Arlott).
 El panel avisa (borde rojo) si un heroe no tiene archivo y lista abajo los archivos con el nombre equivocado.
 
 LOGOS Y FOTOS

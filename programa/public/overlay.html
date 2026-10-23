@@ -270,6 +270,10 @@ const $=document.getElementById('app'),prevSeen={};
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 // Busca primero el video .webm, luego .mp4, luego la imagen .png; si no hay nada, queda la inicial
 const vid=(h,tipo)=>{const f=mediaFor(h,tipo);if(!f)return '';return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`:`<img src="${f}" onerror="this.remove()">`};
+/* Para el fondo borroso de las cartas: va la imagen quieta si existe. Esta tapado por
+   el arte y encima desenfocado, asi que animarlo no se ve y duplica el gasto. */
+const vidQuieto=(h,tipo)=>{const f=mediaFor(h,tipo,1);if(!f)return '';
+  return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`:`<img src="${f}" onerror="this.remove()">`};
 const pop=(k,h)=>{const n=prevSeen[k]!==h&&h;prevSeen[k]=h;return n?' pop':''};
 const FL='<svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21z"/></svg>';
 function numText(M){const T=M.timer;if(M.useTimer&&T){const n=T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left;
@@ -347,7 +351,7 @@ function lineup(s){const[A,B]=s.teams;
    const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
    return `<div class="lgrid ${c}">${ord.map(k=>{const h=s.picks[i][k],ln=lanes[k];
      return `<div class="lcard${pop('lu'+i+k,h)}" style="--c:${T.color}">
-       ${h?`<div class="art"><div class="bg">${vid(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
+       ${h?`<div class="art"><div class="bg">${vidQuieto(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
           :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
        <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
@@ -382,7 +386,7 @@ function previous(s){const g=s.history&&s.history[s.prev];
    const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
    return `<div class="pvgrid ${c}">${ord.map(k=>{const h=g.picks[i][k],ln=lanes[k];
      return `<div class="lcard" style="--c:${T.color}">
-       ${h?`<div class="art"><div class="bg">${vid(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
+       ${h?`<div class="art"><div class="bg">${vidQuieto(h,'pick')}</div>${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
           :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
        <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>

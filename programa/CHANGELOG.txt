@@ -4,6 +4,21 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.23.0 - LOS PICKS PUEDEN SER GIF ANIMADOS. Si dejas un .gif en public/picks/, el heroe se
+         mueve en la barra del draft y en el line-up. Andaba ya desde antes, pero habia
+         dos cosas que convenia ordenar:
+       - Si un heroe tiene varios archivos, ahora gana siempre el que se mueve, en este
+         orden: .webm -> .mp4 -> .gif -> imagen quieta. Antes el .gif y el .png quedaban
+         empatados y podia ganar cualquiera segun como los ordenara Windows. Asi que
+         podes dejar el .gif y el .png del mismo heroe juntos sin pensarlo.
+       - El fondo borroso de las cartas del line-up ahora usa la imagen QUIETA si existe.
+         Ese fondo esta tapado y desenfocado, asi que animarlo no se notaba y hacia el
+         doble de trabajo: se animaban 20 imagenes en vez de 10.
+         Si un heroe solo tiene el .gif, se sigue usando ese.
+       Recorda que el nombre del archivo no tiene que ser exacto: aguanta una letra de
+       diferencia, asi que arlot.gif encuentra a Arlott, beleric.gif a Belerick,
+       carmila.gif a Carmilla, minotour.gif a Minotaur y fredrin.gif a Fredrinn.
+
 0.22.0 - Se saca el tiempo de reserva de la barra, se pulen los detalles que faltaban del
          diseño Midnight y se arregla un error que venia de la 0.20.0:
        - FUERA EL RELOJITO DE AL LADO DEL NOMBRE: el "1:00" que aparecia pegado al nombre
