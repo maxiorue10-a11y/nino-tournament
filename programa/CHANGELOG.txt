@@ -4,6 +4,14 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.18.3 - Panel "Personalizar" mas limpio:
+       - QUITADO "Tema de color" (los cuadritos Dorado / Carmesi / Esmeralda / Personalizado).
+         De los cuatro colores que cambiaba, tres ya no hacian nada desde que se sacaron los
+         disenios alternativos. El unico que si sirve, el acento, pasa a la tarjeta de Colores.
+       - QUITADO "Banderas", que solo era un cartel diciendo que las banderas se suben en el
+         control del marcador. Se siguen subiendo exactamente igual desde ahi.
+       - Ahora quedan dos tarjetas: Colores (acento, lado azul y lado rojo) y Fuentes.
+
 0.18.2 - configuracion.txt ahora perdona un error muy facil de cometer: si pegaste la linea
          entera y quedo "actualizaciones=actualizaciones=usuario/repo", el programa igual
          lo entiende bien. Vale para todas las opciones, no solo esa.

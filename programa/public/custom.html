@@ -8,14 +8,6 @@
 .cols{display:grid;grid-template-columns:440px 1fr;gap:16px;align-items:start}
 @media(max-width:1200px){.cols{grid-template-columns:1fr}}
 .num{display:inline-block;min-width:24px;color:var(--mut);font-size:13px}
-.temas{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.tm{position:relative;border:2px solid var(--line);border-radius:8px;background:var(--input);padding:8px;cursor:pointer}
-.tm.on{border-color:var(--acc)}
-.tm .sw2{display:flex;height:48px;border-radius:5px;overflow:hidden;margin-bottom:7px}
-.tm .sw2 i{flex:1}
-.tm b{font-size:14px;font-weight:600}
-.tm .air{position:absolute;top:5px;right:5px;background:var(--acc);color:var(--acc-tx);font-weight:600;font-size:12px;
- padding:1px 6px;border-radius:3px}
 .crow{display:grid;grid-template-columns:96px 52px minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:9px}
 .crow span{font-size:12px;color:var(--mut)}
 .crow input[type=color]{padding:2px;height:38px}
@@ -38,10 +30,8 @@
 <main>
   <div class="cols">
     <div style="display:flex;flex-direction:column;gap:16px">
-      <section class="card" id="c1"></section>
       <section class="card" id="c2"></section>
       <section class="card" id="c3"></section>
-      <section class="card" id="c4"></section>
     </div>
     <section class="card" id="prev"></section>
   </div>
@@ -67,8 +57,6 @@ function push(){if(!esAdmin())return;clearTimeout(tOut);tOut=setTimeout(()=>{
 function set(k,v){S[k]=v;aplicarTema(S);push()}
 function setConn(){const e=$('conn');if(e)e.innerHTML=`<i class="dot ${conectado?'ok':''}"></i>${conectado?'Servidor conectado':'Sin conexión con el servidor'}`}
 
-function usarPreset(k){const p=PRE[k];S.preset=k;S.accent=p.accent;S.accent2=p.accent2;S.bg1=p.bg1;S.bg2=p.bg2;
-  aplicarTema(S);build();push()}
 function reiniciarTodo(){if(!confirm('¿Volver todo a los valores originales? (colores, fuentes y diseños)'))return;
   if(S.fontH)borrarArchivo(S.fontH);
   S=def();aplicarTema(S);build();push()}
@@ -93,23 +81,11 @@ function renderTop(){
    ${navHTML('/custom.html')}
    <div class="acts"><button class="bad" onclick="reiniciarTodo()">Reiniciar todo</button></div>`;setConn()}
 
-function renderC1(){
-  $('c1').innerHTML=`<h2><span class="num">01</span>Tema de color</h2>
-   <div class="hint">El color de acento y el fondo de todos los overlays.</div>
-   <div class="temas">${Object.entries(PRE).map(([k,p])=>`
-     <div class="tm ${S.preset===k?'on':''}" onclick="usarPreset('${k}')">
-       ${S.preset===k?'<span class="air">Al aire</span>':''}
-       <div class="sw2"><i style="background:${p.accent}"></i><i style="background:${p.accent2}"></i><i style="background:${p.bg1}"></i><i style="background:${p.bg2}"></i></div>
-       <b>${p.nombre}</b></div>`).join('')}</div>
-   ${S.preset==='custom'?`
-   <div class="crow"><span>Acento</span><input type="color" value="${S.accent}" oninput="set('accent',this.value)"><input value="${S.accent}" oninput="set('accent',this.value)"><button class="sm" onclick="set('accent',PRE.custom.accent);build()">Original</button></div>
-   <div class="crow"><span>Acento claro</span><input type="color" value="${S.accent2}" oninput="set('accent2',this.value)"><input value="${S.accent2}" oninput="set('accent2',this.value)"><button class="sm" onclick="set('accent2',PRE.custom.accent2);build()">Original</button></div>
-   <div class="crow"><span>Fondo 1</span><input type="color" value="${S.bg1}" oninput="set('bg1',this.value)"><input value="${S.bg1}" oninput="set('bg1',this.value)"><button class="sm" onclick="set('bg1',PRE.custom.bg1);build()">Original</button></div>
-   <div class="crow"><span>Fondo 2</span><input type="color" value="${S.bg2}" oninput="set('bg2',this.value)"><input value="${S.bg2}" oninput="set('bg2',this.value)"><button class="sm" onclick="set('bg2',PRE.custom.bg2);build()">Original</button></div>`:''}`}
-
 function renderC2(){
-  $('c2').innerHTML=`<h2><span class="num">02</span>Colores de los equipos</h2>
-   <div class="hint">El lado azul y el lado rojo en el draft, el marcador y el line-up.</div>
+  $('c2').innerHTML=`<h2><span class="num">01</span>Colores</h2>
+   <div class="hint">El lado azul y el lado rojo del draft, el marcador y el line-up, y el color
+     de acento que usan los overlays (el recuadro del tiempo, las fichas y los baneos).</div>
+   <div class="crow"><span>Acento</span><input type="color" value="${S.accent}" oninput="set('accent',this.value)"><input value="${S.accent}" oninput="set('accent',this.value)"><button class="sm" onclick="set('accent',PRE.gold.accent);build()">Original</button></div>
    <div class="crow"><span>Lado azul</span><input type="color" value="${S.blue}" oninput="set('blue',this.value);pintarVs()"><input id="hb" value="${S.blue}" oninput="set('blue',this.value);pintarVs()"><button class="sm" onclick="set('blue','#2f80ff');build()">Original</button></div>
    <div class="crow"><span>Lado rojo</span><input type="color" value="${S.red}" oninput="set('red',this.value);pintarVs()"><input id="hr" value="${S.red}" oninput="set('red',this.value);pintarVs()"><button class="sm" onclick="set('red','#ff3d55');build()">Original</button></div>
    <div class="vs" id="vs" style="--b:${S.blue};--r:${S.red}"><div class="a">Lado azul</div><div class="m">VS</div><div class="b">Lado rojo</div></div>`}
@@ -121,14 +97,9 @@ function renderC3(){
       <span class="acts"><button class="sm" onclick="subirFuente('${cual}')">Subir</button>
       ${S[cual]?`<button class="sm" onclick="quitarFuente('${cual}')">Quitar</button>`:''}</span></div>
     <div class="fprev ${cls}" style="font-family:${S[cual]?'TemaTitulos':'inherit'}">${txt}</div></div>`;
-  $('c3').innerHTML=`<h2><span class="num">03</span>Fuentes</h2>
+  $('c3').innerHTML=`<h2><span class="num">02</span>Fuentes</h2>
    <div class="hint">Sube un archivo TTF, OTF o WOFF para cambiar la letra de todos los overlays.</div>
    ${caja('fontH','Letra de los overlays','Barlow Condensed','Campeones 2 – 1','')}`}
-
-function renderC4(){
-  $('c4').innerHTML=`<h2><span class="num">04</span>Banderas</h2>
-   <div class="lbl">Bandera del marcador</div>
-   <div class="hint" style="margin:0">Cada equipo tiene su propia bandera, y se sube en el <a href="marcador.html" style="color:var(--acc)">control del marcador</a>.</div>`}
 
 function renderPrev(){
   const op=[['draft','Draft pick'],['lineup','Line-up'],['previous','Draft anterior'],
@@ -144,7 +115,7 @@ function ajustarPreview(){const w=$('pvwrap');if(!w)return;const s=w.clientWidth
   w.style.height=Math.round(1080*s)+'px';$('pv').style.transform=`scale(${s})`}
 addEventListener('resize',ajustarPreview);
 
-function build(){renderTop();renderC1();renderC2();renderC3();renderC4();renderPrev();
+function build(){renderTop();renderC2();renderC3();renderPrev();
   aplicarRol();
   if(!esAdmin()){
     document.querySelectorAll('main input,main select,main button').forEach(el=>{el.disabled=true});
