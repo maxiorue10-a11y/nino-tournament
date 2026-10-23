@@ -55,6 +55,12 @@
         <p>El marcador en vivo durante la partida: kills, oro, torres, lords, reloj, narradores y patrocinador en la esquina.</p>
         <span class="ir">Abrir &rarr;</span></span></a>
 
+    <a class="tile" href="cierre.html"><span class="ic" style="--c:#38c172">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.3 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z"/></svg></span>
+      <span><h3>Pantallas de cierre</h3>
+        <p>El MVP de la partida, el equipo que gana y el cierre de la transmisión. Una sola fuente en OBS para las tres.</p>
+        <span class="ir">Abrir &rarr;</span></span></a>
+
     <a class="tile" href="custom.html"><span class="ic" style="--c:#b27bff">
       <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.6-1.3-.3-.4-.5-.8-.5-1.2 0-1 .8-1.8 1.8-1.8H17a5 5 0 0 0 5-5c0-4.4-4.5-8-10-8zM6.5 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3.5-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3.5 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg></span>
       <span><h3>Personalizar</h3>
@@ -83,7 +89,9 @@ $('top').innerHTML=`<div class="brand"><span class="hexmark"><i>ML</i></span><b>
 
 const OV=[['Draft pick','overlay.html?view=draft'],['Post-Draft Line-up','overlay.html?view=lineup'],
           ['Draft anterior','overlay.html?view=previous'],
-          ['Estadísticas de la serie','overlay.html?view=stats'],['Programación','schedule-overlay.html'],
+          ['Estadísticas de la serie','overlay.html?view=stats'],
+          ['Pool de baneos','overlay.html?view=banpool'],['Pantallas de cierre','cierre-overlay.html'],
+          ['Programación','schedule-overlay.html'],
           ['Marcador en vivo','scoreboard.html']];
 $('links').innerHTML=OV.map(([n,u])=>{const full=location.origin+'/'+u;
   return `<div><div class="lbl" style="margin-top:0">${n}</div><div class="urlrow">

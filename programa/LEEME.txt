@@ -48,6 +48,7 @@ LOS CUATRO PANELES
   Control de draft         http://localhost:3000/control.html
   Control de programacion  http://localhost:3000/schedule.html
   Control del marcador     http://localhost:3000/marcador.html
+  Cierre                   http://localhost:3000/cierre.html
   Personalizar             http://localhost:3000/custom.html
 Se pasa de uno a otro con la barra de arriba a la derecha.
 El boton redondo del final de esa barra cambia entre modo claro y modo oscuro.
@@ -58,6 +59,11 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
                       (usa los mismos datos del draft; el arte sale de la carpeta public/picks/)
   Draft anterior      http://localhost:3000/overlay.html?view=previous
   Estadisticas        http://localhost:3000/overlay.html?view=stats
+  Pool de baneos      http://localhost:3000/overlay.html?view=banpool
+                      (todos los baneos de la serie juntos, equipo por equipo)
+  Pantallas de cierre http://localhost:3000/cierre-overlay.html
+                      (MVP, equipo ganador y fin de transmision; se eligen desde
+                       el panel "Cierre" con el boton "Al aire")
   Programacion        http://localhost:3000/schedule-overlay.html
   Marcador en vivo    http://localhost:3000/scoreboard.html
 Cada panel tiene los enlaces con un boton para copiarlos.

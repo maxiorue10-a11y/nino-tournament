@@ -33,7 +33,7 @@ function cargarRol(despues){
 
 function navHTML(actual){
   const items=[['/','Inicio'],['/control.html','Draft'],['/schedule.html','Programación'],
-               ['/marcador.html','Marcador'],['/custom.html','Personalizar']];
+               ['/marcador.html','Marcador'],['/cierre.html','Cierre'],['/custom.html','Personalizar']];
   setTimeout(()=>{aplicarTemaUI(document.documentElement.dataset.tema||'oscuro');aplicarRol()},0);
   return '<span class="rolchip" id="rolchip" style="display:none"></span>'
     +'<nav class="nav">'+items.map(([u,n])=>

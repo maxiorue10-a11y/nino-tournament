@@ -17,11 +17,13 @@ const PERMITIDOS = [
   'server.js', 'actualizador.js', 'package.json', 'INICIAR.bat', 'LEEME.txt', 'CHANGELOG.txt',
   'public/index.html', 'public/control.html', 'public/schedule.html', 'public/marcador.html',
   'public/custom.html', 'public/overlay.html', 'public/scoreboard.html', 'public/schedule-overlay.html',
+  'public/cierre.html', 'public/cierre-overlay.html',
   'public/panel.css', 'public/nav.js', 'public/theme.js', 'public/heroes.js', 'public/equipos.js'
 ];
 // Carpetas y archivos tuyos: el actualizador los ignora siempre.
 const INTOCABLES = ['public/heroes', 'public/picks', 'public/bans', 'public/logos', 'public/lanes',
-  'configuracion.txt', 'state.json', 'state-schedule.json', 'state-scoreboard.json', 'state-theme.json'];
+  'configuracion.txt', 'state.json', 'state-schedule.json', 'state-scoreboard.json',
+  'state-theme.json', 'state-cierre.json'];
 
 const bajar = (url, redirecciones = 0) => new Promise((ok, mal) => {
   if (redirecciones > 4) return mal(new Error('demasiadas redirecciones'));

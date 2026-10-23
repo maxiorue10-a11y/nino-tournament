@@ -4,6 +4,22 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.19.0 - Dos pantallas nuevas, las dos salen de datos que ya cargas en el panel:
+       - POOL DE BANEOS DE LA SERIE: un overlay nuevo (overlay.html?view=banpool) que
+         junta todos los baneos de todas las partidas de la serie y los muestra por
+         equipo, con el retrato en gris y tachado, y un numero chico cuando un heroe
+         fue baneado mas de una vez. Agrupa por NOMBRE de equipo, asi que aunque
+         cambien de lado azul/rojo entre partidas los baneos siguen contando bien.
+         Si todavia no hay baneos, avisa en vez de quedar vacio.
+       - PANTALLAS DE CIERRE: pagina nueva "Cierre" en el menu, con tres pantallas
+         para el final de la transmision: MVP de la partida (jugador, heroe, KDA y
+         arte del heroe), equipo ganador (con marcador de la serie) y fin de
+         transmision (logo del torneo, mensaje y tu usuario). Se prenden y apagan de
+         a una con el boton "Al aire"; con "nada" el overlay queda transparente.
+         El boton "Copiar del draft" trae equipos, logos y jugadores ya cargados.
+         En OBS: http://localhost:3000/cierre-overlay.html (1920x1080).
+         Las dos aparecen tambien en la vista previa de Personalizar.
+
 0.18.6 - configuracion.txt se vuelve a leer solo cuando lo editas: ya no hace falta cerrar
          y abrir el programa para que tome la clave o el repositorio de actualizaciones.
          (Cambiar "red" sigue necesitando reiniciar, porque ahi el programa ya quedo

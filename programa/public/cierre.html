@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pantallas de cierre</title>
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="panel.css">
+<script>try{document.documentElement.dataset.tema=localStorage.getItem("tema")||"oscuro"}catch(e){}</script>
+<style>
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px}
+@media(max-width:1200px){.cols{grid-template-columns:1fr}}
+.aire{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:6px}
+.ab{position:relative;border:2px solid var(--line);border-radius:9px;background:var(--input);padding:13px 10px;
+ cursor:pointer;text-align:center;font-size:14px;font-weight:600;color:var(--tx2)}
+.ab:hover{border-color:var(--mut)}
+.ab.on{border-color:var(--acc);background:var(--acc-soft);color:var(--tx)}
+.ab small{display:block;font-size:11px;font-weight:400;color:var(--mut);margin-top:3px}
+.ab .vivo{position:absolute;top:-8px;right:8px;background:var(--acc);color:var(--acc-tx);font-size:11px;
+ font-weight:700;padding:1px 7px;border-radius:4px}
+.lado2{display:flex;gap:8px;margin-top:7px}
+.lado2 button{flex:1}
+.lado2 button.on{background:var(--c);border-color:var(--c);color:#fff;font-weight:600}
+#pvwrap{position:relative;width:100%;overflow:hidden;border:1px solid var(--line);border-radius:9px;
+ background:repeating-conic-gradient(var(--tablero1) 0 25%,var(--tablero2) 0 50%) 0 0/24px 24px}
+#pv{width:1920px;height:1080px;border:0;transform-origin:0 0;display:block}
+</style></head><body>
+
+<header id="top"></header>
+<main>
+  <div class="cols">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <section class="card" id="c1"></section>
+      <section class="card" id="c2"></section>
+    </div>
+    <section class="card" id="prev"></section>
+  </div>
+</main>
+
+<script src="nav.js"></script>
+<script src="theme.js"></script>
+<script src="heroes.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const E5=()=>['','','','',''];
+const def=()=>({aire:'nada',torneo:'',season:'',stage:'',logo:'',
+  teams:[{name:'',tag:'',color:'#2f80ff',logo:'',players:E5()},
+         {name:'',tag:'',color:'#ff3d55',logo:'',players:E5()}],
+  mvp:{equipo:0,jugador:'',heroe:'',kda:'',nota:'MVP de la partida'},
+  ganador:{equipo:0,titulo:'Gana la partida',marcador:[0,0],mostrarMarcador:true},
+  fin:{titulo:'Gracias por acompañarnos',sub:'',nota:''}});
+let S=def(),conectado=false,tOut;
+
+function push(){if(!puedeEditar())return;clearTimeout(tOut);tOut=setTimeout(()=>{
+  fetch('/state?k=cierre',{method:'POST',body:JSON.stringify(S)})
+   .then(()=>{conectado=true;setConn()}).catch(()=>{conectado=false;setConn()})},120)}
+function set(path,v){let o=S;for(let i=0;i<path.length-1;i++)o=o[path[i]];o[path[path.length-1]]=v;push()}
+function setConn(){const e=$('conn');if(e)e.innerHTML=`<i class="dot ${conectado?'ok':''}"></i>${conectado?'Servidor conectado':'Sin conexión con el servidor'}`}
+
+function alAire(k){S.aire=(S.aire===k?'nada':k);build();push()}
+function copiarDelDraft(){fetch('/api/state?k=draft').then(r=>r.json()).then(d=>{
+  if(!d||!d.teams)return alert('Todavía no hay datos en el control de draft.');
+  d.teams.forEach((t,i)=>{S.teams[i]={name:t.name||'',tag:t.tag||'',color:t.color||S.teams[i].color,
+    logo:t.logo||'',players:(t.players||E5()).slice(0,5)}});
+  const M=d.match||{};
+  S.torneo=M.tournament||S.torneo;S.season=M.season||S.season;S.stage=M.stage||S.stage;S.logo=M.logo||S.logo;
+  S.ganador.marcador=[(M.wins||[0,0])[0]|0,(M.wins||[0,0])[1]|0];
+  build();push();alert('Listo: se copiaron los equipos, los logos, el marcador y los datos del torneo.')})
+  .catch(()=>alert('No se pudo leer el control de draft.'))}
+
+/* ---------- render ---------- */
+function renderTop(){
+  $('top').innerHTML=`
+   <div class="brand"><span class="hexmark"><i>ML</i></span><b>Pantallas de cierre</b></div>
+   <small id="conn"></small>
+   ${navHTML('/cierre.html')}
+   <div class="acts"><button onclick="copiarDelDraft()">Copiar datos del draft</button></div>`;
+  setConn()}
+
+function renderC1(){
+  const b=(k,t,d)=>`<div class="ab ${S.aire===k?'on':''}" onclick="alAire('${k}')">
+    ${S.aire===k?'<span class="vivo">Al aire</span>':''}${t}<small>${d}</small></div>`;
+  $('c1').innerHTML=`<h2>Qué se ve en OBS<span>una sola fuente de navegador para las tres pantallas</span></h2>
+   <div class="hint">Haz clic para ponerla al aire. Si vuelves a hacer clic en la que está al aire, la sacas.</div>
+   <div class="aire">
+     ${b('nada','Nada','todo transparente')}
+     ${b('mvp','MVP','jugador de la partida')}
+     ${b('ganador','Ganador','equipo que gana')}
+     ${b('fin','Fin','cierre de la transmisión')}
+   </div>
+   <div class="lbl">Datos del torneo (la cinta de arriba)</div>
+   <div class="mg">
+     <label>Torneo<input value="${esc(S.torneo)}" oninput="set(['torneo'],this.value)"></label>
+     <label>Temporada<input value="${esc(S.season)}" oninput="set(['season'],this.value)"></label>
+     <label>Fase<input value="${esc(S.stage)}" oninput="set(['stage'],this.value)"></label>
+   </div>`}
+
+function ladoBtn(ruta,val){return `<div class="lado2">${[0,1].map(i=>{
+  const T=S.teams[i],n=T.name||(i?'Equipo rojo':'Equipo azul');
+  return `<button class="${+val===i?'on':''}" style="--c:${T.color}" onclick="set(${JSON.stringify(ruta)},${i});build()">${esc(n)}</button>`}).join('')}</div>`}
+
+function renderC2(){
+  const M=S.mvp,G=S.ganador,F=S.fin;
+  const T=S.teams[+M.equipo||0];
+  const jugadores=(T.players||[]).filter(x=>String(x).trim());
+  $('c2').innerHTML=`<h2>Qué dice cada pantalla</h2>
+
+   <div class="lbl">MVP de la partida</div>
+   ${ladoBtn(['mvp','equipo'],M.equipo)}
+   <div class="mg" style="margin-top:9px">
+     <label>Jugador<input list="jugs" value="${esc(M.jugador)}" placeholder="Nick del jugador" oninput="set(['mvp','jugador'],this.value)">
+       <datalist id="jugs">${jugadores.map(j=>`<option value="${esc(j)}">`).join('')}</datalist></label>
+     <label>Héroe<input list="hers" value="${esc(M.heroe)}" placeholder="Con qué héroe jugó" oninput="set(['mvp','heroe'],this.value);avisoHeroe(this)">
+       <datalist id="hers">${HEROES.map(h=>`<option value="${esc(h.n)}">`).join('')}</datalist></label>
+     <label>KDA<input value="${esc(M.kda)}" placeholder="Ej: 9 / 1 / 7" oninput="set(['mvp','kda'],this.value)"></label>
+     <label>Etiqueta<input value="${esc(M.nota)}" placeholder="Ej: MVP de la partida" oninput="set(['mvp','nota'],this.value)"></label>
+   </div>
+
+   <div class="lbl">Equipo ganador</div>
+   ${ladoBtn(['ganador','equipo'],G.equipo)}
+   <div class="mg" style="margin-top:9px">
+     <label>Título<input value="${esc(G.titulo)}" placeholder="Ej: Gana la partida" oninput="set(['ganador','titulo'],this.value)"></label>
+     <label>Marcador azul<input type="number" min="0" value="${G.marcador[0]|0}" oninput="set(['ganador','marcador',0],+this.value||0)"></label>
+     <label>Marcador rojo<input type="number" min="0" value="${G.marcador[1]|0}" oninput="set(['ganador','marcador',1],+this.value||0)"></label>
+   </div>
+   <label class="chk"><input type="checkbox" ${G.mostrarMarcador!==false?'checked':''} onchange="set(['ganador','mostrarMarcador'],this.checked)">Mostrar el marcador de la serie</label>
+
+   <div class="lbl">Fin de la transmisión</div>
+   <div class="mg">
+     <label>Título<input value="${esc(F.titulo)}" placeholder="Ej: Gracias por acompañarnos" oninput="set(['fin','titulo'],this.value)"></label>
+     <label>Subtítulo<input value="${esc(F.sub)}" placeholder="Ej: Nos vemos la próxima semana" oninput="set(['fin','sub'],this.value)"></label>
+     <label>Etiqueta dorada<input value="${esc(F.nota)}" placeholder="Ej: @ninoesports" oninput="set(['fin','nota'],this.value)"></label>
+   </div>`}
+
+function avisoHeroe(el){const v=el.value.trim();el.style.outline='';el.title='';
+  if(!v)return;
+  if(!HEROES.some(h=>_key(h.n)===_key(v))){const s=suggestHero(v);
+    el.style.outline='2px solid var(--acc)';el.title=s?'¿Quisiste decir '+s+'?':'No está en la lista de héroes';return}
+  if(!mediaFor(v,'pick')){el.style.outline='2px solid var(--bad)';el.title='Este héroe no tiene arte de pick'}}
+
+function renderPrev(){
+  $('prev').innerHTML=`<h2>Vista previa en vivo<span>así se verá en OBS</span></h2>
+   <div id="pvwrap"><iframe id="pv" src="cierre-overlay.html" scrolling="no"></iframe></div>
+   <div class="lbl">Enlace para OBS · fuente de navegador 1920 × 1080</div>
+   <div class="urlrow"><input readonly value="${location.origin}/cierre-overlay.html" onclick="this.select()">
+     <button class="sm" onclick="navigator.clipboard.writeText('${location.origin}/cierre-overlay.html')">Copiar</button>
+     <button class="sm" onclick="window.open('cierre-overlay.html','_blank')">Ver</button></div>
+   <div class="hint" style="margin:10px 0 0">Con una sola fuente alcanza: desde acá eliges cuál de las tres se ve.</div>`;
+  ajustarPreview()}
+function ajustarPreview(){const w=$('pvwrap');if(!w)return;const s=w.clientWidth/1920;
+  w.style.height=Math.round(1080*s)+'px';$('pv').style.transform=`scale(${s})`}
+addEventListener('resize',ajustarPreview);
+
+function build(){renderTop();renderC1();renderC2();renderPrev();aplicarRol();
+  setTimeout(()=>document.querySelectorAll('#c2 input[list=hers]').forEach(avisoHeroe),0)}
+
+const es=new EventSource('/events?k=cierre');let primero=true;
+es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
+  try{const d=JSON.parse(e.data);
+    if(d&&d.teams){const b=def();S=Object.assign(b,d);
+      S.mvp=Object.assign(b.mvp,d.mvp||{});
+      S.ganador=Object.assign(b.ganador,d.ganador||{});
+      S.fin=Object.assign(b.fin,d.fin||{});
+      if(!Array.isArray(S.ganador.marcador))S.ganador.marcador=[0,0];
+      S.teams=S.teams.map((t,i)=>Object.assign(def().teams[i],t))}}catch(x){}
+  build();es.close()};
+es.onerror=()=>{conectado=false;setConn()};
+loadMedia().then(()=>cargarRol(build));
+fetch('/version').then(r=>r.json()).then(v=>{document.title='Pantallas de cierre · MLBB v'+v.version}).catch(()=>{});
+</script></body></html>

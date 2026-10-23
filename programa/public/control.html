@@ -624,7 +624,7 @@ function renderLinks(){
   const base=location.origin;
   $('links').innerHTML=`<h2>Enlaces para OBS<span>Fuente de navegador · 1920 × 1080</span></h2>
    ${[['Draft pick','draft'],['Post-Draft Line-up','lineup'],['Draft anterior','previous'],
-      ['Estadísticas de la serie','stats']].map(([n,v])=>`
+      ['Estadísticas de la serie','stats'],['Pool de baneos','banpool']].map(([n,v])=>`
      <div class="lbl">${n}</div><div class="urlrow">
        <input readonly value="${base}/overlay.html?view=${v}" onclick="this.select()">
        <button class="sm" onclick="navigator.clipboard.writeText('${base}/overlay.html?view=${v}')">Copiar</button></div>`).join('')}`}

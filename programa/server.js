@@ -97,7 +97,7 @@ const pedirClave = res => {
 };
 
 // Un estado por canal: "draft" (el draft) y "schedule" (la programación)
-const CANALES = ['draft', 'schedule', 'scoreboard', 'theme'];
+const CANALES = ['draft', 'schedule', 'scoreboard', 'cierre', 'theme'];
 const archivo = k => path.join(__dirname, k === 'draft' ? 'state.json' : 'state-' + k + '.json');
 const estado = {}, clientes = {};
 CANALES.forEach(k => {
@@ -284,6 +284,7 @@ const servidor = http.createServer((req, res) => {
         + '<li><a style="color:#f0b429" href="/">Control de draft</a></li>'
         + '<li><a style="color:#f0b429" href="/schedule.html">Control de programación</a></li>'
         + '<li><a style="color:#f0b429" href="/marcador.html">Control del marcador</a></li>'
+        + '<li><a style="color:#f0b429" href="/cierre.html">Pantallas de cierre</a></li>'
         + '<li><a style="color:#f0b429" href="/custom.html">Personalizar</a></li></ul>'
         + '<p style="color:#7d8db0">Si esto aparece al abrir el control de draft, es que está corriendo una versión vieja del programa: '
         + 'cierra todas las ventanas negras y vuelve a abrir INICIAR.bat desde esta carpeta.</p></body>');
@@ -326,6 +327,7 @@ servidor.listen(PORT, HOST, () => {
   console.log('  Control de draft:         http://localhost:' + PORT + '/control.html');
   console.log('  Control de programación:  http://localhost:' + PORT + '/schedule.html');
   console.log('  Control del marcador:     http://localhost:' + PORT + '/marcador.html');
+  console.log('  Pantallas de cierre:      http://localhost:' + PORT + '/cierre.html');
   console.log('  Personalizar:             http://localhost:' + PORT + '/custom.html');
   if (ABIERTA) {
     const ip = ipDeRed();

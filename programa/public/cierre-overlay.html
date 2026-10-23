@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Pantallas de cierre</title>
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Montserrat:wght@700;800;900&display=swap">
+<style>
+:root{--gold:#e9b949;--gold2:#f6d98a}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#141821;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+#app{position:relative;width:1920px;height:1080px}
+.pan{position:absolute;inset:0;overflow:hidden;background:#eef0f3}
+/* fondo con las franjas inclinadas, igual que el line-up */
+.fondo{position:absolute;inset:0;overflow:hidden}
+.fondo i{position:absolute;display:block}
+.f1{left:-140px;top:-120px;width:520px;height:1400px;transform:rotate(18deg);background:#e4e7ec}
+.f2{right:-180px;top:-160px;width:620px;height:1500px;transform:rotate(18deg);background:#e8eaef}
+.f3{left:60px;bottom:-60px;width:18px;height:320px;transform:skewX(-18deg);background:var(--gold);opacity:.75}
+.f4{right:120px;top:-40px;width:14px;height:300px;transform:skewX(-18deg);background:var(--c,#2f6fe0);opacity:.5}
+/* cinta de arriba */
+.cinta{position:absolute;left:0;top:0;width:1920px;height:52px;display:flex;align-items:center;padding:0 34px;
+ background:#fff;border-bottom:1px solid #e4e6ea;font-family:'Montserrat',sans-serif;z-index:4}
+.cinta b{font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.cinta span{font-size:18px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#6e737c}
+.cinta .der{margin-left:auto;display:flex;align-items:center;gap:9px}
+.pl{display:inline-block;font-size:15px;letter-spacing:-3px}
+
+/* ---------- MVP ---------- */
+.mvart{position:absolute;left:0;top:52px;bottom:0;width:820px;overflow:hidden;background:#dfe3e9;z-index:2}
+.mvart .bg{position:absolute;inset:-10%;filter:blur(26px) saturate(1.1);opacity:.85}
+.mvart .bg img,.mvart .bg video{width:100%;height:100%;object-fit:cover;object-position:center top}
+.mvart:before{content:'';position:absolute;inset:0;z-index:1;
+ background:linear-gradient(90deg,rgba(238,240,243,.2),rgba(238,240,243,0) 55%,rgba(238,240,243,.95))}
+.mvart>img,.mvart>video{position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+ height:76%;width:auto;max-width:none;z-index:2;object-fit:contain;
+ -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 15%);
+ mask-image:linear-gradient(to bottom,transparent 0,#000 15%)}
+.mvart .ini{position:absolute;inset:0;display:grid;place-items:center;font-size:300px;font-weight:800;color:#c8cdd6}
+.mvinfo{position:absolute;left:880px;right:80px;top:50%;transform:translateY(-50%);z-index:3}
+.mvet{display:inline-flex;align-items:center;height:48px;padding:0 24px;background:var(--c);color:#fff;
+ font-size:26px;font-weight:800;letter-spacing:4px;text-transform:uppercase;
+ clip-path:polygon(0 0,100% 0,calc(100% - 18px) 100%,0 100%)}
+.mvnk{font-size:130px;font-weight:800;line-height:.95;letter-spacing:-1px;text-transform:uppercase;margin:16px 0 4px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mveq{display:flex;align-items:center;gap:14px;margin-top:10px}
+.mveq .lg{width:62px;height:62px;flex:none;display:grid;place-items:center;overflow:hidden}
+.mveq .lg img{max-width:100%;max-height:100%;object-fit:contain}
+.mveq b{font-size:34px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#4a515c}
+.mvdat{display:flex;align-items:stretch;gap:3px;margin-top:26px}
+.mvdat div{background:#fff;border:1px solid #e4e6ea;padding:12px 24px;min-width:150px}
+.mvdat small{display:block;font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8a9099}
+.mvdat b{display:block;font-size:40px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;line-height:1.1;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
+
+/* ---------- EQUIPO GANADOR ---------- */
+.gncen{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:3}
+.gnlg{width:320px;height:320px;margin:0 auto 10px;display:grid;place-items:center;overflow:hidden}
+.gnlg img{width:100%;height:100%;object-fit:contain}
+.gnlg span{font-size:180px;font-weight:800;color:#c8cdd6}
+.gnet{display:inline-flex;align-items:center;height:56px;padding:0 34px;background:var(--c);color:#fff;
+ font-size:30px;font-weight:800;letter-spacing:6px;text-transform:uppercase;
+ clip-path:polygon(0 0,100% 0,calc(100% - 20px) 100%,0 100%)}
+.gnnm{font-size:132px;font-weight:800;line-height:1;letter-spacing:-1px;text-transform:uppercase;margin-top:16px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 60px}
+.gnsc{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:26px}
+.gnsc i{font-style:normal;display:grid;place-items:center;width:92px;height:92px;font-family:'Montserrat',sans-serif;
+ font-size:54px;font-weight:900;background:#fff;border:1px solid #e4e6ea}
+.gnsc i.g{background:var(--c);color:#fff;border-color:var(--c)}
+.gnsc em{font-style:normal;font-size:34px;font-weight:800;color:#9aa1ad;letter-spacing:2px}
+.gnjug{display:flex;align-items:center;justify-content:center;gap:3px;margin-top:34px}
+.gnjug span{background:#fff;border:1px solid #e4e6ea;padding:9px 20px;font-size:26px;font-weight:700;
+ letter-spacing:1px;text-transform:uppercase}
+
+/* ---------- FIN DE TRANSMISION ---------- */
+.fncen{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:3;padding:0 120px}
+.fnlg{width:260px;height:200px;margin:0 auto 30px;display:grid;place-items:center}
+.fnlg img{width:100%;height:100%;object-fit:contain}
+.fntit{font-size:112px;font-weight:800;line-height:1.02;letter-spacing:-1px;text-transform:uppercase}
+.fnsub{font-size:40px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#6d737e;margin-top:18px}
+.fnnota{display:inline-flex;align-items:center;height:56px;padding:0 30px;margin-top:34px;background:var(--gold);
+ color:#141821;font-size:28px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+</style></head><body><div id="app"></div>
+<script src="theme.js"></script>
+<script src="heroes.js"></script>
+<script>
+const $=document.getElementById('app');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const vid=(h,tipo)=>{const f=mediaFor(h,tipo);if(!f)return '';
+  return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`
+                                 :`<img src="${f}" onerror="this.remove()">`};
+const FL='<span class="pl">&#9654;&#9654;</span>';
+let S=null;
+
+const cinta=s=>`<div class="cinta">${FL}&nbsp;<b>${esc(s.torneo||'')}</b>&nbsp;${FL}
+  <span class="der">${FL}&nbsp;<b>${esc(s.season||'')}</b>&nbsp;<span>${esc(s.stage||'')}</span>&nbsp;&#10033;</span></div>`;
+const fondo=c=>`<div class="fondo" style="--c:${c}"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i></div>`;
+const equipo=(s,i)=>Object.assign({name:'',tag:'',color:i?'#e8405c':'#2f6fe0',logo:'',players:['','','','','']},(s.teams||[])[i]||{});
+
+function mvp(s){const M=s.mvp||{},T=equipo(s,+M.equipo||0),h=M.heroe||'';
+ const arte=h?`<div class="bg">${vid(h,'pick')}</div>${vid(h,'pick')}`
+             :`<span class="ini">${esc((M.jugador||'?')[0]||'?').toUpperCase()}</span>`;
+ const dato=(et,v)=>v?`<div><small>${et}</small><b>${esc(v)}</b></div>`:'';
+ return `<div class="pan">${fondo(T.color)}${cinta(s)}
+   <div class="mvart">${arte}</div>
+   <div class="mvinfo" style="--c:${T.color}">
+     <span class="mvet">${esc(M.nota||'MVP de la partida')}</span>
+     <div class="mvnk">${esc(M.jugador||'Jugador')}</div>
+     <div class="mveq"><span class="lg">${T.logo?`<img src="${T.logo}">`:''}</span><b>${esc(T.name)}</b></div>
+     <div class="mvdat">${dato('Héroe',h)}${dato('KDA',M.kda)}</div>
+   </div></div>`}
+
+function ganador(s){const G=s.ganador||{},T=equipo(s,+G.equipo||0),O=equipo(s,(+G.equipo||0)?0:1);
+ const sc=Array.isArray(G.marcador)?G.marcador:[0,0];
+ const mios=sc[+G.equipo||0]|0,suyos=sc[(+G.equipo||0)?0:1]|0;
+ const jug=(T.players||[]).filter(x=>String(x).trim());
+ return `<div class="pan">${fondo(T.color)}${cinta(s)}
+   <div class="gncen" style="--c:${T.color}">
+     <div class="gnlg">${T.logo?`<img src="${T.logo}">`:`<span>${esc((T.name||'?')[0]||'?').toUpperCase()}</span>`}</div>
+     <span class="gnet">${esc(G.titulo||'Gana la partida')}</span>
+     <div class="gnnm">${esc(T.name||'Equipo')}</div>
+     ${G.mostrarMarcador!==false?`<div class="gnsc"><i class="g">${mios}</i><em>&ndash;</em><i>${suyos}</i></div>`:''}
+     ${jug.length?`<div class="gnjug">${jug.map(j=>`<span>${esc(j)}</span>`).join('')}</div>`:''}
+   </div></div>`}
+
+function fin(s){const F=s.fin||{};
+ return `<div class="pan">${fondo('#8a9099')}${cinta(s)}
+   <div class="fncen">
+     ${s.logo?`<div class="fnlg"><img src="${s.logo}"></div>`:''}
+     <div class="fntit">${esc(F.titulo||'Gracias por acompañarnos')}</div>
+     ${F.sub?`<div class="fnsub">${esc(F.sub)}</div>`:''}
+     ${F.nota?`<span class="fnnota">${esc(F.nota)}</span>`:''}
+   </div></div>`}
+
+/* achica el texto que no entra */
+function encajar(){[['.mvnk',130,52],['.gnnm',132,54],['.fntit',112,48],['.mveq b',34,18],
+   ['.mvdat b',40,20],['.gnjug span',26,15]]
+  .forEach(([sel,max,min])=>document.querySelectorAll(sel).forEach(el=>{
+    let f=max;el.style.fontSize=f+'px';
+    while(el.scrollWidth>el.clientWidth&&f>min){f-=2;el.style.fontSize=f+'px'}}))}
+
+function pintar(){
+  if(!S||!S.aire||S.aire==='nada'){$.innerHTML='';return}
+  $.innerHTML=({mvp,ganador,fin}[S.aire]||(()=>''))(S);
+  encajar();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(encajar)}
+
+document.addEventListener('tema',pintar);
+new EventSource('/events?k=cierre').onmessage=e=>{
+  try{S=JSON.parse(e.data)}catch(x){return}
+  loadMedia().then(pintar)};
+</script></body></html>

@@ -226,6 +226,41 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
  font-size:26px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
 .sxpie .lado i{font-style:normal;display:grid;place-items:center;min-width:52px;height:40px;
  background:var(--c);color:#fff;font-size:26px;font-variant-numeric:tabular-nums}
+/* ===== POOL DE BANEOS DE LA SERIE ===== */
+#bp{position:absolute;inset:0;overflow:hidden;color:#141821;background:#eef0f3;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+#bp .vacio2{position:absolute;inset:0;display:grid;place-items:center;text-align:center;
+ font-size:42px;font-weight:800;color:#8d939e;text-transform:uppercase;letter-spacing:2px}
+.bptit{position:absolute;left:0;right:0;top:78px;text-align:center}
+.bptit b{font-size:54px;font-weight:800;letter-spacing:3px;text-transform:uppercase;line-height:1}
+.bptit span{display:block;margin-top:6px;font-size:24px;font-weight:700;letter-spacing:3px;
+ text-transform:uppercase;color:#8a6a17}
+.bpcol{position:absolute;top:196px;width:880px}
+.bpcol.l{left:56px}.bpcol.r{right:56px}
+.bpcab{display:flex;align-items:center;gap:14px;height:72px;padding:0 18px;background:var(--c);color:#fff}
+.bpcab .lg{width:52px;height:52px;flex:none;display:grid;place-items:center;overflow:hidden}
+.bpit .nb{display:block}
+.bpcab .lg img{max-width:100%;max-height:100%;object-fit:contain}
+.bpcab b{flex:1;min-width:0;font-size:34px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bpcab em{font-style:normal;font-size:19px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+ background:rgba(0,0,0,.22);padding:5px 13px;flex:none}
+.bprej{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:14px;background:#fff;
+ border:1px solid #e4e6ea;border-top:0}
+.bpit{position:relative;background:#dfe3e9;overflow:hidden}
+.bpit .rt{display:block;position:relative;width:100%;height:128px;overflow:hidden;background:#d6dae1}
+.bpit .rt img,.bpit .rt video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+ object-position:center 20%;filter:grayscale(1) brightness(.85)}
+.bpit .rt:after{content:'';position:absolute;left:-14%;right:-14%;top:50%;height:3px;background:#d8384a;
+ transform:rotate(-26deg)}
+.bpit .nb{display:block;padding:5px 4px;background:#f3f5f7;text-align:center;font-size:17px;font-weight:700;
+ letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bpit .x{position:absolute;right:0;top:0;background:#141821;color:#fff;font-size:17px;font-weight:800;
+ padding:2px 7px;letter-spacing:.5px}
+.bpsin{grid-column:1/-1;text-align:center;padding:26px 0;font-size:23px;font-weight:700;
+ text-transform:uppercase;letter-spacing:2px;color:#9aa1ad}
+.bppie{position:absolute;left:0;right:0;bottom:44px;text-align:center;font-size:21px;font-weight:700;
+ letter-spacing:3px;text-transform:uppercase;color:#6d737e}
 </style></head><body><div id="app"></div>
 <script src="theme.js"></script>
 <script src="equipos.js"></script>
@@ -400,14 +435,52 @@ function stats(s){
     <span class="lado" style="--c:${B.color}"><i>${gan[1]}</i> desde el lado rojo</span>
   </div>
  </div>`}
+function banpool(s){
+ const M=Object.assign({tournament:'',season:'',stage:'',game:1},s.match||{});
+ const FL2='<span class="pl">&#9654;&#9654;</span>';
+ const cinta=`<div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
+   <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>`;
+ const[A,B]=s.teams;
+ const nom=t=>String((t&&t.name)||'').trim().toLowerCase();
+ /* Juntamos los baneos de todas las partidas guardadas MAS los de la que se esta jugando.
+    Los equipos pueden cambiar de lado entre partidas, asi que agrupamos por nombre de equipo,
+    no por lado. */
+ const bolsa=[{},{}];
+ const sumar=(juego,bans)=>{[0,1].forEach(i=>{
+   const quien=nom(juego[i]);
+   const k=quien===nom(A)?0:quien===nom(B)?1:-1;
+   if(k<0)return;
+   (bans[i]||[]).forEach(h=>{if(h)bolsa[k][h]=(bolsa[k][h]||0)+1})})};
+ (Array.isArray(s.history)?s.history:[]).forEach(g=>sumar(g.teams||[],g.bans||[]));
+ sumar(s.teams,s.bans||[]);
+ const partidas=(Array.isArray(s.history)?s.history.length:0)+1;
+ const total=bolsa.reduce((n,b)=>n+Object.values(b).reduce((a,c)=>a+c,0),0);
+ if(!total)return `<div id="bp">${cinta}<div class="vacio2">Todavía no hay baneos<br>
+   <span style="font-size:24px;font-weight:600;letter-spacing:1px">Aparecen acá a medida que se banea en el control de draft</span></div></div>`;
+ const col=(T,i,c)=>{
+   const lista=Object.entries(bolsa[i]).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+   const n=lista.reduce((a,x)=>a+x[1],0);
+   return `<div class="bpcol ${c}" style="--c:${T.color}">
+     <div class="bpcab"><span class="lg">${T.logo?`<img src="${T.logo}">`:''}</span>
+       <b>${esc(T.name)}</b><em>${n} baneo${n===1?'':'s'}</em></div>
+     <div class="bprej">${lista.length?lista.map(([h,q])=>`<div class="bpit">
+       <span class="rt">${vid(h,'ban')}</span>
+       ${q>1?`<i class="x">&times;${q}</i>`:''}
+       <span class="nb">${esc(h)}</span></div>`).join(''):'<div class="bpsin">Sin baneos todavía</div>'}</div>
+   </div>`};
+ return `<div id="bp">${cinta}
+  <div class="bptit"><b>Pool de baneos</b><span>${partidas} partida${partidas===1?'':'s'} &middot; ${total} baneos en total</span></div>
+  ${col(A,0,'l')}${col(B,1,'r')}
+  <div class="bppie">Héroes fuera de la mesa en esta serie</div>
+ </div>`}
 let _s=null;
 function encajar(){[['.eqn b',27,13],['.pcel .nk',20,11],['.mcen .pie span',25,13],['.mcen .mg',23,14],
-   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16]]
+   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16],['.bpcab b',34,17],['.bpit .nb',17,11]]
   .forEach(([sel,max,min])=>document.querySelectorAll(sel).forEach(el=>{
     let f=max;el.style.fontSize=f+'px';
     while(el.scrollWidth>el.clientWidth&&f>min){f-=1;el.style.fontSize=f+'px'}}))}
 function render(s){if(!s.teams)return;_s=s;
- s.teams.forEach((t,i)=>t.color=colorLado(i,t.color));$.innerHTML=({draft,lineup,previous,stats}[view]||draft)(s);
+ s.teams.forEach((t,i)=>t.color=colorLado(i,t.color));$.innerHTML=({draft,lineup,previous,stats,banpool}[view]||draft)(s);
  encajar();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(encajar)}
 document.addEventListener('tema',()=>{if(_s)render(_s)});
 let lastS=null;new EventSource('/events').onmessage=e=>{lastS=JSON.parse(e.data);loadMedia().then(()=>render(lastS))};

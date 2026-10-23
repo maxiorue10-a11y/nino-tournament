@@ -103,8 +103,10 @@ function renderC3(){
 
 function renderPrev(){
   const op=[['draft','Draft pick'],['lineup','Line-up'],['previous','Draft anterior'],
-            ['stats','Estadísticas'],['scoreboard','Marcador en vivo'],['schedule','Programación']];
-  const url=vista==='scoreboard'?'scoreboard.html':vista==='schedule'?'schedule-overlay.html':'overlay.html?view='+vista;
+            ['stats','Estadísticas'],['banpool','Pool de baneos'],
+            ['cierre','Pantallas de cierre'],['scoreboard','Marcador en vivo'],['schedule','Programación']];
+  const url=vista==='scoreboard'?'scoreboard.html':vista==='schedule'?'schedule-overlay.html'
+    :vista==='cierre'?'cierre-overlay.html':'overlay.html?view='+vista;
   $('prev').innerHTML=`<h2>Vista previa en vivo
      <span style="float:right"><button class="sm" onclick="window.open('${url}','_blank')">Abrir</button></span></h2>
    <select onchange="vista=this.value;renderPrev()">${op.map(([v,n])=>`<option value="${v}" ${vista===v?'selected':''}>${n}</option>`).join('')}</select>
