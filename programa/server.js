@@ -17,7 +17,13 @@ const CFG = { red: 'solo-esta-pc', 'clave': '', 'clave-colaborador': '', 'clave-
 try {
   fs.readFileSync(path.join(__dirname, 'configuracion.txt'), 'utf8').split('\n').forEach(l => {
     const m = /^\s*([a-z-]+)\s*=\s*(.*?)\s*$/.exec(l.split('#')[0] || '');
-    if (m && CFG[m[1]] !== undefined) CFG[m[1]] = m[2];
+    if (!m || CFG[m[1]] === undefined) return;
+    // Error comun: pegar la linea entera y que quede "clave=clave=loquesea".
+    // Si el valor empieza repitiendo el nombre, le sacamos esa parte.
+    let v = m[2];
+    const repetido = new RegExp('^' + m[1] + '\\s*=\\s*');
+    while (repetido.test(v)) v = v.replace(repetido, '');
+    CFG[m[1]] = v;
   });
 } catch (e) {}
 const ABIERTA = CFG.red.toLowerCase().startsWith('abierta');
