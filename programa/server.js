@@ -14,8 +14,18 @@ const VERSION = require('./package.json').version;
      clave-invitado     INVITADO     solo mira, no puede cambiar nada
    La clave que se deja vacia simplemente no existe: nadie puede entrar con ese nivel. */
 const CFG = { red: 'solo-esta-pc', 'clave': '', 'clave-colaborador': '', 'clave-invitado': '', 'actualizaciones': '', 'abrir-navegador': 'si' };
-try {
-  fs.readFileSync(path.join(__dirname, 'configuracion.txt'), 'utf8').split('\n').forEach(l => {
+const ARCH_CFG = path.join(__dirname, 'configuracion.txt');
+let cfgMtime = 0, cfgIniciada = false;
+/* Lee configuracion.txt. Se vuelve a leer solo cuando el archivo cambia, asi editarlo
+   no obliga a cerrar y abrir el programa. (Cambiar "red" si necesita reiniciar: el
+   programa ya quedo escuchando de una manera o de la otra.) */
+function leerConfig() {
+  let txt, st;
+  try { st = fs.statSync(ARCH_CFG); } catch (e) { return; }
+  if (st.mtimeMs === cfgMtime) return;
+  cfgMtime = st.mtimeMs;
+  try { txt = fs.readFileSync(ARCH_CFG, 'utf8'); } catch (e) { return; }
+  txt.split('\n').forEach(l => {
     const m = /^\s*([a-z-]+)\s*=\s*(.*?)\s*$/.exec(l.split('#')[0] || '');
     if (!m || CFG[m[1]] === undefined) return;
     // Error comun: pegar la linea entera y que quede "clave=clave=loquesea".
@@ -25,10 +35,15 @@ try {
     while (repetido.test(v)) v = v.replace(repetido, '');
     CFG[m[1]] = v;
   });
-} catch (e) {}
+  // si la red esta abierta nunca puede quedar sin clave de admin
+  if (cfgIniciada && ABIERTA && !CFG['clave']) CFG['clave'] = claveInventada;
+}
+leerConfig();
 const ABIERTA = CFG.red.toLowerCase().startsWith('abierta');
 // Si la abrieron sin poner clave de admin, inventamos una para que nunca quede sin proteccion
-if (ABIERTA && !CFG['clave']) CFG['clave'] = String(Math.floor(1000 + Math.random() * 9000));
+const claveInventada = String(Math.floor(1000 + Math.random() * 9000));
+if (ABIERTA && !CFG['clave']) CFG['clave'] = claveInventada;
+cfgIniciada = true;
 const HOST = ABIERTA ? '0.0.0.0' : '127.0.0.1';
 
 /* Revisa que esten las carpetas con las imagenes. El error mas comun es arrancar el
@@ -106,6 +121,9 @@ const servidor = http.createServer((req, res) => {
   try { url = decodeURIComponent(req.url.split('?')[0]); }
   catch (e) { res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Direccion no valida'); }
   const json = (code, o) => { res.writeHead(code, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(o)); };
+
+  // por si editaron configuracion.txt mientras el programa estaba abierto
+  leerConfig();
 
   // Desde otra compu de la red hay que poner la clave una vez
   const rol = rolDe(req);

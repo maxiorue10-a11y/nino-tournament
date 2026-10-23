@@ -4,6 +4,11 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.18.6 - configuracion.txt se vuelve a leer solo cuando lo editas: ya no hace falta cerrar
+         y abrir el programa para que tome la clave o el repositorio de actualizaciones.
+         (Cambiar "red" sigue necesitando reiniciar, porque ahi el programa ya quedo
+         escuchando de una manera o de la otra.)
+
 0.18.5 - El modo oscuro deja de ser casi negro y pasa a un gris oscuro: contrasta menos
          con la pantalla y cansa menos de noche. Los colores de la interfaz (el dorado,
          el azul, el rojo y el verde) quedan exactamente igual.

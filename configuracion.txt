@@ -1,0 +1,24 @@
+# Configuracion del programa. Guarda el archivo y vuelve a abrir INICIAR.bat para que tome los cambios.
+
+# QUIEN PUEDE ABRIR LOS PANELES DE CONTROL
+#   solo-esta-pc  = nadie mas puede entrar, ni aunque este en tu mismo WiFi. Es lo mas seguro
+#                   y es lo que necesitas si transmitis vos solo desde una sola computadora.
+#   abierta       = se puede entrar desde otra compu o celular de la misma red, con clave.
+red=solo-esta-pc
+
+# LAS TRES CLAVES (solo se usan cuando red=abierta)
+# Desde esta computadora siempre entras como administrador, sin clave.
+#
+# ADMINISTRADOR: puede todo.
+#   Si la dejas vacia, el programa inventa una y te la muestra en la ventana negra al arrancar.
+clave=
+#
+# COLABORADOR: carga el draft, el marcador y la programacion, pero NO puede subir ni borrar
+#   imagenes ni logos, y NO entra a Personalizar. Es para el que te ayuda en vivo.
+#   Dejala vacia si no queres que exista este nivel.
+clave-colaborador=
+#
+# INVITADO: solo mira los paneles, no puede cambiar nada. Util para un narrador
+#   que quiere seguir el draft desde su compu.
+#   Dejala vacia si no queres que exista este nivel.
+clave-invitado=
