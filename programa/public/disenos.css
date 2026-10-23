@@ -200,8 +200,14 @@
 :root[data-diseno="midnight"] .pvhead .lgc{background:rgba(7,10,18,.85);border-color:rgba(255,255,255,.12)}
 :root[data-diseno="midnight"] .lhead .wins i{background:rgba(255,255,255,.14)}
 :root[data-diseno="midnight"] .lhead .wins i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+/* la placa del equipo va recta: el corte en diagonal dejaba un triangulo del fondo
+   metido entre el color del equipo y las fichas de partidas ganadas */
 :root[data-diseno="midnight"] .lhead .tg,
-:root[data-diseno="midnight"] .pvhead .tg{text-shadow:0 0 22px var(--c)}
+:root[data-diseno="midnight"] .lhead.r .tg,
+:root[data-diseno="midnight"] .pvhead .tg,
+:root[data-diseno="midnight"] .pvhead.r .tg{clip-path:none;text-shadow:0 0 22px var(--c)}
+:root[data-diseno="midnight"] .lhead.l .tg{border-radius:0 6px 6px 0}
+:root[data-diseno="midnight"] .lhead.r .tg{border-radius:6px 0 0 6px}
 /* el nombre del torneo y la ficha de la partida */
 :root[data-diseno="midnight"] .lchips .c1{background:rgba(7,10,18,.85);border-color:rgba(233,185,73,.45);color:#eef2ff}
 /* las cartas de los heroes */

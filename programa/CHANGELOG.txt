@@ -4,6 +4,20 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.24.1 - Tres retoques mas del line-up (y del "draft anterior", que usa las mismas
+         tarjetas):
+       - LOS HEROES LLENAN LA TARJETA: todavia quedaban dos franjas vacias, una arriba
+         del heroe y otra justo encima de su nombre, porque el arte entraba entero y
+         sobraba lugar. Ahora el arte llena la tarjeta de punta a punta; lo que sobra
+         a los costados se recorta, que es donde menos se nota.
+       - MIDNIGHT: la placa con la sigla del equipo va recta. El corte en diagonal
+         dejaba un triangulo del fondo metido entre el color del equipo y las fichas de
+         partidas ganadas, que en el diseño oscuro se veia como un hueco.
+         En Clasico y en Clash la diagonal queda como estaba.
+       - EL LOGO DEL TORNEO YA NO CRUZA LA CINTA: arrancaba muy arriba y se montaba
+         sobre la linea de abajo de la cinta del torneo. Ahora empieza debajo de esa
+         linea y se achico un poco el alto maximo para que entre comodo.
+
 0.24.0 - EL POST-DRAFT LINE-UP, RETOCADO (y con el de siempre tambien cambia el
          "Draft anterior", que usa las mismas tarjetas):
        - FUERA EL DIFUMINADO: arriba de cada heroe habia una franja borrosa, que era la
