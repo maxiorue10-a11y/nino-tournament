@@ -28,7 +28,7 @@
 .center .acts{justify-content:center}
 /* ---- preview ---- */
 #pvwrap{margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;
- background:repeating-conic-gradient(#1a2338 0 25%,#141b2d 0 50%) 0 0/24px 24px}
+ background:repeating-conic-gradient(var(--tablero1) 0 25%,var(--tablero2) 0 50%) 0 0/24px 24px}
 #pvwrap iframe{border:0;width:1920px;height:1080px;transform-origin:top left;position:absolute;left:0}
 /* ---- lados ---- */
 .side h2 i{font-style:normal}
@@ -40,7 +40,7 @@
 input,select{background:var(--input);border:1px solid var(--line);border-radius:5px;color:var(--tx);
  padding:8px 10px;font:14px 'Segoe UI',Arial;width:100%}
 input:focus,select:focus{outline:2px solid var(--acc);outline-offset:-1px}
-input.turno{outline:2px solid var(--acc);outline-offset:-1px;background:#1b1605}
+input.turno{outline:2px solid var(--acc);outline-offset:-1px;background:var(--acc-soft)}
 input::placeholder{color:#4a5873}
 .bans{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
 .lbl{font-weight:500;font-size:12px;color:var(--mut);margin:12px 0 4px}
@@ -53,7 +53,7 @@ input::placeholder{color:#4a5873}
 #ac .it:last-child{border-bottom:0}
 #ac .it.sel{background:var(--card2)}
 #ac .it.usado{opacity:.4;cursor:not-allowed}
-#ac .mini{width:38px;height:38px;flex:none;border-radius:5px;background:#16233d;display:grid;place-items:center;
+#ac .mini{width:38px;height:38px;flex:none;border-radius:5px;background:var(--card2);display:grid;place-items:center;
  overflow:hidden;font-weight:600;font-size:14px;color:var(--mut)}
 #ac .mini img,#ac .mini video{width:100%;height:100%;object-fit:cover}
 #ac .nm{flex:1;min-width:0}

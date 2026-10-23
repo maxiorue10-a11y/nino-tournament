@@ -4,6 +4,17 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.18.4 - Arreglos del modo claro:
+       - ARREGLO: al pasar el mouse por una tarjeta de la pagina de inicio, el titulo
+         desaparecia. El fondo que se usaba al pasar el mouse era oscuro fijo, asi que
+         en modo claro quedaba texto oscuro sobre fondo oscuro.
+       - ARREGLO: el cuadriculado de la vista previa (el que marca lo transparente) era
+         oscuro fijo y en modo claro quedaba un bloque negro en medio del panel.
+       - ARREGLO: la casilla iluminada del turno en el control de draft tenia fondo oscuro
+         fijo; en modo claro el texto casi no se leia.
+       - El modo claro ahora es un gris suave en vez de blanco puro: cansa menos la vista
+         en sesiones largas.
+
 0.18.3 - Panel "Personalizar" mas limpio:
        - QUITADO "Tema de color" (los cuadritos Dorado / Carmesi / Esmeralda / Personalizado).
          De los cuatro colores que cambiaba, tres ya no hacian nada desde que se sacaron los
