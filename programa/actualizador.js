@@ -20,6 +20,14 @@ const PERMITIDOS = [
   'public/cierre.html', 'public/cierre-overlay.html',
   'public/panel.css', 'public/disenos.css', 'public/nav.js', 'public/theme.js', 'public/heroes.js', 'public/equipos.js'
 ];
+/* Ademas de la lista de arriba, se aceptan paginas y hojas de estilo NUEVAS que vengan
+   sueltas dentro de public/ (por ejemplo public/cierre.html). Sin esto, cada vez que el
+   programa suma una pantalla nueva el actualizador viejo rechazaba la actualizacion entera.
+   Ojo: solo archivos sueltos de public/, nunca carpetas adentro (public/heroes/... no entra)
+   y solo .html, .css y .js, asi que tu configuracion y tus estados siguen a salvo. */
+const NUEVOS_OK = /^public\/[A-Za-z0-9][A-Za-z0-9._-]*\.(html|css|js)$/;
+const permitido = p => PERMITIDOS.includes(p) || (NUEVOS_OK.test(p) && !p.includes('..'));
+
 // Carpetas y archivos tuyos: el actualizador los ignora siempre.
 const INTOCABLES = ['public/heroes', 'public/picks', 'public/bans', 'public/logos', 'public/lanes',
   'configuracion.txt', 'state.json', 'state-schedule.json', 'state-scoreboard.json',
@@ -86,7 +94,7 @@ function instalar(raiz, paquete) {
   // 1) revisamos TODO antes de escribir una sola linea
   for (const n of nombres) {
     const limpio = n.replace(/\\/g, '/');
-    if (!PERMITIDOS.includes(limpio))
+    if (!permitido(limpio))
       throw new Error('la actualización quiere tocar un archivo que no corresponde: ' + n);
     if (INTOCABLES.some(x => limpio === x || limpio.startsWith(x + '/')))
       throw new Error('la actualización quiere tocar tus archivos: ' + n);
@@ -116,4 +124,4 @@ function instalar(raiz, paquete) {
   return { escritos: nombres.length, respaldados: guardados, respaldo: path.relative(raiz, dirResp) };
 }
 
-module.exports = { buscar, instalar, esMasNueva, PERMITIDOS };
+module.exports = { buscar, instalar, esMasNueva, PERMITIDOS, permitido };

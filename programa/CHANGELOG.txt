@@ -4,6 +4,17 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.20.1 - ARREGLO IMPORTANTE DEL ACTUALIZADOR: cuando una version nueva traia una pantalla
+         que antes no existia (como public/cierre.html), el actualizador la rechazaba
+         entera con el mensaje "la actualizacion quiere tocar un archivo que no
+         corresponde". El problema era que el actualizador solo aceptaba la lista de
+         archivos que conocia el dia que se instalo, asi que cualquier pagina nueva le
+         parecia sospechosa. Ahora tambien acepta paginas y hojas de estilo nuevas que
+         vengan sueltas dentro de public/ (.html, .css y .js). Tus imagenes, tus logos,
+         configuracion.txt y los archivos de estado siguen igual de protegidos que antes:
+         las carpetas de adentro de public/ (heroes, picks, bans, logos, lanes) y todo lo
+         que no sea una de esas tres extensiones se siguen rechazando.
+
 0.20.0 - DISEÑOS DE LOS OVERLAYS: ahora la barra del draft y el marcador en vivo se pueden
          ver de tres formas distintas. Se elige en Personalizar > Diseño de los overlays
          y todos los overlays abiertos en OBS cambian solos, sin tocar nada mas.
