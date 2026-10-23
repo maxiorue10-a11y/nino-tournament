@@ -68,6 +68,13 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
   Marcador en vivo    http://localhost:3000/scoreboard.html
 Cada panel tiene los enlaces con un boton para copiarlos.
 
+DISEÑO DE LOS OVERLAYS
+En Personalizar > Diseño de los overlays elegis como se ve la barra del draft y el
+marcador en vivo: Clasico (la barra negra estilo MPL), Clash (mitades azul y roja bien
+fuertes con bandejas blancas) o Midnight (vidrio oscuro con bordes de neon).
+Los colores de Personalizar > Colores se usan en los tres, y lo que elijas se aplica
+solo en todos los overlays que tengas abiertos en OBS. Las demas vistas no cambian.
+
 IMAGENES Y VIDEOS DE HEROES
 Hay tres carpetas:
   public/picks/   el arte grande de los picks (draft y line-up)

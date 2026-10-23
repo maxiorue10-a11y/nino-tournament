@@ -2,7 +2,8 @@
    Cárgalo con <script src="theme.js"></script> antes del resto. */
 (function(){
   const BASE={accent:'#e9b949',accent2:'#f6d98a',blue:'#2f80ff',red:'#ff3d55',
-    bg1:'#0b1736',bg2:'#060d20',fontH:''};
+    bg1:'#0b1736',bg2:'#060d20',fontH:'',diseno:'clasico'};
+  const DISENOS=['clasico','clash','midnight'];
   window.TEMA=Object.assign({},BASE);
   window.colorLado=(i,porDefecto)=>(i?window.TEMA.red:window.TEMA.blue)||porDefecto;
   function fuente(nombre,url){if(!url)return;
@@ -14,6 +15,9 @@
     r.setProperty('--blue',T.blue);r.setProperty('--red',T.red);
     r.setProperty('--thbg1',T.bg1);r.setProperty('--thbg2',T.bg2);
     if(T.fontH){fuente('TemaTitulos',T.fontH);r.setProperty('--fh',"'TemaTitulos'")}else r.removeProperty('--fh');
+    /* el diseño de los overlays (clasico, clash o midnight) viaja con el tema */
+    const d=DISENOS.includes(T.diseno)?T.diseno:'clasico';
+    document.documentElement.dataset.diseno=d;
     document.dispatchEvent(new CustomEvent('tema'));
   }
   window.aplicarTema=aplicar;

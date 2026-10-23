@@ -4,6 +4,20 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.20.0 - DISEÑOS DE LOS OVERLAYS: ahora la barra del draft y el marcador en vivo se pueden
+         ver de tres formas distintas. Se elige en Personalizar > Diseño de los overlays
+         y todos los overlays abiertos en OBS cambian solos, sin tocar nada mas.
+           Clasico   el de siempre, la barra negra estilo MPL.
+           Clash     mitades azul y roja bien fuertes alrededor de un centro oscuro,
+                     bandejas blancas para los baneos, marcos blancos en los picks y
+                     el reloj dentro de un hexagono dorado.
+           Midnight  vidrio oscuro, tarjetas redondeadas, bordes de neon del color de
+                     cada equipo y brillos suaves.
+         Los colores que elegiste en Personalizar > Colores (acento, lado azul y lado
+         rojo) se siguen usando en los tres diseños, asi que no hay que reconfigurar nada.
+         Las demas vistas (line-up, draft anterior, estadisticas, pool de baneos,
+         programacion y pantallas de cierre) no cambian con el diseño.
+
 0.19.0 - Dos pantallas nuevas, las dos salen de datos que ya cargas en el panel:
        - POOL DE BANEOS DE LA SERIE: un overlay nuevo (overlay.html?view=banpool) que
          junta todos los baneos de todas las partidas de la serie y los muestra por
