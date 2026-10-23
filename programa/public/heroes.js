@@ -157,14 +157,18 @@ function _indexar(lista,soloQuietas){
   if(soloQuietas)lista=(lista||[]).filter(f=>!_ANIMADO.test(f));
   const pr=f=>/\.webm$/i.test(f)?0:/\.mp4$/i.test(f)?1:/\.gif$/i.test(f)?2:3;
   const l=(lista||[]).slice().sort((a,b)=>pr(a)-pr(b)),m={};
-  l.forEach(f=>{const k=_key(f.replace(/\.[^.]+$/,''));if(!m[k])m[k]=f});return m}
+  /* El archivo puede venir dentro de una subcarpeta ("HeroPick/chou.gif"): para
+     reconocer al heroe vale solo el nombre del archivo, no la carpeta. */
+  l.forEach(f=>{const n=String(f).split('/').pop();
+    const k=_key(n.replace(/\.[^.]+$/,''));if(!m[k])m[k]=f});return m}
 function loadMedia(){return fetch('/api/media',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   if(Array.isArray(d))d={heroes:d,picks:[],bans:[]};
   MEDIA={heroes:_indexar(d.heroes),picks:_indexar(d.picks),bans:_indexar(d.bans)};
   MEDIA_Q={heroes:_indexar(d.heroes,1),picks:_indexar(d.picks,1),bans:_indexar(d.bans,1)}}).catch(()=>{})}
 function _buscar(carpeta,k,quietas){const m=(quietas?MEDIA_Q:MEDIA)[carpeta]||{};let f=m[k];
   if(!f&&k.length>=5){const c=Object.keys(m).filter(x=>osa(x,k)<=1);if(c.length===1)f=m[c[0]]}
-  return f?'/'+carpeta+'/'+encodeURIComponent(f):''}
+  /* cada pedazo de la ruta se codifica por separado, para no romper las barras */
+  return f?'/'+carpeta+'/'+String(f).split('/').map(encodeURIComponent).join('/'):''}
 /* tipo: 'pick', 'ban' o nada (solo la carpeta general)
    quietas: pide la version que no se mueve; si el heroe solo tiene animacion, la devuelve igual */
 function mediaFor(name,tipo,quietas){const k=_key(name);if(!k)return '';

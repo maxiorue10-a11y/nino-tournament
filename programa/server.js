@@ -49,14 +49,27 @@ const HOST = ABIERTA ? '0.0.0.0' : '127.0.0.1';
 /* Revisa que esten las carpetas con las imagenes. El error mas comun es arrancar el
    programa desde la carpeta de la actualizacion (que trae solo el codigo) en vez de
    hacerlo desde tu carpeta de siempre. */
+const MEDIA_EXT = /\.(png|jpe?g|webp|gif|webm|mp4)$/i;
+/* Lista las imagenes de una carpeta. Tambien mira adentro de las subcarpetas (hasta dos
+   niveles): si copiaste la carpeta entera en vez de los archivos sueltos, igual los
+   encuentra. Devuelve rutas relativas, por ejemplo "HeroPick/chou.gif". */
+function listarMedia(d, base, nivel) {
+  base = base || ''; nivel = nivel || 0;
+  let e;
+  try { e = fs.readdirSync(path.join(PUB, d, base), { withFileTypes: true }); } catch (x) { return []; }
+  const out = [];
+  for (const x of e) {
+    const rel = base ? base + '/' + x.name : x.name;
+    if (x.isFile()) { if (MEDIA_EXT.test(x.name)) out.push(rel); }
+    else if (x.isDirectory() && nivel < 2) out.push(...listarMedia(d, rel, nivel + 1));
+  }
+  return out;
+}
 const CARPETAS = { heroes: 'imágenes de los héroes', lanes: 'iconos de las líneas', logos: 'logos de los equipos' };
 function revisarArchivos() {
   const faltan = [];
   for (const d in CARPETAS) {
-    let n = 0;
-    try { n = fs.readdirSync(path.join(PUB, d)).filter(f => /\.(png|jpe?g|webp|gif|webm|mp4)$/i.test(f)).length; }
-    catch (e) { n = 0; }
-    if (!n) faltan.push({ carpeta: 'public/' + d, que: CARPETAS[d] });
+    if (!listarMedia(d).length) faltan.push({ carpeta: 'public/' + d, que: CARPETAS[d] });
   }
   return faltan;
 }
@@ -140,10 +153,8 @@ const servidor = http.createServer((req, res) => {
 
   // lista de imágenes y videos de héroes
   if (url === '/api/media') {
-    const leer = d => { try { return fs.readdirSync(path.join(PUB, d))
-      .filter(f => /\.(webm|mp4|png|jpe?g|webp|gif)$/i.test(f)); } catch (e) { return []; } };
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-    return res.end(JSON.stringify({ heroes: leer('heroes'), picks: leer('picks'), bans: leer('bans') }));
+    return res.end(JSON.stringify({ heroes: listarMedia('heroes'), picks: listarMedia('picks'), bans: listarMedia('bans') }));
   }
 
   // ---- actualizaciones (solo el administrador) ----

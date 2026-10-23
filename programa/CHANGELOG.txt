@@ -4,6 +4,13 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.23.1 - ARREGLO: si copiabas la CARPETA entera adentro de public/picks/ (por ejemplo
+         public/picks/HeroPick/) en vez de los archivos sueltos, el programa no
+         encontraba nada y seguia mostrando las imagenes quietas de public/heroes/.
+         Ahora tambien mira adentro de las subcarpetas, hasta dos niveles, asi que
+         las dos formas funcionan y no hace falta reacomodar nada.
+         Vale igual para public/bans/ y public/heroes/.
+
 0.23.0 - LOS PICKS PUEDEN SER GIF ANIMADOS. Si dejas un .gif en public/picks/, el heroe se
          mueve en la barra del draft y en el line-up. Andaba ya desde antes, pero habia
          dos cosas que convenia ordenar:
