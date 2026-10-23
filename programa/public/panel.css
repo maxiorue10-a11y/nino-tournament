@@ -3,14 +3,15 @@
    y la elección queda guardada en el navegador. */
 
 :root{
-  --bg:#101216; --card:#171a20; --card2:#1d2128; --input:#0c0e12;
-  --line:#272b33; --line2:#1e222a;
-  --tx:#e6e8ec; --tx2:#aeb4bf; --mut:#7e858f;
-  --acc:#d9a93f; --acc-tx:#1a1408; --acc-soft:#2a2418;
+  /* gris oscuro, no negro: se lee mejor y no contrasta tanto con la pantalla */
+  --bg:#1a1d23; --card:#22262e; --card2:#2a2f38; --input:#15181d;
+  --line:#363c47; --line2:#2b313a;
+  --tx:#e9ebef; --tx2:#b4bac5; --mut:#868e9b;
+  --acc:#d9a93f; --acc-tx:#1a1408; --acc-soft:#352d1c;
   --ok:#49b97a; --bad:#e05b6b; --info:#5b9bd8;
   --blue:#4a86d8; --red:#d8566a;
-  --sombra:0 1px 2px rgba(0,0,0,.3);
-  --tablero1:#1a2338; --tablero2:#141b2d;
+  --sombra:0 1px 2px rgba(0,0,0,.22);
+  --tablero1:#242a38; --tablero2:#1e2430;
   --r:10px;
 }
 :root[data-tema="claro"]{
