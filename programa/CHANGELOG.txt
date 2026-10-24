@@ -4,6 +4,13 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.25.1 - El post-draft line-up ahora muestra LOS BANEOS de cada equipo, debajo de la
+         placa con su sigla: los mismos cinco retratos en gris y tachados que ya salian
+         en el "draft anterior". Si todavia no hay ningun baneo cargado no se dibuja
+         nada, asi que el line-up queda igual que antes hasta que empieces a banear.
+         De paso, los baneos del draft anterior tambien se adaptaron al diseño oscuro:
+         antes quedaban en gris claro.
+
 0.25.0 - QUEDA SOLO EL DISEÑO MIDNIGHT. Se sacaron Clasico y Clash, y con ellos la
          tarjeta "Diseño de los overlays" de Personalizar: ya no hay nada que elegir,
          Midnight se aplica siempre.

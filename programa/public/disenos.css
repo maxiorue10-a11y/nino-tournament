@@ -125,6 +125,12 @@
 :root[data-diseno="midnight"] .lcard .ln{background:rgba(255,255,255,.08);border-radius:0 0 0 14px}
 :root[data-diseno="midnight"] .lcard .vacio img{opacity:.22;filter:brightness(0) invert(1)}
 :root[data-diseno="midnight"] .lpie span{color:#8d96b5}
+/* los baneos (los del line-up y los del draft anterior) */
+:root[data-diseno="midnight"] .pvban em{color:#8d96b5}
+:root[data-diseno="midnight"] .pvban i{background:#121a2e;border-radius:6px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+:root[data-diseno="midnight"] .pvban i.sin{background:rgba(7,10,18,.75)}
+:root[data-diseno="midnight"] .pvban i.sin:after{background:rgba(255,255,255,.18)}
 
 /* ===========================================================================
    MIDNIGHT  ·  marcador en vivo

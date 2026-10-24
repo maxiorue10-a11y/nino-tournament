@@ -179,6 +179,9 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .pvban i:after{content:'';position:absolute;left:-12%;right:-12%;top:50%;height:3px;background:#d8384a;
  transform:rotate(-30deg)}
 .pvban i.sin{background:#e3e6ea}.pvban i.sin:after{background:#b9bfc8}
+/* los mismos baneos, pero en el line-up: debajo de la placa de cada equipo */
+.luban{top:200px}
+.luban.l{left:150px}.luban.r{right:150px}
 .pvgrid{position:absolute;top:360px;height:520px;width:890px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
 .pvgrid.l{left:52px}.pvgrid.r{right:52px}
 .pvpie{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-size:21px;font-weight:700;
@@ -347,6 +350,11 @@ function lineup(s){const[A,B]=s.teams;
    <div class="tg">${esc(sigla(T))}</div>
    <div class="wins">${Array.from({length:need},(_,p)=>`<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</div>
  </div>`;
+ /* los baneos del equipo, debajo de su placa. Si no hay ninguno, no se dibuja nada. */
+ const baneos=(i,c)=>{const b=(s.bans&&s.bans[i])||[];
+   if(!b.some(h=>h))return '';
+   return `<div class="pvban luban ${c}"><em>Baneos</em>${b.map(h=>
+     `<i class="${h?'':'sin'}" title="${esc(h)}">${h?vid(h,'ban'):''}</i>`).join('')}</div>`};
  const tarjetas=(i,T,c)=>{const lanes=T.lanes||[0,1,2,3,4];
    const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
    return `<div class="lgrid ${c}">${ord.map(k=>{const h=s.picks[i][k],ln=lanes[k];
@@ -362,6 +370,7 @@ function lineup(s){const[A,B]=s.teams;
   <div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
     <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>
   ${cab(A,0,'l')}${cab(B,1,'r')}
+  ${baneos(0,'l')}${baneos(1,'r')}
   <div class="lcen">
     <div class="ltor">${M.logo?`<img src="${M.logo}">`:`<b>${esc(M.tournament||'')}</b>`}</div>
     <div class="lchips">${M.stage?`<b class="c1">${esc(M.stage)}</b>`:''}<b class="c2">Partida ${esc(M.game)} &middot; BO${esc(M.bestOf)}</b></div>
