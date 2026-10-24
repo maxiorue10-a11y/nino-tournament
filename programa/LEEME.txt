@@ -69,11 +69,12 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
 Cada panel tiene los enlaces con un boton para copiarlos.
 
 DISEÑO DE LOS OVERLAYS
-En Personalizar > Diseño de los overlays elegis como se ve la barra del draft y el
-marcador en vivo: Clasico (la barra negra estilo MPL), Clash (mitades azul y roja bien
-fuertes con bandejas blancas) o Midnight (vidrio oscuro con bordes de neon).
-Los colores de Personalizar > Colores se usan en los tres, y lo que elijas se aplica
-solo en todos los overlays que tengas abiertos en OBS. Las demas vistas no cambian.
+Los overlays usan el diseño "Midnight": vidrio oscuro, bordes de neon del color de cada
+equipo y brillos suaves. Alcanza a la barra del draft, al marcador en vivo, al post-draft
+line-up y al draft anterior. No hay nada que elegir: viene puesto siempre.
+Los colores los seguis manejando vos desde Personalizar > Colores (el acento, el lado
+azul y el lado rojo), y lo que cambies se aplica solo en todos los overlays abiertos
+en OBS.
 
 IMAGENES Y VIDEOS DE HEROES
 Hay tres carpetas:

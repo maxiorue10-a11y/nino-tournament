@@ -24,19 +24,6 @@
  background:repeating-conic-gradient(var(--tablero1) 0 25%,var(--tablero2) 0 50%) 0 0/24px 24px}
 #pvwrap iframe{border:0;width:1920px;height:1080px;transform-origin:top left;position:absolute;top:0;left:0}
 #guardado{color:var(--ok);font-size:13px}
-.dis{display:grid;gap:9px;margin-top:11px}
-.dop{display:grid;grid-template-columns:132px 1fr;gap:13px;align-items:center;cursor:pointer;text-align:left;
- padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--input);color:var(--tx);width:100%}
-.dop:hover{border-color:var(--acc)}
-.dop.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
-.dop b{font-size:15px;display:block;line-height:1.2}
-.dop small{font-size:12px;color:var(--mut);line-height:1.35;display:block;margin-top:3px}
-.mini{height:50px;border-radius:5px;position:relative;overflow:hidden}
-.m-clasico{background:linear-gradient(90deg,#04060b 0 34%,#f4f5f8 34% 66%,#04060b 66%);border-top:3px solid #04060b}
-.m-clash{background:linear-gradient(90deg,#0a2a6b,#1550b8 36%,#0b0e18 36% 64%,#b11a24 64%,#6b0d16);
- border-top:3px solid #fff}
-.m-midnight{background:linear-gradient(180deg,#0e1530,#070a12);border-top:2px solid rgba(233,185,73,.75);
- box-shadow:inset 4px 0 0 #4fb3ff,inset -4px 0 0 #ff5a6e}
 </style></head><body>
 
 <header id="top"></header>
@@ -45,7 +32,6 @@
     <div style="display:flex;flex-direction:column;gap:16px">
       <section class="card" id="c2"></section>
       <section class="card" id="c3"></section>
-      <section class="card" id="c4"></section>
     </div>
     <section class="card" id="prev"></section>
   </div>
@@ -61,11 +47,7 @@ const PRE={
   emerald:{nombre:'Esmeralda',accent:'#2ee6a8',accent2:'#9bf5d8',bg1:'#06281f',bg2:'#03110d'},
   custom: {nombre:'Personalizado',accent:'#b24bff',accent2:'#dcaaff',bg1:'#1a0a33',bg2:'#0a0417'}};
 const def=()=>({preset:'gold',accent:PRE.gold.accent,accent2:PRE.gold.accent2,bg1:PRE.gold.bg1,bg2:PRE.gold.bg2,
-  blue:'#2f80ff',red:'#ff3d55',fontH:'',diseno:'clasico'});
-const DIS=[
- ['clasico','Clásico','La barra negra de siempre, estilo MPL.'],
- ['clash','Clash','Mitades azul y roja bien fuertes, bandejas blancas y rombo hexagonal.'],
- ['midnight','Midnight','Vidrio oscuro, bordes de neón del color del equipo y brillos suaves.']];
+  blue:'#2f80ff',red:'#ff3d55',fontH:'',diseno:'midnight'});
 let S=def(),conectado=false,tOut,vista='draft';
 
 function push(){if(!esAdmin())return;clearTimeout(tOut);tOut=setTimeout(()=>{
@@ -119,16 +101,6 @@ function renderC3(){
    <div class="hint">Sube un archivo TTF, OTF o WOFF para cambiar la letra de todos los overlays.</div>
    ${caja('fontH','Letra de los overlays','Barlow Condensed','Campeones 2 – 1','')}`}
 
-function renderC4(){
-  $('c4').innerHTML=`<h2><span class="num">03</span>Diseño de los overlays</h2>
-   <div class="hint">Cambia la forma de la barra del draft y la del marcador en vivo. Los colores que
-     elegiste arriba se siguen usando en los tres. Las demás vistas (line-up, draft anterior,
-     estadísticas, pool de baneos, programación y pantallas de cierre) no cambian.</div>
-   <div class="dis">${DIS.map(([id,n,d])=>`<button class="dop ${S.diseno===id?'on':''}" onclick="setDiseno('${id}')">
-     <span class="mini m-${id}"></span><span><b>${n}</b><small>${d}</small></span></button>`).join('')}</div>`}
-/* la vista previa no se recarga: el overlay del iframe recibe el cambio solo, igual que los de OBS */
-function setDiseno(v){S.diseno=v;aplicarTema(S);renderC4();push()}
-
 function renderPrev(){
   const op=[['draft','Draft pick'],['lineup','Line-up'],['previous','Draft anterior'],
             ['stats','Estadísticas'],['banpool','Pool de baneos'],
@@ -145,7 +117,7 @@ function ajustarPreview(){const w=$('pvwrap');if(!w)return;const s=w.clientWidth
   w.style.height=Math.round(1080*s)+'px';$('pv').style.transform=`scale(${s})`}
 addEventListener('resize',ajustarPreview);
 
-function build(){renderTop();renderC2();renderC3();renderC4();renderPrev();
+function build(){renderTop();renderC2();renderC3();renderPrev();
   aplicarRol();
   if(!esAdmin()){
     document.querySelectorAll('main input,main select,main button').forEach(el=>{el.disabled=true});

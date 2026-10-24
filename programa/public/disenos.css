@@ -1,113 +1,17 @@
 /* ============================================================================
-   DISEÑOS DE LOS OVERLAYS
-   Tres looks para la barra de draft (#mb) y el marcador en vivo (#sb).
+   DISEÑO "MIDNIGHT" DE LOS OVERLAYS
+   Vidrio oscuro, bordes de neon del color de cada equipo y brillos suaves.
+   Es el unico diseño del programa: se aplica siempre, no hay nada que elegir.
 
-     Clasico   el de siempre: barra negra estilo MPL. No necesita nada de aqui.
-     Clash     mitades azul y roja bien fuertes, bandejas blancas, rombo hexagonal.
-     Midnight  vidrio oscuro, bordes de neon del color del equipo y brillos suaves.
+   Alcanza a la barra del draft (#mb), al marcador en vivo (#sb), al post-draft
+   line-up (#lu) y al draft anterior (#pv).
 
-   Se elige en Personalizar > Diseño de los overlays. El diseño viaja con el
-   tema, asi que todos los overlays abiertos en OBS cambian solos.
+   Los colores salen de var(--c) (el color del equipo) y de var(--gold) (el color
+   de acento), asi que lo que elijas en Personalizar > Colores se sigue respetando.
 
-   Los colores salen de var(--c) (el color del equipo) y de var(--gold)
-   (el color de acento), asi que lo que elijas en Personalizar > Colores
-   se sigue respetando en los tres diseños.
-
-   Las demas vistas (line-up, draft anterior, estadisticas, pool de baneos,
-   programacion y pantallas de cierre) no cambian con el diseño.
+   Las reglas van colgadas de :root[data-diseno="midnight"], que theme.js deja
+   puesto siempre. Asi ganan por especificidad a los estilos de cada pagina.
    ============================================================================ */
-
-/* ===========================================================================
-   CLASH  ·  draft
-   =========================================================================== */
-:root[data-diseno="clash"] #mb .r1,
-:root[data-diseno="clash"] #mb .r2{
-  background:
-    repeating-linear-gradient(-60deg,rgba(255,255,255,.05) 0 2px,transparent 2px 16px),
-    linear-gradient(90deg,#0a2a6b 0%,#1550b8 38.75%,#0b0e18 38.75% 61.25%,#b11a24 61.25%,#6b0d16 100%);
-}
-:root[data-diseno="clash"] #mb .r1{border-top:4px solid #fff}
-:root[data-diseno="clash"] #mb{box-shadow:0 -10px 30px rgba(0,0,0,.5)}
-
-/* nombres de los equipos: placa solida del color del equipo */
-:root[data-diseno="clash"] .eqn{
-  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 62%),var(--c,#1f6feb)}
-/* la franja blanca de abajo marca al equipo al que le toca elegir */
-:root[data-diseno="clash"] .eqn.turno{box-shadow:inset 0 -5px 0 #fff}
-:root[data-diseno="clash"] .eqn b{text-shadow:0 3px 0 rgba(0,0,0,.25)}
-:root[data-diseno="clash"] .eqn .pips i{background:rgba(255,255,255,.25);box-shadow:none}
-:root[data-diseno="clash"] .eqn .pips i.on{background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8)}
-
-/* baneos: bandeja blanca */
-:root[data-diseno="clash"] .mban{
-  background:#fff;padding:4px 5px;gap:3px;box-shadow:0 6px 16px rgba(0,0,0,.45)}
-:root[data-diseno="clash"] .mban .bx{width:56px;height:48px;background:#dde3f0}
-
-/* picks: marco blanco y franja gruesa del equipo abajo */
-:root[data-diseno="clash"] .pcel{
-  background:linear-gradient(180deg,#2a3354,#0b0e18);box-shadow:inset 0 0 0 3px rgba(255,255,255,.9)}
-:root[data-diseno="clash"] .pcel .nk{
-  background:#fff;color:#0b0e18;box-shadow:inset 0 -5px 0 var(--c,#1f6feb)}
-:root[data-diseno="clash"] .pcel .cpt{background:var(--c,#1f6feb);color:#fff}
-:root[data-diseno="clash"] .pcel.act{box-shadow:inset 0 0 0 4px var(--gold,#e9b949)}
-
-/* centro: fondo oscuro, rombo hexagonal y cartel blanco de la fase */
-:root[data-diseno="clash"] .mcen{background:#0b0e18;color:#fff}
-:root[data-diseno="clash"] .mcen .mg i{color:#5b6482}
-:root[data-diseno="clash"] .rombo{
-  background:none;color:#fff;position:relative;height:96px;transform:translateY(-12px)}
-:root[data-diseno="clash"] .rombo:before,
-:root[data-diseno="clash"] .rombo:after{
-  content:'';position:absolute;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
-:root[data-diseno="clash"] .rombo:before{
-  inset:0;background:linear-gradient(160deg,var(--gold2,#f6d98a),var(--gold,#e9b949) 50%,#b9862a)}
-:root[data-diseno="clash"] .rombo:after{inset:7px;background:#0b0e18}
-:root[data-diseno="clash"] .rombo small{
-  position:absolute;left:50%;bottom:-28px;transform:translateX(-50%);z-index:2;white-space:nowrap;
-  background:#fff;color:#0b0e18;padding:4px 20px 2px;font-size:17px}
-:root[data-diseno="clash"] .rombo b{position:relative;z-index:2}
-:root[data-diseno="clash"] .rombo.rsv:before,
-:root[data-diseno="clash"] .rombo.hot:before{background:linear-gradient(160deg,#ff8a92,#e03a4d 50%,#6b0d16)}
-:root[data-diseno="clash"] .rombo.rsv b,
-:root[data-diseno="clash"] .rombo.hot b{color:#ff5a63}
-:root[data-diseno="clash"] .flech svg{fill:var(--c);filter:drop-shadow(0 0 7px var(--c))}
-
-/* ===========================================================================
-   CLASH  ·  marcador en vivo
-   =========================================================================== */
-:root[data-diseno="clash"] .half{
-  background:
-    repeating-linear-gradient(-60deg,rgba(255,255,255,.06) 0 2px,transparent 2px 14px),
-    linear-gradient(90deg,rgba(0,0,0,.45),transparent 55%),var(--c,#1f6feb);
-  box-shadow:inset 0 -4px 0 #fff,0 6px 18px rgba(0,0,0,.45)}
-:root[data-diseno="clash"] .half.r{
-  background:
-    repeating-linear-gradient(-60deg,rgba(255,255,255,.06) 0 2px,transparent 2px 14px),
-    linear-gradient(270deg,rgba(0,0,0,.45),transparent 55%),var(--c,#e5262f)}
-/* la linea blanca de abajo sigue de punta a punta y se vuelve dorada en el centro */
-:root[data-diseno="clash"] #cen:after{content:'';position:absolute;left:0;right:0;top:76px;height:4px;
-  background:var(--gold,#e9b949);z-index:-1}
-/* el nombre del equipo va en una placa blanca, con la letra del color del equipo */
-:root[data-diseno="clash"] .tn{background:#fff;color:var(--c,#1f6feb);padding:1px 11px 0;border-radius:2px;
-  flex:0 1 auto;box-shadow:inset 0 -4px 0 var(--c,#1f6feb)}
-:root[data-diseno="clash"] .half.l .tn{margin-right:auto}
-:root[data-diseno="clash"] .half.r .tn{margin-left:auto}
-:root[data-diseno="clash"] .st svg{fill:#fff}
-:root[data-diseno="clash"] .scr{background:linear-gradient(180deg,#fff,#e4eaf7);color:var(--c,#1f6feb)}
-/* la ventaja de oro, con el numero del color del equipo que va ganando */
-:root[data-diseno="clash"] #gd b{background:#fff;color:var(--g);border-bottom-color:var(--g)}
-:root[data-diseno="clash"] #gd i{color:var(--g);opacity:.75}
-:root[data-diseno="clash"] .clock{background:#0b0e18;color:#fff}
-:root[data-diseno="clash"] .jr{background:rgba(11,14,24,.9)}
-/* esquina: bloque negro, auspiciante blanco, franja dorada */
-:root[data-diseno="clash"] #corner{background:linear-gradient(180deg,#161b2c,#0b0e18);color:#fff}
-:root[data-diseno="clash"] #corner .t1{color:#fff}
-:root[data-diseno="clash"] #corner .t2{color:var(--gold,#e9b949)}
-:root[data-diseno="clash"] #corner .t3{color:#a7afc8}
-:root[data-diseno="clash"] #corner .sp{background:#fff;border-top:0;box-shadow:inset 6px 0 0 var(--gold,#e9b949)}
-:root[data-diseno="clash"] #corner .mic{
-  background:linear-gradient(90deg,var(--gold,#e9b949),var(--gold2,#f6d98a));color:#0b0e18}
-:root[data-diseno="clash"] #corner .mic small{opacity:.65}
 
 /* ===========================================================================
    MIDNIGHT  ·  draft

@@ -4,6 +4,15 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.25.0 - QUEDA SOLO EL DISEÑO MIDNIGHT. Se sacaron Clasico y Clash, y con ellos la
+         tarjeta "Diseño de los overlays" de Personalizar: ya no hay nada que elegir,
+         Midnight se aplica siempre.
+         Si tenias guardado Clasico o Clash, no tenes que hacer nada: el programa pasa
+         solo a Midnight la proxima vez que abras los overlays.
+         Personalizar > Colores sigue igual: el acento, el lado azul y el lado rojo los
+         seguis manejando vos, y Midnight los usa para los filos, las placas y los
+         brillos.
+
 0.24.2 - El nombre del heroe pasa a ir DENTRO del recuadro, apoyado abajo del arte, en
          vez de tener un renglon propio debajo. Lleva una sombra degradada atras, asi
          se lee bien sobre cualquier imagen, sea clara u oscura. Vale para el line-up
