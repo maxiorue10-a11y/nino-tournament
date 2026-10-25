@@ -77,8 +77,6 @@ input::placeholder{color:#4a5873}
 .eqj img{width:22px;height:22px;object-fit:contain;justify-self:center;opacity:.85}
 .eqj input{padding:5px 8px;font-size:13px}
 .eqj div{grid-template-columns:30px 1fr 30px}
-.cap{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--card2);color:var(--mut);font-size:12px;font-weight:600;cursor:pointer;padding:0;display:grid;place-items:center}
-.cap.on{background:var(--acc);border-color:var(--acc);color:var(--acc-tx)}
 .sub{display:grid;grid-template-columns:86px 1fr 62px;gap:5px;align-items:center;margin-bottom:4px}
 .sub select,.sub input{padding:5px 7px;font-size:12.5px}
 .sub button{padding:5px 4px;font-size:12px}
@@ -128,8 +126,6 @@ input::placeholder{color:#4a5873}
  cursor:pointer;display:block;transition:background .12s}
 .pips i.on{background:var(--c);border-color:var(--c)}
 .pips i:hover{border-color:var(--mut)}
-.capsel{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--mut);white-space:nowrap}
-.capsel select{width:auto;min-width:110px;padding:6px 8px;font-size:13px}
 .ptab{table-layout:fixed}
 /* ---- nombre + tag ---- */
 .nomtag{display:flex;gap:8px}
@@ -160,8 +156,8 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const LANES=['EXP','JUNGLA','MID','GOLD','ROAM'];
 const E=()=>['','','','',''];
 const def=()=>({
-  teams:[{name:'Equipo Azul',tag:'AZU',color:'#2f80ff',logo:'',lanes:[0,1,2,3,4],cap:-1,players:E()},
-         {name:'Equipo Rojo',tag:'ROJ',color:'#ff3d55',logo:'',lanes:[0,1,2,3,4],cap:-1,players:E()}],
+  teams:[{name:'Equipo Azul',tag:'AZU',color:'#2f80ff',logo:'',lanes:[0,1,2,3,4],players:E()},
+         {name:'Equipo Rojo',tag:'ROJ',color:'#ff3d55',logo:'',lanes:[0,1,2,3,4],players:E()}],
   picks:[E(),E()],bans:[E(),E()],history:[],prev:-1,saved:null,lib:null,
   match:{game:1,bestOf:5,wins:[0,0],score:'00:00',stage:'NORMAL',tournament:'',season:'',logo:'',
          step:0,autoTimer:true,useTimer:true,draftStage:false,lineupBg:true,
@@ -374,11 +370,10 @@ document.addEventListener('change',e=>{const el=e.target;
 
 /* ================= RENDER ================= */
 /* ---------- equipos guardados ---------- */
-function vacio(){return{n:'',tag:'',c:'#8a93a8',logo:'',j:['','','','',''],cap:-1,s:[['',0],['',0],['',0]]}}
+function vacio(){return{n:'',tag:'',c:'#8a93a8',logo:'',j:['','','','',''],s:[['',0],['',0],['',0]]}}
 function norm(e){if(!e||typeof e!=='object')return vacio();
   const v=vacio();v.n=e.n||'';v.tag=e.tag||'';v.c=e.c||v.c;v.logo=e.logo||'';
   v.j=(Array.isArray(e.j)?e.j.slice(0,5):[]);while(v.j.length<5)v.j.push('');
-  v.cap=(e.cap===undefined?-1:e.cap);
   v.s=(Array.isArray(e.s)?e.s.slice(0,3).map(x=>[x[0]||'',+x[1]||0]):[]);
   while(v.s.length<3)v.s.push(['',0]);return v}
 function vacia(e){return !e||(!String(e.n).trim()&&!e.j.some(x=>String(x).trim()))}
@@ -391,24 +386,22 @@ function guardados(){if(!Array.isArray(S.saved)||S.saved.length!==8)
 function biblio(){if(!Array.isArray(S.lib))S.lib=EQUIPOS_BASE.map(norm);
   S.lib=S.lib.map(norm);return S.lib}
 
-function marcarCap(n,k){const e=guardados()[n];e.cap=(e.cap===k?-1:k);build();push()}
 function meter(n,k){const e=guardados()[n],nom=String(e.s[k][0]||'').trim(),l=+e.s[k][1]||0;
   if(!nom)return alert('Escribe primero el nombre del suplente.');
   const sale=e.j[l]||'';
   if(!confirm('¿Entra '+nom+' por '+(sale||'el jugador de '+LANES[l])+'?'))return;
   e.j[l]=nom;e.s[k][0]=sale;
-  if(e.cap===l&&sale)e.cap=-1;
   build();push()}
 
 function cargarEquipo(n,lado){const e=guardados()[n],T=S.teams[lado];
   if(vacia(e))return alert('Esta ranura está vacía. Carga un equipo primero.');
   T.name=e.n;T.tag=e.tag||'';T.logo=e.logo||'';T.color=e.c||T.color;T.players=e.j.slice(0,5);
   while(T.players.length<5)T.players.push('');T.lanes=[0,1,2,3,4];
-  T.cap=(e.cap===undefined?-1:e.cap);build();push()}
+  build();push()}
 function guardarEquipo(n,lado){const T=S.teams[lado],e=guardados()[n];
   if(!confirm('¿Poner "'+(T.name||'el equipo')+'" en la ranura '+(n+1)+'?'+(vacia(e)?'':' Se reemplaza "'+e.n+'".')))return;
   e.n=T.name;e.tag=T.tag||'';e.c=T.color;e.logo=T.logo||'';e.j=T.players.slice(0,5);
-  e.cap=(T.cap===undefined?-1:T.cap);build();push()}
+  build();push()}
 
 function vaciarRanura(n){const e=guardados()[n];
   if(vacia(e))return;
@@ -462,10 +455,9 @@ function renderGuardados(){const G=guardados(),L=biblio();
          oninput="this.value=this.value.toUpperCase();guardados()[${n}].tag=this.value;push()">
        <input type="color" value="${e.c||'#888888'}" title="Color del equipo" oninput="guardados()[${n}].c=this.value;push()">
      </div>
-     <div class="lblmini">Titulares · C = capitán</div>
+     <div class="lblmini">Titulares</div>
      <div class="eqj">${[0,1,2,3,4].map(k=>`<div><img src="${LANE_ICON[k]}" title="${LANES[k]}" onerror="this.remove()">
-       <input value="${esc(e.j[k]||'')}" placeholder="${LANES[k]}" oninput="guardados()[${n}].j[${k}]=this.value;push()">
-       <button class="cap${e.cap===k?' on':''}" title="Marcar como capitán" onclick="marcarCap(${n},${k})">C</button></div>`).join('')}</div>
+       <input value="${esc(e.j[k]||'')}" placeholder="${LANES[k]}" oninput="guardados()[${n}].j[${k}]=this.value;push()"></div>`).join('')}</div>
      <div class="lblmini">Suplentes · "Entra" lo cambia por el titular</div>
      ${e.s.map((sp,k)=>`<div class="sub">
        <select onchange="guardados()[${n}].s[${k}][1]=+this.value;push()">${LANES.map((l,x)=>`<option value="${x}" ${(+sp[1]||0)===x?'selected':''}>${l}</option>`).join('')}</select>
@@ -520,11 +512,6 @@ function renderSerie(){
        <div class="acts" style="margin-top:8px;align-items:center">
          <label class="filebtn">${T.logo?'Cambiar logo':'Subir logo'}<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="subirLogo(this.files[0],u=>S.teams[${i}].logo=u,S.teams[${i}].logo)"></label>
          ${T.logo?`<button class="sm" onclick="quitarLogoEquipo(${i})">Quitar</button>`:''}
-         <label class="capsel">Capitán
-           <select onchange="set(['teams',${i},'cap'],+this.value);build()">
-             <option value="-1" ${T.cap===-1||T.cap===undefined?'selected':''}>— ninguno —</option>
-             ${[0,1,2,3,4].map(k=>`<option value="${k}" ${T.cap===k?'selected':''}>${esc(T.players[k])||LANES[k]}</option>`).join('')}
-           </select></label>
        </div>
      </div>
      <div class="score">
@@ -550,18 +537,23 @@ function renderSerie(){
      ${lado(1,'r')}</div>
    <div class="acts" style="margin:14px 0 0">
      <span class="opt2">Vista previa</span>
-     <span class="seg2">${[['draft','Draft pick'],['lineup','Post-Draft Line-up']].map(([v,n])=>
+     <span class="seg2">${[['draft','Draft pick'],['lineup','Post-Draft Line-up'],['scoreboard','Marcador en vivo']].map(([v,n])=>
        `<button class="${vistaPrev===v?'on':''}" onclick="vistaPrev='${v}';build()">${n}</button>`).join('')}</span>
-     <button class="sm" onclick="window.open('overlay.html?view='+vistaPrev,'_blank')">Abrir aparte</button></div>
-   <div id="pvwrap"><iframe id="pv" src="overlay.html?view=${vistaPrev}" scrolling="no"></iframe></div>
-   <div class="hint" style="margin:8px 0 0">Así se verá en OBS. Los dos usan los mismos datos del draft.</div>`;
+     <button class="sm" onclick="window.open(urlPrev(),'_blank')">Abrir aparte</button></div>
+   <div id="pvwrap"><iframe id="pv" src="${urlPrev()}" scrolling="no"></iframe></div>
+   <div class="hint" style="margin:8px 0 0">Así se verá en OBS. El marcador usa el nombre, el logo y el marcador de la serie que cargaste acá arriba.</div>`;
   ajustarPreview()}
 
+/* el marcador vive en su propia pagina; las otras dos son vistas del overlay */
+function urlPrev(){return vistaPrev==='scoreboard'?'scoreboard.html':'overlay.html?view='+vistaPrev}
 function ajustarPreview(){const w=$('pvwrap');if(!w)return;
-  /* el Draft pick es solo la barra de abajo; el Line-up ocupa toda la pantalla */
-  const s=w.clientWidth/1920,alto=(vistaPrev==='lineup'?1080:276);
+  /* cada vista ocupa un alto distinto: la barra del draft, el marcador de arriba
+     o la pantalla entera del line-up */
+  const s=w.clientWidth/1920,alto=(vistaPrev==='lineup'?1080:vistaPrev==='scoreboard'?300:276);
   w.style.height=Math.round(alto*s)+'px';
-  const f=$('pv');f.style.transform=`scale(${s})`;f.style.top=Math.round(-(1080-alto)*s)+'px'}
+  /* el draft se recorta desde abajo; el marcador desde arriba */
+  const f=$('pv');f.style.transform=`scale(${s})`;
+  f.style.top=(vistaPrev==='draft'?Math.round(-(1080-alto)*s):0)+'px'}
 addEventListener('resize',ajustarPreview);
 
 function renderLado(i){
@@ -570,7 +562,6 @@ function renderLado(i){
   const filas=[0,1,2,3,4].map(k=>`<tr>
     <td class="n">${k+1}</td>
     <td><input value="${esc(T.players[k])}" placeholder="Nick del jugador ${k+1}" oninput="set(['teams',${i},'players',${k}],this.value)"></td>
-    <td style="width:34px"><button class="cap${T.cap===k?' on':''}" title="Marcar como capitán" onclick="set(['teams',${i},'cap'],S.teams[${i}].cap===${k}?-1:${k});build()">C</button></td>
     <td style="width:120px"><select onchange="set(['teams',${i},'lanes',${k}],+this.value)">${LANES.map((l,n)=>`<option value="${n}" ${(T.lanes||[0,1,2,3,4])[k]===n?'selected':''}>${l}</option>`).join('')}</select></td>
     <td><input id="p${i}-${k}" class="hin${act('pick',k)}" autocomplete="off" value="${esc(S.picks[i][k])}" placeholder="Pick ${k+1}"
         oninput="abrirAC(this)" onfocus="abrirAC(this)" onblur="restaurar(this)"></td>
@@ -581,7 +572,7 @@ function renderLado(i){
     </select></td>
     <td style="width:40px"><button class="sw" title="Intercambiar toda la fila con la de abajo" onclick="moverFila(${i},${k})">⇄</button></td></tr>`).join('');
   $('side'+i).innerHTML=`<h2><i>${c}</i><span>Jugadores · picks · baneos</span></h2>
-   <table class="ptab"><tr><th></th><th>Nick</th><th>C</th><th>Línea</th><th>Héroe (pick)</th><th>Pasar héroe</th><th></th></tr>${filas}</table>
+   <table class="ptab"><tr><th></th><th>Nick</th><th>Línea</th><th>Héroe (pick)</th><th>Pasar héroe</th><th></th></tr>${filas}</table>
    <div class="lbl">Baneos</div>
    <div class="bans">${[0,1,2,3,4].map(k=>`<input id="b${i}-${k}" class="hin${act('ban',k)}" autocomplete="off" value="${esc(S.bans[i][k])}" placeholder="Baneo ${k+1}"
      oninput="abrirAC(this)" onfocus="abrirAC(this)" onblur="restaurar(this)">`).join('')}</div>
@@ -742,7 +733,9 @@ es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
     S=Object.assign(base,d);
     S.match=Object.assign(base.match,d.match||{});
     S.match.timer=Object.assign(def().match.timer,S.match.timer||{});
-    S.teams.forEach((t,i)=>{if(!t.lanes)t.lanes=[0,1,2,3,4];if(t.logo===undefined)t.logo='';if(t.cap===undefined)t.cap=-1;if(t.tag===undefined)t.tag=''});
+    /* "cap" (el capitan) ya no existe: se limpia de los estados viejos */
+    S.teams.forEach((t,i)=>{if(!t.lanes)t.lanes=[0,1,2,3,4];if(t.logo===undefined)t.logo='';
+      if(t.tag===undefined)t.tag='';delete t.cap});
     if(!Array.isArray(S.saved)||S.saved.length!==8)S.saved=null;
     if(!Array.isArray(S.lib))S.lib=null}
   loadMedia().then(build);es.close()};

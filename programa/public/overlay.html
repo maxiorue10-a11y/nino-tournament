@@ -75,13 +75,10 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .mcen .pie{height:42px;width:100%;display:grid;grid-template-columns:1fr 1fr}
 .mcen .pie span{display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;
  letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;padding:0 8px}
-.cpt{display:inline-grid;place-items:center;width:1.05em;height:1.05em;border-radius:50%;
- background:var(--gold);color:#1b1405;font-size:.62em;font-weight:800;line-height:1;vertical-align:.12em;margin-left:.3em}
 /* ===== POST-DRAFT LINE-UP (estilo claro MPL) ===== */
 #lu{position:absolute;inset:0;overflow:hidden;color:#141821;
  font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
 .pl{display:inline-block;font-size:15px;letter-spacing:-3px}
-#lu .cpt{background:rgba(0,0,0,.28);color:#fff}
 .lubg{position:absolute;inset:0;background:linear-gradient(118deg,#fff 0 40%,#eceef1 40% 100%)}
 .lubg i{position:absolute;display:block}
 .lb1{top:-40px;left:-80px;width:300px;height:1300px;transform:rotate(16deg);
@@ -355,7 +352,7 @@ function draft(s){const[A,B]=s.teams,S2=s;
  const cel=(i,k,T,h)=>`<div class="pcel${esAct('pick',i,k)?' act':''}${pop('p'+i+k,h)}" style="--c:${T.color}">
    ${h?`<div class="art">${vid(h,'pick')}</div><div class="hn"><span>${esc(h)}</span></div>`
       :`<div class="lane"><img src="${LANE_ICON[lanes(T)[k]]}" onerror="this.remove()"></div>`}
-   <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div></div>`;
+   <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}</div></div>`;
  const fase=enRsv?'Reserva':(act?(act.type==='ban'?'Baneando':'Eligiendo'):'Listo');
  /* la sigla del equipo: el TAG si lo escribieron, si no la primera palabra del nombre */
  const corto=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
@@ -408,7 +405,7 @@ function lineup(s){const[A,B]=s.teams;
      return `<div class="lcard${pop('lu'+i+k,h)}" style="--c:${T.color}">
        ${h?`<div class="art">${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
           :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
-       <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
+       <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}</div>
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
      </div>`}).join('')}</div>`};
  const fondo=M.lineupBg!==false
@@ -446,7 +443,7 @@ function previous(s){const g=s.history&&s.history[s.prev];
      return `<div class="lcard" style="--c:${T.color}">
        ${h?`<div class="art">${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
           :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
-       <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}${T.cap===k?'<i class="cpt">C</i>':''}</div>
+       <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}</div>
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
      </div>`}).join('')}</div>`};
  const[A,B]=g.teams;

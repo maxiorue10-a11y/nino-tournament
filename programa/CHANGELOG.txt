@@ -4,6 +4,15 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.27.0 - SE FUE EL CAPITAN. Se saco de todas partes: el selector de la tarjeta Serie,
+         la columna "C" de la tabla de jugadores, el boton de las ranuras de equipos
+         guardados y la insignia dorada que salia al lado del nick en el draft, en el
+         line-up y en el draft anterior. Si tenias alguno marcado, el dato viejo se
+         limpia solo la primera vez que abris el control.
+       - La vista previa de la tarjeta Serie ahora tambien muestra el MARCADOR EN VIVO,
+         ademas del Draft pick y del Post-Draft Line-up. Es donde mejor se ve, porque
+         el nombre, el logo y el marcador de la serie salen de esa misma tarjeta.
+
 0.26.0 - OVERLAY NUEVO: ANALISIS DEL DRAFT ANTERIOR
          (http://localhost:3000/overlay.html?view=analisis)
          Dos paneles a los costados de la pantalla, uno por equipo, con lo que ESE
