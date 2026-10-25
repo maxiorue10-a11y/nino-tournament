@@ -81,6 +81,16 @@ Los colores los seguis manejando vos desde Personalizar > Colores (el acento, el
 azul y el lado rojo), y lo que cambies se aplica solo en todos los overlays abiertos
 en OBS.
 
+VOCES DE LOS HEROES
+Si dejas los sonidos en public/voces/, cada vez que un equipo elige un heroe en el draft
+suena su voz. El nombre del archivo es el del heroe (chou.ogg, layla.ogg...), con la misma
+tolerancia que las imagenes: no importan mayusculas, espacios ni guiones, aguanta una letra
+de diferencia, y podes dejar los archivos sueltos o adentro de una subcarpeta.
+Formatos: .ogg, .mp3, .wav, .m4a, .aac
+Se prende y se apaga en Control de draft > Torneo, junto con el volumen y un boton
+"Probar". Suena solo en el overlay del Draft pick, asi que no se duplica aunque tengas
+otros overlays abiertos en OBS.
+
 IMAGENES Y VIDEOS DE HEROES
 Hay tres carpetas:
   public/picks/   el arte grande de los picks (draft y line-up)

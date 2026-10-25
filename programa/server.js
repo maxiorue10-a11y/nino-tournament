@@ -50,18 +50,19 @@ const HOST = ABIERTA ? '0.0.0.0' : '127.0.0.1';
    programa desde la carpeta de la actualizacion (que trae solo el codigo) en vez de
    hacerlo desde tu carpeta de siempre. */
 const MEDIA_EXT = /\.(png|jpe?g|webp|gif|webm|mp4)$/i;
-/* Lista las imagenes de una carpeta. Tambien mira adentro de las subcarpetas (hasta dos
+const AUDIO_EXT = /\.(ogg|mp3|wav|m4a|aac)$/i;
+/* Lista los archivos de una carpeta. Tambien mira adentro de las subcarpetas (hasta dos
    niveles): si copiaste la carpeta entera en vez de los archivos sueltos, igual los
    encuentra. Devuelve rutas relativas, por ejemplo "HeroPick/chou.gif". */
-function listarMedia(d, base, nivel) {
-  base = base || ''; nivel = nivel || 0;
+function listarMedia(d, base, nivel, ext) {
+  base = base || ''; nivel = nivel || 0; ext = ext || MEDIA_EXT;
   let e;
   try { e = fs.readdirSync(path.join(PUB, d, base), { withFileTypes: true }); } catch (x) { return []; }
   const out = [];
   for (const x of e) {
     const rel = base ? base + '/' + x.name : x.name;
-    if (x.isFile()) { if (MEDIA_EXT.test(x.name)) out.push(rel); }
-    else if (x.isDirectory() && nivel < 2) out.push(...listarMedia(d, rel, nivel + 1));
+    if (x.isFile()) { if (ext.test(x.name)) out.push(rel); }
+    else if (x.isDirectory() && nivel < 2) out.push(...listarMedia(d, rel, nivel + 1, ext));
   }
   return out;
 }
@@ -125,7 +126,8 @@ const canalDe = req => {
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif',
   '.webp': 'image/webp', '.ttf': 'font/ttf', '.otf': 'font/otf', '.woff': 'font/woff',
-  '.woff2': 'font/woff2', '.webm': 'video/webm', '.mp4': 'video/mp4' };
+  '.woff2': 'font/woff2', '.webm': 'video/webm', '.mp4': 'video/mp4',
+  '.ogg': 'audio/ogg', '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.m4a': 'audio/mp4', '.aac': 'audio/aac' };
 
 const servidor = http.createServer((req, res) => {
   // Una direccion mal escrita (por ejemplo con un % suelto) no debe tirar el programa:
@@ -154,7 +156,8 @@ const servidor = http.createServer((req, res) => {
   // lista de imágenes y videos de héroes
   if (url === '/api/media') {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-    return res.end(JSON.stringify({ heroes: listarMedia('heroes'), picks: listarMedia('picks'), bans: listarMedia('bans') }));
+    return res.end(JSON.stringify({ heroes: listarMedia('heroes'), picks: listarMedia('picks'),
+      bans: listarMedia('bans'), voces: listarMedia('voces', '', 0, AUDIO_EXT) }));
   }
 
   // ---- actualizaciones (solo el administrador) ----

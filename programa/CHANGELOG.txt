@@ -4,6 +4,20 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.29.0 - VOCES DE LOS HEROES. Carpeta nueva public/voces/: si dejas ahi los sonidos,
+         cada vez que un equipo elige un heroe en el draft suena su voz.
+         - Se enciende y se apaga en Control de draft > Torneo, con el volumen al lado
+           y un boton "Probar" para chequear que los archivos esten.
+         - Los nombres se reconocen igual que los de las imagenes: no importan
+           mayusculas ni guiones, aguanta una letra de diferencia (arlot.ogg encuentra
+           a Arlott) y podes dejar la carpeta entera adentro, sin desarmarla.
+         - Formatos: .ogg, .mp3, .wav, .m4a, .aac
+         - Suena SOLO en el overlay del Draft pick, asi que no se duplica aunque tengas
+           el line-up o el marcador abiertos al mismo tiempo en OBS.
+         - No suena al abrir el overlay con un draft ya cargado, ni al restaurar una
+           partida entera, ni con los baneos: solo cuando entra un pick nuevo.
+         El actualizador no toca public/voces/, igual que el resto de tus carpetas.
+
 0.28.1 - VUELVE ATRAS EL LINE-UP. El rediseño de la 0.28.0 (placas en diagonal, cartas
          inclinadas y el VS en el medio) queda sin efecto: el Post-Draft Line-up vuelve
          exactamente al diseño anterior, el de las cartas derechas con el nombre del

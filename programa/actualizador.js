@@ -30,6 +30,7 @@ const permitido = p => PERMITIDOS.includes(p) || (NUEVOS_OK.test(p) && !p.includ
 
 // Carpetas y archivos tuyos: el actualizador los ignora siempre.
 const INTOCABLES = ['public/heroes', 'public/picks', 'public/bans', 'public/logos', 'public/lanes',
+  'public/voces',
   'configuracion.txt', 'state.json', 'state-schedule.json', 'state-scoreboard.json',
   'state-theme.json', 'state-cierre.json'];
 

@@ -144,6 +144,8 @@ function osa(a,b){const m=a.length,n=b.length,d=[];for(let i=0;i<=m;i++)d[i]=[i]
  if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[m][n]}
 function suggestHero(v,max=2){const k=_key(v);let best='',bd=max+1;HEROES.forEach(x=>{const d=osa(k,_key(x.n));if(d<bd){bd=d;best=x.n}});return best}
 let MEDIA={heroes:{},picks:{},bans:{}};
+/* Las voces de los heroes (public/voces/): suenan cuando se elige un heroe en el draft. */
+let VOCES={};
 /* Tres carpetas: picks/ para el arte de los picks, bans/ para los retratos de baneo
    y heroes/ como respaldo de las dos. */
 /* Si un heroe tiene varios archivos, gana el que se mueve: primero el video (.webm, .mp4),
@@ -157,7 +159,13 @@ function _indexar(lista){
     const k=_key(n.replace(/\.[^.]+$/,''));if(!m[k])m[k]=f});return m}
 function loadMedia(){return fetch('/api/media',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   if(Array.isArray(d))d={heroes:d,picks:[],bans:[]};
-  MEDIA={heroes:_indexar(d.heroes),picks:_indexar(d.picks),bans:_indexar(d.bans)}}).catch(()=>{})}
+  MEDIA={heroes:_indexar(d.heroes),picks:_indexar(d.picks),bans:_indexar(d.bans)};
+  VOCES=_indexar(d.voces)}).catch(()=>{})}
+/* La voz del heroe, con la misma tolerancia de nombres que las imagenes */
+function vozDe(name){const k=_key(name);if(!k)return '';
+  let f=VOCES[k];
+  if(!f&&k.length>=5){const c=Object.keys(VOCES).filter(x=>osa(x,k)<=1);if(c.length===1)f=VOCES[c[0]]}
+  return f?'/voces/'+String(f).split('/').map(encodeURIComponent).join('/'):''}
 function _buscar(carpeta,k){const m=MEDIA[carpeta]||{};let f=m[k];
   if(!f&&k.length>=5){const c=Object.keys(m).filter(x=>osa(x,k)<=1);if(c.length===1)f=m[c[0]]}
   /* cada pedazo de la ruta se codifica por separado, para no romper las barras */

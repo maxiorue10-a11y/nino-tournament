@@ -578,6 +578,20 @@ function renderLado(i){
      oninput="abrirAC(this)" onfocus="abrirAC(this)" onblur="restaurar(this)">`).join('')}</div>
    <div class="acts" style="margin-top:8px">${[0,1,2,3,4].map(k=>`<button class="sw" title="Intercambiar baneo ${k+1} con el siguiente" onclick="moverBan(${i},${k})">⇄ ${k+1}</button>`).join('')}</div>`}
 
+/* Prueba una voz desde el panel, para chequear que los archivos estan y se escuchan.
+   Usa el ultimo heroe elegido, o el primero que encuentre cargado. */
+let vozPrueba=null;
+function probarVoz(){
+  const h=[...S.picks[0],...S.picks[1]].filter(Boolean).pop();
+  if(!h)return alert('Elegí primero algún héroe en el draft para poder probar su voz.');
+  const u=vozDe(h);
+  if(!u)return alert('No encontré la voz de "'+h+'" en public/voces/.');
+  try{if(!vozPrueba)vozPrueba=new Audio();
+    vozPrueba.pause();vozPrueba.src=u;
+    vozPrueba.volume=Math.max(0,Math.min(1,(S.match.vozVol===undefined?80:S.match.vozVol)/100));
+    const pr=vozPrueba.play();if(pr&&pr.catch)pr.catch(()=>alert('El navegador no dejó reproducir. Hacé clic en la página y probá otra vez.'))}
+  catch(e){alert('No se pudo reproducir: '+e.message)}}
+
 function renderTorneo(){
   const M=S.match,mi=(k,v)=>`oninput="set(['match','${k}'],${v})"`;
   $('torneo').innerHTML=`<h2>Torneo<span>Textos y logo que se ven en los overlays</span></h2>
@@ -590,7 +604,12 @@ function renderTorneo(){
      <label>Tiempo de reserva por equipo (segundos)<input type="number" min="0" value="${M.reservaSecs|0}" onchange="setReserva(+this.value)"></label>
      <label>Pie del Line-up · izquierda<input value="${esc(M.lemaIzq||'')}" placeholder="Ej: Lamayo Esports" ${mi('lemaIzq','this.value')}></label>
      <label>Pie del Line-up · derecha<input value="${esc(M.lemaDer||'')}" placeholder="Ej: ¡Vamos!" ${mi('lemaDer','this.value')}></label>
+     <label>Volumen de las voces (0 a 100)<input type="number" min="0" max="100" value="${M.vozVol===undefined?80:M.vozVol}"
+       onchange="set(['match','vozVol'],Math.max(0,Math.min(100,+this.value||0)));build()"></label>
    </div>
+   <label class="chk"><input type="checkbox" ${M.voces!==false?'checked':''} onchange="set(['match','voces'],this.checked)">Hacer sonar la voz del héroe cuando lo eligen
+     <button class="sm" style="margin-left:8px" onclick="event.preventDefault();probarVoz()">Probar</button></label>
+   <div class="hint" style="margin:4px 0 0">Suena en el overlay del <b>Draft pick</b>, con los archivos de <b>public/voces/</b>. Si esa carpeta está vacía no suena nada.</div>
    <label class="chk"><input type="checkbox" ${M.useTimer?'checked':''} onchange="set(['match','useTimer'],this.checked);renderTop()">Mostrar el temporizador en el overlay</label>
    <label class="chk"><input type="checkbox" ${M.autoTimer?'checked':''} onchange="set(['match','autoTimer'],this.checked)">Arrancar el temporizador solo en cada turno</label>
    <label class="chk"><input type="checkbox" ${M.usarReserva?'checked':''} onchange="set(['match','usarReserva'],this.checked);build()">Usar tiempo de reserva: cuando a un equipo se le acaban los segundos del turno, empieza a gastar su banco

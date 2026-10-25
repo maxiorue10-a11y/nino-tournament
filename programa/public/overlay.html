@@ -322,6 +322,18 @@ const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 // Busca primero el video .webm, luego .mp4, luego la imagen .png; si no hay nada, queda la inicial
 const vid=(h,tipo)=>{const f=mediaFor(h,tipo);if(!f)return '';return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`:`<img src="${f}" onerror="this.remove()">`};
 const pop=(k,h)=>{const n=prevSeen[k]!==h&&h;prevSeen[k]=h;return n?' pop':''};
+/* ---- voces de los heroes ----
+   Suena en el Draft pick cuando entra un pick nuevo. En el primer dibujo no suena
+   nada: si no, al abrir el overlay con el draft ya cargado sonarian los 10 juntos.
+   Si entran varios de una (por ejemplo al restaurar un draft), tampoco suena. */
+let vozPrimera=true,vozEl=null;
+function tocarVoz(h,M){
+  if(!M||M.voces===false)return;
+  const u=vozDe(h);if(!u)return;
+  try{if(!vozEl)vozEl=new Audio();
+    vozEl.pause();vozEl.src=u;
+    vozEl.volume=Math.max(0,Math.min(1,(M.vozVol===undefined?80:M.vozVol)/100));
+    const pr=vozEl.play();if(pr&&pr.catch)pr.catch(()=>{})}catch(e){}}
 const FL='<svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21z"/></svg>';
 function numText(M){const T=M.timer;if(M.useTimer&&T){const n=T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left;
   return String(n)}return M.score}
@@ -349,7 +361,10 @@ function draft(s){const[A,B]=s.teams,S2=s;
  /* --c es el color del equipo: los diseños lo usan para las placas y los filos */
  const cab=(T,c,i)=>`<div class="eqn ${c}${act&&act.team===i?' turno':''}" style="--c:${T.color}"><span class="lg">${logo(T)}</span><b>${esc(T.name)}</b>${pips(i)}</div>`;
  const ban=(i,k,h)=>`<div class="bx${h?'':' vac'}${esAct('ban',i,k)?' act':''}${pop('b'+i+k,h)}">${h?vid(h,'ban'):''}</div>`;
- const cel=(i,k,T,h)=>`<div class="pcel${esAct('pick',i,k)?' act':''}${pop('p'+i+k,h)}" style="--c:${T.color}">
+ /* los picks que entraron en este dibujo, para saber cual voz tocar */
+ const nuevos=[];
+ const marcaPick=(i,k,h)=>{const c=pop('p'+i+k,h);if(c&&h)nuevos.push(h);return c};
+ const cel=(i,k,T,h)=>`<div class="pcel${esAct('pick',i,k)?' act':''}${marcaPick(i,k,h)}" style="--c:${T.color}">
    ${h?`<div class="art">${vid(h,'pick')}</div><div class="hn"><span>${esc(h)}</span></div>`
       :`<div class="lane"><img src="${LANE_ICON[lanes(T)[k]]}" onerror="this.remove()"></div>`}
    <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}</div></div>`;
@@ -358,6 +373,8 @@ function draft(s){const[A,B]=s.teams,S2=s;
  const corto=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
    const p=String(T.name||'').trim().split(/\s+/);
    return (p[0]||'').length<=3&&p.length>1?(p[0]+' '+p[1]):(p[0]||'')};
+ /* se arma el HTML y recien despues suena, asi no suena de un draft a medio dibujar */
+ setTimeout(()=>{if(!vozPrimera&&nuevos.length===1)tocarVoz(nuevos[0],M);vozPrimera=false},0);
  return `<div id="mb">
   <div class="r1">
    ${cab(A,'l',0)}
