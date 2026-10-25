@@ -151,6 +151,53 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
  font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;text-transform:uppercase}
 .lpie.l{left:34px}.lpie.r{right:34px}
 .lpie span{font-weight:500;color:#5d636d}
+/* ===== ANALISIS DEL DRAFT ANTERIOR (dos paneles a los costados) ===== */
+#an{position:absolute;inset:0;font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;color:#eef2ff}
+.acamp{position:absolute;top:420px;width:470px;padding:0 0 14px;
+ background:repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 22px),
+            linear-gradient(180deg,rgba(14,21,48,.95),rgba(7,10,18,.97));
+ box-shadow:0 20px 50px rgba(0,0,0,.55);border-radius:12px}
+.acamp.l{left:22px;border-left:5px solid var(--c);animation:anL .7s cubic-bezier(.2,.9,.2,1) both}
+.acamp.r{right:22px;border-right:5px solid var(--c);animation:anR .7s cubic-bezier(.2,.9,.2,1) both}
+@keyframes anL{from{transform:translateX(-120%)}}
+@keyframes anR{from{transform:translateX(120%)}}
+.ahd{display:flex;align-items:center;gap:11px;padding:11px 15px 9px;
+ background:linear-gradient(90deg,var(--c),transparent 62%)}
+.acamp.r .ahd{flex-direction:row-reverse;text-align:right;
+ background:linear-gradient(270deg,var(--c),transparent 62%)}
+.ahd img{width:42px;height:42px;flex:none;object-fit:contain}
+.ahd .ak{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold2,#f6d98a)}
+.ahd .an{font-size:30px;font-weight:800;line-height:1;letter-spacing:1px;text-transform:uppercase;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:360px}
+.alab{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#8d96b5;padding:9px 15px 5px}
+.acamp.r .alab{text-align:right}
+.arow{display:flex;gap:8px;padding:0 15px}
+.acamp.r .arow{flex-direction:row-reverse}
+.aft{position:relative;width:82px;flex:none;overflow:hidden;background:#121a2e;border-radius:7px;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);animation:aIn .5s cubic-bezier(.2,1.3,.4,1) both;
+ animation-delay:calc(.35s + var(--i) * .06s)}
+@keyframes aIn{from{opacity:0;transform:translateY(16px) scale(.9)}}
+.apk .aft{height:104px}.abn .aft{height:56px}
+.aft img,.aft video{width:100%;height:100%;object-fit:cover;object-position:center 16%;
+ transition:transform .6s cubic-bezier(.2,.9,.2,1),filter .5s}
+.abn .aft img,.abn .aft video{filter:grayscale(1) brightness(.7)}
+.abn .aft:before{content:'';position:absolute;left:-10%;right:-10%;top:50%;height:2px;z-index:1;
+ background:rgba(216,56,74,.75);transform:rotate(-32deg)}
+.aft.sin{background:repeating-linear-gradient(-45deg,#121a2e 0 5px,#0b1124 5px 10px)}
+.aft.sin:before{background:rgba(255,255,255,.16)}
+.aet{position:absolute;left:0;right:0;bottom:0;padding:3px 1px 2px;text-align:center;z-index:2;
+ font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;line-height:1.1;
+ color:#070a12;background:var(--s)}
+.aft[data-e]{box-shadow:inset 0 0 0 2px var(--s),0 0 16px -2px var(--s);z-index:3}
+.aft[data-e] img,.aft[data-e] video{transform:scale(1.12)}
+.aft[data-e="repite"]{--s:#3ddc84}
+.aft[data-e="robado"]{--s:var(--gold,#e9b949)}
+.aft[data-e="baneado"]{--s:#ff4655}
+.aft[data-e="rebaneado"]{--s:#b3122b}
+.aft[data-e="elegido"]{--s:#2ec9c9}
+.aft[data-e="baneado"] .aet,.aft[data-e="rebaneado"] .aet{color:#fff}
+.aft[data-e="baneado"] img,.aft[data-e="baneado"] video{filter:grayscale(1) brightness(.6);transform:none}
+.aft[data-e="elegido"] img,.aft[data-e="elegido"] video{filter:none}
 /* ===== DRAFT ANTERIOR (mismo estilo claro que el Line-up) ===== */
 #pv{position:absolute;inset:0;overflow:hidden;color:#141821;background:#eef0f3;
  font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
@@ -453,6 +500,46 @@ function stats(s){
     <span class="lado" style="--c:${B.color}"><i>${gan[1]}</i> desde el lado rojo</span>
   </div>
  </div>`}
+/* ===== ANALISIS DEL DRAFT ANTERIOR =====
+   Dos paneles a los costados: lo que eligio y baneo cada equipo la ultima vez que
+   jugo, marcado EN VIVO contra el draft que esta corriendo ahora. Sirve para que el
+   relator vea al toque si repiten, si les roban un heroe o si se lo banean.
+   Si un equipo no tiene ninguna partida guardada, su panel no se dibuja. */
+const AN_ETQ={repite:'Lo repite',robado:'Se lo robaron',baneado:'Ahora baneado',
+  rebaneado:'Lo rebanean',elegido:'Ahora elegido'};
+function analisis(s){
+ const H=Array.isArray(s.history)?s.history:[];
+ const nom=t=>String((t&&t.name)||'').trim().toLowerCase();
+ /* la ultima partida de ESTE equipo, sin importar de que lado la jugo */
+ const ultima=T=>{const n=nom(T);if(!n)return null;
+   for(let g=H.length-1;g>=0;g--){const j=H[g].teams||[];
+     for(let i=0;i<2;i++)if(nom(j[i])===n)
+       return {picks:(H[g].picks&&H[g].picks[i])||[],bans:(H[g].bans&&H[g].bans[i])||[],lado:i}}
+   return null};
+ const K=h=>_key(h||'');
+ const pickAhora=[0,1].map(i=>new Set((s.picks[i]||[]).filter(Boolean).map(K)));
+ const banAhora=new Set([...(s.bans[0]||[]),...(s.bans[1]||[])].filter(Boolean).map(K));
+ const pickTodos=new Set([...pickAhora[0],...pickAhora[1]]);
+ const etPick=(h,i)=>{const k=K(h);if(!k)return '';
+   if(pickAhora[i].has(k))return 'repite';
+   if(pickAhora[1-i].has(k))return 'robado';
+   return banAhora.has(k)?'baneado':''};
+ const etBan=h=>{const k=K(h);if(!k)return '';
+   if(banAhora.has(k))return 'rebaneado';
+   return pickTodos.has(k)?'elegido':''};
+ const ficha=(h,tipo,et,n)=>`<div class="aft${h?'':' sin'}"${et?` data-e="${et}"`:''} style="--i:${n}">
+   ${h?vid(h,tipo):''}${et?`<span class="aet">${AN_ETQ[et]}</span>`:''}</div>`;
+ const panel=(i,c)=>{const T=s.teams[i],U=ultima(T);if(!U)return '';
+   return `<div class="acamp ${c}" style="--c:${T.color}">
+    <div class="ahd">${T.logo?`<img src="${T.logo}">`:''}
+      <div><div class="ak">Última partida · jugó de ${U.lado?'rojo':'azul'}</div>
+      <div class="an">${esc(T.name)}</div></div></div>
+    <div class="alab">Picks</div>
+    <div class="arow apk">${[0,1,2,3,4].map(n=>ficha(U.picks[n],'pick',etPick(U.picks[n],i),n)).join('')}</div>
+    <div class="alab">Baneos</div>
+    <div class="arow abn">${[0,1,2,3,4].map(n=>ficha(U.bans[n],'ban',etBan(U.bans[n]),n+5)).join('')}</div>
+   </div>`};
+ return `<div id="an">${panel(0,'l')}${panel(1,'r')}</div>`}
 function banpool(s){
  const M=Object.assign({tournament:'',season:'',stage:'',game:1},s.match||{});
  const FL2='<span class="pl">&#9654;&#9654;</span>';
@@ -498,7 +585,7 @@ function encajar(){[['.eqn b',27,13],['.pcel .nk',20,11],['.mcen .pie span',25,1
     let f=max;el.style.fontSize=f+'px';
     while(el.scrollWidth>el.clientWidth&&f>min){f-=1;el.style.fontSize=f+'px'}}))}
 function render(s){if(!s.teams)return;_s=s;
- s.teams.forEach((t,i)=>t.color=colorLado(i,t.color));$.innerHTML=({draft,lineup,previous,stats,banpool}[view]||draft)(s);
+ s.teams.forEach((t,i)=>t.color=colorLado(i,t.color));$.innerHTML=({draft,lineup,previous,stats,banpool,analisis}[view]||draft)(s);
  encajar();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(encajar)}
 document.addEventListener('tema',()=>{if(_s)render(_s)});
 let lastS=null;new EventSource('/events').onmessage=e=>{lastS=JSON.parse(e.data);loadMedia().then(()=>render(lastS))};

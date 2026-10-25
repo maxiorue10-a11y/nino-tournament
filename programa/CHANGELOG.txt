@@ -4,6 +4,25 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.26.0 - OVERLAY NUEVO: ANALISIS DEL DRAFT ANTERIOR
+         (http://localhost:3000/overlay.html?view=analisis)
+         Dos paneles a los costados de la pantalla, uno por equipo, con lo que ESE
+         equipo eligio y baneo la ultima vez que jugo. Lo importante es que cada
+         ficha se marca EN VIVO contra el draft que esta corriendo:
+           LO REPITE        volvio a elegir el mismo heroe
+           SE LO ROBARON    lo eligio el equipo rival
+           AHORA BANEADO    ese pick suyo esta baneado en este draft
+           LO REBANEAN      ese baneo suyo se volvio a banear
+           AHORA ELEGIDO    ese baneo suyo ahora lo esta usando alguien
+         Busca la partida de cada equipo POR NOMBRE, asi que si cambiaron de lado
+         entre partidas igual le sigue el rastro al equipo correcto, y la cabecera
+         te dice de que lado la jugo.
+         Si un equipo todavia no tiene ninguna partida guardada su panel no se
+         dibuja, y si no hay ninguna partida guardada el overlay queda transparente:
+         lo podes dejar puesto en OBS toda la transmision sin que moleste.
+         Para que tenga de donde sacar los datos, acordate de usar "Guardar partida"
+         en el control cuando termina cada juego.
+
 0.25.1 - El post-draft line-up ahora muestra LOS BANEOS de cada equipo, debajo de la
          placa con su sigla: los mismos cinco retratos en gris y tachados que ya salian
          en el "draft anterior". Si todavia no hay ningun baneo cargado no se dibuja

@@ -60,6 +60,11 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
   Draft anterior      http://localhost:3000/overlay.html?view=previous
   Estadisticas        http://localhost:3000/overlay.html?view=stats
   Pool de baneos      http://localhost:3000/overlay.html?view=banpool
+  Analisis del draft  http://localhost:3000/overlay.html?view=analisis
+   anterior            (dos paneles a los costados con lo que eligio y baneo cada
+                        equipo la ultima vez, marcado contra el draft de ahora:
+                        "lo repite", "se lo robaron", "ahora baneado", "lo rebanean"
+                        y "ahora elegido". Si no hay partidas guardadas no dibuja nada.)
                       (todos los baneos de la serie juntos, equipo por equipo)
   Pantallas de cierre http://localhost:3000/cierre-overlay.html
                       (MVP, equipo ganador y fin de transmision; se eligen desde
