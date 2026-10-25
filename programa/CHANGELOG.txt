@@ -4,6 +4,26 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.30.0 - EL POST-DRAFT LINE-UP, CON LAS PLACAS NUEVAS Y FONDO AZUL
+       - Arriba, las placas en diagonal con el logo, "LADO AZUL" / "LADO ROJO", el
+         nombre del equipo bien grande y las fichas de partidas ganadas. Las tarjetas
+         de los heroes y los baneos quedan como estaban.
+       - Fondo nuevo: un degradado azul oscuro, de casi negro arriba a azul fuerte
+         abajo. Esta hecho con codigo en vez de una imagen, asi que no hay ningun
+         archivo que copiar y se ve nitido a cualquier tamaño.
+       - Se fue la casilla "Fondo morado en el Line-up" del control, que ya no aplica.
+
+       VOCES, MAS A PRUEBA DE FALLAS (por el caso de Mathilda):
+       - Si copiaste los sonidos DESPUES de abrir el overlay, antes no sonaba ninguno
+         hasta reiniciar OBS. Ahora, la primera vez que no encuentra una voz, vuelve a
+         leer la carpeta solo y reintenta.
+       - Dos picks seguidos ya no se cortan entre si: cada voz usa su propio
+         reproductor en vez de pisar la anterior.
+       - Ahora suena cuando entra al draft un heroe que ANTES NO ESTABA, en vez de
+         fijarse en cada casilla. Asi, pasarle un heroe de un jugador a otro (que
+         cambia dos casillas pero no suma ningun heroe) ya no deja sin sonido al
+         pick siguiente.
+
 0.29.0 - VOCES DE LOS HEROES. Carpeta nueva public/voces/: si dejas ahi los sonidos,
          cada vez que un equipo elige un heroe en el draft suena su voz.
          - Se enciende y se apaga en Control de draft > Torneo, con el volumen al lado

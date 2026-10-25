@@ -160,7 +160,7 @@ const def=()=>({
          {name:'Equipo Rojo',tag:'ROJ',color:'#ff3d55',logo:'',lanes:[0,1,2,3,4],players:E()}],
   picks:[E(),E()],bans:[E(),E()],history:[],prev:-1,saved:null,lib:null,
   match:{game:1,bestOf:5,wins:[0,0],score:'00:00',stage:'NORMAL',tournament:'',season:'',logo:'',
-         step:0,autoTimer:true,useTimer:true,draftStage:false,lineupBg:true,
+         step:0,autoTimer:true,useTimer:true,draftStage:false,
          usarReserva:true,reservaSecs:60,reserva:[60,60],
          timer:{secs:30,left:30,endsAt:0,running:false,modo:'normal'}}});
 let S=def(),conectado=false,tOut,vistaPrev='draft';
@@ -615,7 +615,6 @@ function renderTorneo(){
    <label class="chk"><input type="checkbox" ${M.usarReserva?'checked':''} onchange="set(['match','usarReserva'],this.checked);build()">Usar tiempo de reserva: cuando a un equipo se le acaban los segundos del turno, empieza a gastar su banco
      <button class="sm" style="margin-left:8px" onclick="event.preventDefault();reiniciarReserva()">Reiniciar los bancos</button></label>
    <label class="chk"><input type="checkbox" ${M.draftStage?'checked':''} onchange="set(['match','draftStage'],this.checked)">Mostrar el texto inferior central también en el Draft</label>
-   <label class="chk"><input type="checkbox" ${M.lineupBg!==false?'checked':''} onchange="set(['match','lineupBg'],this.checked)">Fondo morado en el Line-up</label>
    <div class="lbl">Logo del torneo</div>
    <div class="acts" style="align-items:center">
      <div class="lgbox" style="width:76px;height:76px">${M.logo?`<img src="${M.logo}">`:'Sin logo'}</div>

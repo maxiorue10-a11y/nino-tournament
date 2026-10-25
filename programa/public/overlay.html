@@ -76,19 +76,36 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .mcen .pie span{display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;
  letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;padding:0 8px}
 /* ===== POST-DRAFT LINE-UP (estilo claro MPL) ===== */
-#lu{position:absolute;inset:0;overflow:hidden;color:#141821;
- font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+#lu{position:absolute;inset:0;overflow:hidden;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;
+ /* degradado azul oscuro, de casi negro arriba a azul fuerte abajo */
+ background:linear-gradient(180deg,#04091d 0%,#070e2b 15%,#0a1237 30%,#0c184a 50%,#0f1f5d 70%,#102368 85%,#142678 100%)}
+/* placas de los equipos */
+.nplate{position:absolute;top:40px;width:780px;height:150px;display:flex;align-items:center;gap:22px;padding:0 30px}
+.nplate.l{left:0;background:linear-gradient(90deg,var(--c),transparent 72%);border-left:8px solid var(--c);
+ clip-path:polygon(0 0,100% 0,calc(100% - 40px) 100%,0 100%)}
+.nplate.r{right:0;flex-direction:row-reverse;background:linear-gradient(270deg,var(--c),transparent 72%);
+ border-right:8px solid var(--c);clip-path:polygon(0 0,100% 0,100% 100%,40px 100%)}
+.nplate .nlg{width:118px;height:118px;flex:none;display:grid;place-items:center}
+.nplate .nlg img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.6))}
+.nplate .nwho{min-width:0;flex:1}
+.nplate.r .nwho{text-align:right}
+.nplate .nside{font-size:16px;letter-spacing:6px;color:#fff;opacity:.75;text-transform:uppercase}
+.nplate .nnm{font-size:74px;font-weight:800;line-height:.95;letter-spacing:1px;white-space:nowrap;text-transform:uppercase;
+ overflow:hidden;text-overflow:ellipsis;text-shadow:0 4px 16px rgba(0,0,0,.6)}
+.npips{display:flex;gap:6px;margin-top:8px}
+.nplate.r .npips{justify-content:flex-end}
+.npips i{width:30px;height:8px;display:block;transform:skewX(-20deg);background:rgba(255,255,255,.14)}
+.npips i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+
 .pl{display:inline-block;font-size:15px;letter-spacing:-3px}
-.lubg{position:absolute;inset:0;background:linear-gradient(118deg,#fff 0 40%,#eceef1 40% 100%)}
-.lubg i{position:absolute;display:block}
-.lb1{top:-40px;left:-80px;width:300px;height:1300px;transform:rotate(16deg);
- background:repeating-linear-gradient(90deg,rgba(0,0,0,.04) 0 2px,transparent 2px 64px)}
-.lb2{top:60px;left:-60px;width:150px;height:140px;transform:skewX(-18deg);background:#1f34c4}
-.lb3{top:150px;left:-20px;width:18px;height:420px;transform:skewX(-18deg);background:#e9b949}
-.lb4{bottom:-60px;right:-40px;width:170px;height:260px;transform:skewX(-18deg);background:#c8102e;opacity:.85}
-.lb5{bottom:40px;right:160px;width:16px;height:280px;transform:skewX(-18deg);background:#e9b949;opacity:.7}
 .lcinta{position:absolute;left:0;top:0;width:1920px;height:52px;display:flex;align-items:center;padding:0 34px;
  background:#fff;border-bottom:1px solid #e4e6ea;font-family:'Montserrat',sans-serif}
+/* en el line-up la cinta y el pie van sobre el fondo azul oscuro */
+#lu .lcinta{background:rgba(4,9,29,.85);border-bottom:1px solid rgba(233,185,73,.45);color:#eef2ff}
+#lu .lcinta span{color:#8d96b5}
+#lu .lpie{color:#eef2ff}
+#lu .lpie span{color:#8d96b5}
 .lcinta b{font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
 .lcinta span{font-size:18px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#6e737c}
 .lcinta .der{margin-left:auto;display:flex;align-items:center;gap:9px}
@@ -323,15 +340,23 @@ const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const vid=(h,tipo)=>{const f=mediaFor(h,tipo);if(!f)return '';return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline onerror="this.remove()"></video>`:`<img src="${f}" onerror="this.remove()">`};
 const pop=(k,h)=>{const n=prevSeen[k]!==h&&h;prevSeen[k]=h;return n?' pop':''};
 /* ---- voces de los heroes ----
-   Suena en el Draft pick cuando entra un pick nuevo. En el primer dibujo no suena
-   nada: si no, al abrir el overlay con el draft ya cargado sonarian los 10 juntos.
-   Si entran varios de una (por ejemplo al restaurar un draft), tampoco suena. */
-let vozPrimera=true,vozEl=null;
+   Suena en el Draft pick cuando entra al draft un heroe que antes no estaba.
+   Se lleva la lista de los que ya estaban, asi mover un heroe de un jugador a otro
+   (que cambia dos casillas pero no suma ningun heroe nuevo) no hace sonar nada,
+   y restaurar un draft entero tampoco. */
+let vozPrimera=true,vozEnDraft=new Set(),vozEl=null,vozRecarga=false;
 function tocarVoz(h,M){
   if(!M||M.voces===false)return;
-  const u=vozDe(h);if(!u)return;
-  try{if(!vozEl)vozEl=new Audio();
-    vozEl.pause();vozEl.src=u;
+  const u=vozDe(h);
+  if(!u){
+    /* si la lista de voces esta vacia es que se copiaron los archivos despues de abrir
+       el overlay: se vuelve a leer una sola vez y se reintenta */
+    if(!vozRecarga&&!Object.keys(VOCES).length){vozRecarga=true;
+      loadMedia().then(()=>tocarVoz(h,M))}
+    return}
+  try{
+    /* un sonido nuevo no corta al anterior: cada uno usa su propio reproductor */
+    vozEl=new Audio(u);
     vozEl.volume=Math.max(0,Math.min(1,(M.vozVol===undefined?80:M.vozVol)/100));
     const pr=vozEl.play();if(pr&&pr.catch)pr.catch(()=>{})}catch(e){}}
 const FL='<svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21z"/></svg>';
@@ -361,9 +386,9 @@ function draft(s){const[A,B]=s.teams,S2=s;
  /* --c es el color del equipo: los diseños lo usan para las placas y los filos */
  const cab=(T,c,i)=>`<div class="eqn ${c}${act&&act.team===i?' turno':''}" style="--c:${T.color}"><span class="lg">${logo(T)}</span><b>${esc(T.name)}</b>${pips(i)}</div>`;
  const ban=(i,k,h)=>`<div class="bx${h?'':' vac'}${esAct('ban',i,k)?' act':''}${pop('b'+i+k,h)}">${h?vid(h,'ban'):''}</div>`;
- /* los picks que entraron en este dibujo, para saber cual voz tocar */
- const nuevos=[];
- const marcaPick=(i,k,h)=>{const c=pop('p'+i+k,h);if(c&&h)nuevos.push(h);return c};
+ /* que heroes hay elegidos ahora mismo, para compararlos con los de antes */
+ const hoy=new Set();[0,1].forEach(i=>(s.picks[i]||[]).forEach(h=>{if(h)hoy.add(_key(h))}));
+ const marcaPick=(i,k,h)=>pop('p'+i+k,h);
  const cel=(i,k,T,h)=>`<div class="pcel${esAct('pick',i,k)?' act':''}${marcaPick(i,k,h)}" style="--c:${T.color}">
    ${h?`<div class="art">${vid(h,'pick')}</div><div class="hn"><span>${esc(h)}</span></div>`
       :`<div class="lane"><img src="${LANE_ICON[lanes(T)[k]]}" onerror="this.remove()"></div>`}
@@ -374,7 +399,13 @@ function draft(s){const[A,B]=s.teams,S2=s;
    const p=String(T.name||'').trim().split(/\s+/);
    return (p[0]||'').length<=3&&p.length>1?(p[0]+' '+p[1]):(p[0]||'')};
  /* se arma el HTML y recien despues suena, asi no suena de un draft a medio dibujar */
- setTimeout(()=>{if(!vozPrimera&&nuevos.length===1)tocarVoz(nuevos[0],M);vozPrimera=false},0);
+ setTimeout(()=>{
+   const entraron=[...hoy].filter(k=>!vozEnDraft.has(k));
+   vozEnDraft=hoy;
+   if(!vozPrimera&&entraron.length===1){
+     const h=[...(s.picks[0]||[]),...(s.picks[1]||[])].find(x=>x&&_key(x)===entraron[0]);
+     if(h)tocarVoz(h,M)}
+   vozPrimera=false},0);
  return `<div id="mb">
   <div class="r1">
    ${cab(A,'l',0)}
@@ -401,16 +432,20 @@ function draft(s){const[A,B]=s.teams,S2=s;
   </div></div>`}
 function lineup(s){const[A,B]=s.teams;
  const M=Object.assign({wins:[0,0],bestOf:3,game:1,stage:'',tournament:'',season:'',logo:'',
-   lemaIzq:'',lemaDer:'',lineupBg:true},s.match||{});
+   lemaIzq:'',lemaDer:''},s.match||{});
  const need=Math.max(1,Math.ceil((M.bestOf||3)/2));
  const FL2='<span class="pl">&#9654;&#9654;</span>';
  const sigla=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
    return (String(T.name||'').trim().split(/\s+/)[0]||'').toUpperCase()};
- const cab=(T,i,c)=>`<div class="lhead ${c}" style="--c:${T.color}">
-   <div class="lgc">${T.logo?`<img src="${T.logo}">`:''}</div>
-   <div class="tg">${esc(sigla(T))}</div>
-   <div class="wins">${Array.from({length:need},(_,p)=>`<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</div>
- </div>`;
+ /* placa del equipo: logo, lado, nombre y las fichas de partidas ganadas */
+ const placa=(T,i,c)=>`<div class="nplate ${c}" style="--c:${T.color}">
+   <div class="nlg">${T.logo?`<img src="${T.logo}">`:''}</div>
+   <div class="nwho">
+     <div class="nside">${i?'Lado rojo':'Lado azul'}</div>
+     <div class="nnm">${esc(T.name)||(i?'Equipo rojo':'Equipo azul')}</div>
+     <div class="npips">${Array.from({length:need},(_,p)=>`<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</div>
+   </div></div>`;
+
  /* los baneos del equipo, debajo de su placa. Si no hay ninguno, no se dibuja nada. */
  const baneos=(i,c)=>{const b=(s.bans&&s.bans[i])||[];
    if(!b.some(h=>h))return '';
@@ -425,12 +460,10 @@ function lineup(s){const[A,B]=s.teams;
        <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}</div>
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
      </div>`}).join('')}</div>`};
- const fondo=M.lineupBg!==false
-   ?'<div class="lubg"><i class="lb1"></i><i class="lb2"></i><i class="lb3"></i><i class="lb4"></i><i class="lb5"></i></div>':'';
- return `<div id="lu">${fondo}
+ return `<div id="lu">
   <div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
     <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>
-  ${cab(A,0,'l')}${cab(B,1,'r')}
+  ${placa(A,0,'l')}${placa(B,1,'r')}
   ${baneos(0,'l')}${baneos(1,'r')}
   <div class="lcen">
     <div class="ltor">${M.logo?`<img src="${M.logo}">`:`<b>${esc(M.tournament||'')}</b>`}</div>
@@ -594,7 +627,7 @@ function banpool(s){
  </div>`}
 let _s=null;
 function encajar(){[['.eqn b',27,13],['.pcel .nk',20,11],['.mcen .pie span',25,13],['.mcen .mg',23,14],
-   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16],['.bpcab b',34,17],['.bpit .nb',17,11]]
+   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.nplate .nnm',74,30],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16],['.bpcab b',34,17],['.bpit .nb',17,11]]
   .forEach(([sel,max,min])=>document.querySelectorAll(sel).forEach(el=>{
     let f=max;el.style.fontSize=f+'px';
     while(el.scrollWidth>el.clientWidth&&f>min){f-=1;el.style.fontSize=f+'px'}}))}
