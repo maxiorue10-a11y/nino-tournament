@@ -4,6 +4,16 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.30.1 - Tres retoques del line-up:
+       - EL FONDO pasa a ser el del codigo que pasaste: un brillo azul del lado del
+         equipo azul, uno rojo del lado rojo, una trama fina en diagonal y un degradado
+         de base. Sigue siendo codigo, no una imagen.
+       - VUELVE EL "VS" del medio, con la barandilla dorada arriba y abajo. Las dos
+         columnas de tarjetas se angostaron un poco para hacerle lugar; quedo centrado
+         exactamente a la altura de las tarjetas.
+       - EL MARCADOR DE LA SERIE (por ejemplo 2 : 1, en azul y rojo) aparece abajo de
+         la ficha de la partida, en el centro.
+
 0.30.0 - EL POST-DRAFT LINE-UP, CON LAS PLACAS NUEVAS Y FONDO AZUL
        - Arriba, las placas en diagonal con el logo, "LADO AZUL" / "LADO ROJO", el
          nombre del equipo bien grande y las fichas de partidas ganadas. Las tarjetas

@@ -78,8 +78,11 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 /* ===== POST-DRAFT LINE-UP (estilo claro MPL) ===== */
 #lu{position:absolute;inset:0;overflow:hidden;color:#eef2ff;
  font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;
- /* degradado azul oscuro, de casi negro arriba a azul fuerte abajo */
- background:linear-gradient(180deg,#04091d 0%,#070e2b 15%,#0a1237 30%,#0c184a 50%,#0f1f5d 70%,#102368 85%,#142678 100%)}
+ /* un brillo azul de un lado, uno rojo del otro, una trama fina y el degradado de base */
+ background:radial-gradient(ellipse at 22% 55%,rgba(58,160,255,.16),transparent 45%),
+  radial-gradient(ellipse at 78% 55%,rgba(255,70,85,.14),transparent 45%),
+  repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),
+  linear-gradient(180deg,#0e1530,#070a12 70%)}
 /* placas de los equipos */
 .nplate{position:absolute;top:40px;width:780px;height:150px;display:flex;align-items:center;gap:22px;padding:0 30px}
 .nplate.l{left:0;background:linear-gradient(90deg,var(--c),transparent 72%);border-left:8px solid var(--c);
@@ -127,7 +130,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .lcen{position:absolute;left:50%;top:66px;transform:translateX(-50%);z-index:3;
  display:flex;flex-direction:column;align-items:center;gap:14px}
 .ltor{width:320px;display:grid;place-items:center}
-.ltor img{max-width:100%;max-height:170px;object-fit:contain}
+.ltor img{max-width:100%;max-height:150px;object-fit:contain}
 .ltor b{font-size:46px;font-weight:800;color:#e9b949;text-transform:uppercase;text-align:center;line-height:1}
 .lchips{display:flex;height:40px}
 .lchips b{display:flex;align-items:center;padding:0 26px;font-size:24px;font-weight:800;letter-spacing:1px;
@@ -137,7 +140,15 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
  clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
 /* la banda del arte va justa al alto del heroe, asi no queda un hueco grande arriba */
 .lgrid{position:absolute;top:352px;height:520px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
-.lgrid.l{left:52px;width:890px}.lgrid.r{right:52px;width:890px}
+.lgrid.l{left:46px;width:850px}.lgrid.r{right:46px;width:850px}
+/* el VS del medio, con una barandilla dorada arriba y abajo */
+.nvs{position:absolute;left:910px;width:100px;top:427px;text-align:center;font-size:92px;font-weight:800;
+ line-height:.8;color:var(--gold,#e9b949);text-shadow:0 0 24px rgba(233,185,73,.55),0 6px 18px rgba(0,0,0,.8)}
+.nvs:before,.nvs:after{content:'';display:block;width:3px;height:120px;margin:14px auto;
+ background:linear-gradient(180deg,transparent,var(--gold,#e9b949),transparent)}
+/* el marcador de la serie, abajo de la ficha de la partida */
+.lsc{font-size:46px;font-weight:800;line-height:1;letter-spacing:4px;text-align:center}
+.lsc b{color:var(--blue,#2f80ff)}.lsc i{font-style:normal;color:var(--red,#ff3d55)}
 .lcard{position:relative;overflow:hidden;background:linear-gradient(#e9ecf0,#d8dce2)}
 /* El heroe entra entero y centrado en su banda, sin fondo borroso ni degradados
    encima: lo que sobra a los costados queda del color liso de la carta. */
@@ -468,7 +479,9 @@ function lineup(s){const[A,B]=s.teams;
   <div class="lcen">
     <div class="ltor">${M.logo?`<img src="${M.logo}">`:`<b>${esc(M.tournament||'')}</b>`}</div>
     <div class="lchips">${M.stage?`<b class="c1">${esc(M.stage)}</b>`:''}<b class="c2">Partida ${esc(M.game)} &middot; BO${esc(M.bestOf)}</b></div>
+    <div class="lsc"><b>${M.wins[0]|0}</b> : <i>${M.wins[1]|0}</i></div>
   </div>
+  <div class="nvs">VS</div>
   ${tarjetas(0,A,'l')}${tarjetas(1,B,'r')}
   ${M.lemaIzq?`<div class="lpie l">&#10006; <b>${esc(M.lemaIzq)}</b></div>`:''}
   ${M.lemaDer?`<div class="lpie r"><b>${esc(M.lemaDer)}</b> ${FL2}</div>`:''}
