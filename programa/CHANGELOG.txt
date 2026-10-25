@@ -4,6 +4,13 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.30.2 - Dos ajustes del line-up:
+       - SE FUE LA CINTA DE ARRIBA, la que mostraba el nombre del torneo a la izquierda
+         y la season con la fase a la derecha. Esos datos ya estan en el centro y abajo.
+         El "Draft anterior" la mantiene, ahi no cambia nada.
+       - LOS BANEOS se corren hacia los bordes: el bloque de la izquierda arranca a 40px
+         del borde en vez de 150, y el de la derecha igual del otro lado.
+
 0.30.1 - Tres retoques del line-up:
        - EL FONDO pasa a ser el del codigo que pasaste: un brillo azul del lado del
          equipo azul, uno rojo del lado rojo, una trama fina en diagonal y un degradado

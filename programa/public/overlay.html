@@ -104,9 +104,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .pl{display:inline-block;font-size:15px;letter-spacing:-3px}
 .lcinta{position:absolute;left:0;top:0;width:1920px;height:52px;display:flex;align-items:center;padding:0 34px;
  background:#fff;border-bottom:1px solid #e4e6ea;font-family:'Montserrat',sans-serif}
-/* en el line-up la cinta y el pie van sobre el fondo azul oscuro */
-#lu .lcinta{background:rgba(4,9,29,.85);border-bottom:1px solid rgba(233,185,73,.45);color:#eef2ff}
-#lu .lcinta span{color:#8d96b5}
+/* en el line-up el pie va sobre el fondo azul oscuro */
 #lu .lpie{color:#eef2ff}
 #lu .lpie span{color:#8d96b5}
 .lcinta b{font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
@@ -253,7 +251,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .pvban i.sin{background:#e3e6ea}.pvban i.sin:after{background:#b9bfc8}
 /* los mismos baneos, pero en el line-up: debajo de la placa de cada equipo */
 .luban{top:200px}
-.luban.l{left:150px}.luban.r{right:150px}
+.luban.l{left:40px}.luban.r{right:40px}
 .pvgrid{position:absolute;top:360px;height:520px;width:890px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
 .pvgrid.l{left:52px}.pvgrid.r{right:52px}
 .pvpie{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-size:21px;font-weight:700;
@@ -472,8 +470,6 @@ function lineup(s){const[A,B]=s.teams;
        <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
      </div>`}).join('')}</div>`};
  return `<div id="lu">
-  <div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
-    <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>
   ${placa(A,0,'l')}${placa(B,1,'r')}
   ${baneos(0,'l')}${baneos(1,'r')}
   <div class="lcen">
