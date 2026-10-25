@@ -4,6 +4,12 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.28.1 - VUELVE ATRAS EL LINE-UP. El rediseño de la 0.28.0 (placas en diagonal, cartas
+         inclinadas y el VS en el medio) queda sin efecto: el Post-Draft Line-up vuelve
+         exactamente al diseño anterior, el de las cartas derechas con el nombre del
+         heroe adentro y el nick abajo, que es el que querias mantener.
+         Todo lo demas de la 0.28.0 y de la 0.27.0 se queda como estaba.
+
 0.28.0 - EL POST-DRAFT LINE-UP, REHECHO. Pasa del estilo claro al oscuro, con la misma
          idea de la referencia que pasaste:
        - Arriba, dos placas grandes en diagonal con el logo, el lado, el nombre bien
