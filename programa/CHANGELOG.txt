@@ -4,6 +4,27 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.28.0 - EL POST-DRAFT LINE-UP, REHECHO. Pasa del estilo claro al oscuro, con la misma
+         idea de la referencia que pasaste:
+       - Arriba, dos placas grandes en diagonal con el logo, el lado, el nombre bien
+         grande y las fichas de partidas ganadas. En el medio, el logo del torneo, la
+         partida y el marcador de la serie (2 : 1) en azul y rojo.
+       - Las cinco cartas de cada equipo quedan inclinadas, con el heroe llenandolas,
+         el numero de ranura marcado atras, el icono de la linea en un circulo, el nick
+         del jugador en dorado, el nombre del heroe grande y una franja del color del
+         equipo abajo.
+       - Un VS grande en el medio, con dos lineas doradas.
+       - Abajo, los baneos de cada equipo con el tachado rojo, y al pie el nombre del
+         torneo, el subtitulo y la fase.
+       El "Draft anterior" NO cambia: sigue como estaba.
+       Dos cosas de la referencia que no copie, y por que:
+       - Las animaciones de entrada (las cartas subiendo, las placas entrando de
+         costado). Nuestros overlays se redibujan cada vez que tocas algo en el
+         control, asi que la animacion se repetiria a cada tecla y marearia en vivo.
+         El destello cuando entra un pick nuevo si quedo.
+       - La marca de agua gigante del logo atras: con un logo que no sea transparente
+         (como el tuyo) quedaba un recuadro gris en el medio de la pantalla.
+
 0.27.0 - SE FUE EL CAPITAN. Se saco de todas partes: el selector de la tarjeta Serie,
          la columna "C" de la tabla de jugadores, el boton de las ranuras de equipos
          guardados y la insignia dorada que salia al lado del nick en el draft, en el

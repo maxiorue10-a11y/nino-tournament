@@ -84,36 +84,19 @@
 :root[data-diseno="midnight"] .mcen .pie span{box-shadow:inset 0 2px 0 rgba(255,255,255,.18)}
 
 /* ===========================================================================
-   MIDNIGHT  ·  post-draft line-up  (y el "draft anterior", que usa las mismas cartas)
+   MIDNIGHT  ·  draft anterior  (el line-up ya trae su propio fondo oscuro)
    =========================================================================== */
 :root[data-diseno="midnight"] #lu,
 :root[data-diseno="midnight"] #pv{color:#eef2ff}
 :root[data-diseno="midnight"] #pv{background:#070a12}
-:root[data-diseno="midnight"] .lubg{background:linear-gradient(118deg,#0e1530 0 40%,#070a12 40% 100%)}
-:root[data-diseno="midnight"] .lb1{background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 2px,transparent 2px 64px)}
-:root[data-diseno="midnight"] .lb2{background:var(--blue,#4fb3ff);opacity:.55}
-:root[data-diseno="midnight"] .lb4{background:var(--red,#ff5a6e);opacity:.5}
-:root[data-diseno="midnight"] .lb3,
-:root[data-diseno="midnight"] .lb5{background:var(--gold,#e9b949);opacity:.8}
-/* la cinta de arriba */
+/* la cinta de arriba del "draft anterior" */
 :root[data-diseno="midnight"] .lcinta{background:rgba(7,10,18,.92);border-bottom:1px solid rgba(233,185,73,.45)}
 :root[data-diseno="midnight"] .lcinta span{color:#8d96b5}
-/* los equipos */
-:root[data-diseno="midnight"] .lhead .lgc,
-:root[data-diseno="midnight"] .lhead .wins,
-:root[data-diseno="midnight"] .pvhead .lgc{background:rgba(7,10,18,.85);border-color:rgba(255,255,255,.12)}
-:root[data-diseno="midnight"] .lhead .wins i{background:rgba(255,255,255,.14)}
-:root[data-diseno="midnight"] .lhead .wins i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
 /* la placa del equipo va recta: el corte en diagonal dejaba un triangulo del fondo
-   metido entre el color del equipo y las fichas de partidas ganadas */
-:root[data-diseno="midnight"] .lhead .tg,
-:root[data-diseno="midnight"] .lhead.r .tg,
+   metido entre el color del equipo y el resto */
+:root[data-diseno="midnight"] .pvhead .lgc{background:rgba(7,10,18,.85);border-color:rgba(255,255,255,.12)}
 :root[data-diseno="midnight"] .pvhead .tg,
 :root[data-diseno="midnight"] .pvhead.r .tg{clip-path:none;text-shadow:0 0 22px var(--c)}
-:root[data-diseno="midnight"] .lhead.l .tg{border-radius:0 6px 6px 0}
-:root[data-diseno="midnight"] .lhead.r .tg{border-radius:6px 0 0 6px}
-/* el nombre del torneo y la ficha de la partida */
-:root[data-diseno="midnight"] .lchips .c1{background:rgba(7,10,18,.85);border-color:rgba(233,185,73,.45);color:#eef2ff}
 /* las cartas de los heroes */
 :root[data-diseno="midnight"] .lcard{
   background:linear-gradient(180deg,rgba(30,43,87,.9),rgba(7,10,18,.96));
@@ -124,7 +107,6 @@
   background:rgba(7,10,18,.92);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);border-radius:0 0 14px 14px}
 :root[data-diseno="midnight"] .lcard .ln{background:rgba(255,255,255,.08);border-radius:0 0 0 14px}
 :root[data-diseno="midnight"] .lcard .vacio img{opacity:.22;filter:brightness(0) invert(1)}
-:root[data-diseno="midnight"] .lpie span{color:#8d96b5}
 /* los baneos (los del line-up y los del draft anterior) */
 :root[data-diseno="midnight"] .pvban em{color:#8d96b5}
 :root[data-diseno="midnight"] .pvban i{background:#121a2e;border-radius:6px;

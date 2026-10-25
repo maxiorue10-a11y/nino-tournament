@@ -75,61 +75,92 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .mcen .pie{height:42px;width:100%;display:grid;grid-template-columns:1fr 1fr}
 .mcen .pie span{display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;
  letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;padding:0 8px}
-/* ===== POST-DRAFT LINE-UP (estilo claro MPL) ===== */
-#lu{position:absolute;inset:0;overflow:hidden;color:#141821;
- font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+/* ===== POST-DRAFT LINE-UP ===== */
+#lu{position:absolute;inset:0;overflow:hidden;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase;
+ background:radial-gradient(ellipse at 22% 55%,rgba(58,160,255,.16),transparent 45%),
+  radial-gradient(ellipse at 78% 55%,rgba(255,70,85,.14),transparent 45%),
+  repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),
+  linear-gradient(180deg,#0e1530,#070a12 70%)}
+/* placas de los equipos */
+.nplate{position:absolute;top:40px;width:780px;height:150px;display:flex;align-items:center;gap:22px;padding:0 30px}
+.nplate.l{left:0;background:linear-gradient(90deg,var(--c),transparent 72%);border-left:8px solid var(--c);
+ clip-path:polygon(0 0,100% 0,calc(100% - 40px) 100%,0 100%)}
+.nplate.r{right:0;flex-direction:row-reverse;background:linear-gradient(270deg,var(--c),transparent 72%);
+ border-right:8px solid var(--c);clip-path:polygon(0 0,100% 0,100% 100%,40px 100%)}
+.nplate .nlg{width:118px;height:118px;flex:none;display:grid;place-items:center}
+.nplate .nlg img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.6))}
+.nplate .nwho{min-width:0;flex:1}
+.nplate.r .nwho{text-align:right}
+.nplate .nside{font-size:16px;letter-spacing:6px;color:#fff;opacity:.75}
+.nplate .nnm{font-size:74px;font-weight:800;line-height:.95;letter-spacing:1px;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;text-shadow:0 4px 16px rgba(0,0,0,.6)}
+.npips{display:flex;gap:6px;margin-top:8px}
+.nplate.r .npips{justify-content:flex-end}
+.npips i{width:30px;height:8px;display:block;transform:skewX(-20deg);background:rgba(255,255,255,.14)}
+.npips i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+/* centro: logo del torneo, partida y marcador de la serie */
+.ncen{position:absolute;top:34px;left:780px;width:360px;height:170px;
+ display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ncen .ntl{width:92px;height:92px;display:grid;place-items:center}
+.ncen .ntl img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 0 16px rgba(233,185,73,.4))}
+.ncen .ng{font-size:17px;letter-spacing:5px;color:var(--gold2,#f6d98a);margin-top:6px;white-space:nowrap}
+.ncen .nsc{font-size:46px;font-weight:800;line-height:1;letter-spacing:4px}
+.ncen .nsc b{color:var(--blue,#3aa0ff)}.ncen .nsc i{font-style:normal;color:var(--red,#ff4655)}
+/* las cinco cartas de cada equipo */
+.nteam{position:absolute;top:236px;height:620px;width:860px;display:flex;gap:12px}
+.nteam.l{left:50px}.nteam.r{right:50px;flex-direction:row-reverse}
+.ncard{flex:1;position:relative;overflow:hidden;transform:skewX(-4deg);border-radius:4px;
+ background:linear-gradient(180deg,#1e2b57,#070a12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.nteam.r .ncard{transform:skewX(4deg)}
+/* el contenido se des-inclina, asi el heroe y los textos salen derechos */
+.ncard .nin{position:absolute;inset:0 -40px;transform:skewX(4deg)}
+.nteam.r .ncard .nin{transform:skewX(-4deg)}
+.ncard .nart{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 14%}
+.ncard .nsh{position:absolute;inset:0;
+ background:linear-gradient(180deg,rgba(7,10,18,.3) 0%,transparent 22%,transparent 52%,rgba(7,10,18,.97) 86%)}
+.ncard .nno{position:absolute;top:12px;left:56px;font-size:58px;font-weight:800;line-height:1;color:rgba(255,255,255,.12)}
+.nteam.r .ncard .nno{left:auto;right:56px}
+/* 64px de margen a cada lado: abajo el borde inclinado se corre ~22px, y asi el
+   nombre nunca queda cortado contra el filo de la tarjeta */
+.ncard .ninfo{position:absolute;left:64px;right:64px;bottom:22px;text-align:center}
+.ncard .nln{width:46px;height:46px;object-fit:contain;display:block;margin:0 auto 8px;padding:6px;border-radius:50%;
+ background:rgba(7,10,18,.75);box-shadow:inset 0 0 0 1px rgba(233,185,73,.5);filter:brightness(0) invert(1)}
+.ncard .npn{font-size:20px;letter-spacing:2px;color:var(--gold2,#f6d98a);white-space:nowrap;overflow:hidden}
+.ncard .nhn{font-size:36px;font-weight:800;line-height:.95;letter-spacing:.5px;white-space:nowrap;
+ overflow:hidden;margin-top:4px}
+.ncard .nbar{position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--c);box-shadow:0 0 16px var(--c)}
+.ncard.vacia .nhn{color:rgba(255,255,255,.2)}
+/* el VS del medio */
+.nvs{position:absolute;left:910px;width:100px;top:336px;text-align:center;font-size:92px;font-weight:800;
+ line-height:.8;color:var(--gold,#e9b949);text-shadow:0 0 24px rgba(233,185,73,.55),0 6px 18px rgba(0,0,0,.8)}
+.nvs:before,.nvs:after{content:'';display:block;width:3px;height:150px;margin:14px auto;
+ background:linear-gradient(180deg,transparent,var(--gold,#e9b949),transparent)}
+/* los baneos de abajo */
+.nbans{position:absolute;top:900px;width:760px;display:flex;align-items:center;gap:12px}
+.nbans.l{left:60px}.nbans.r{right:60px;flex-direction:row-reverse}
+.nbans .nlab{font-size:16px;letter-spacing:5px;color:#8d96b5;writing-mode:vertical-rl;transform:rotate(180deg)}
+.nbans.r .nlab{transform:none}
+.nban{width:96px;height:96px;position:relative;overflow:hidden;background:#0e1530;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+ clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%)}
+.nban img,.nban video{width:100%;height:100%;object-fit:cover;object-position:center 18%;filter:grayscale(1) brightness(.7)}
+.nban:after{content:'';position:absolute;left:4px;right:4px;top:50%;height:6px;border-radius:3px;
+ background:var(--red,#ff4655);transform:rotate(-42deg);box-shadow:0 0 6px var(--red,#ff4655)}
+.nban.vacio:after{background:rgba(255,255,255,.14);box-shadow:none}
+.nfoot{position:absolute;left:0;right:0;bottom:18px;text-align:center;font-size:15px;letter-spacing:8px;
+ color:rgba(255,255,255,.34);white-space:nowrap}
+/* lo que sigue lo usa el "Draft anterior", que mantiene el estilo claro */
 .pl{display:inline-block;font-size:15px;letter-spacing:-3px}
-.lubg{position:absolute;inset:0;background:linear-gradient(118deg,#fff 0 40%,#eceef1 40% 100%)}
-.lubg i{position:absolute;display:block}
-.lb1{top:-40px;left:-80px;width:300px;height:1300px;transform:rotate(16deg);
- background:repeating-linear-gradient(90deg,rgba(0,0,0,.04) 0 2px,transparent 2px 64px)}
-.lb2{top:60px;left:-60px;width:150px;height:140px;transform:skewX(-18deg);background:#1f34c4}
-.lb3{top:150px;left:-20px;width:18px;height:420px;transform:skewX(-18deg);background:#e9b949}
-.lb4{bottom:-60px;right:-40px;width:170px;height:260px;transform:skewX(-18deg);background:#c8102e;opacity:.85}
-.lb5{bottom:40px;right:160px;width:16px;height:280px;transform:skewX(-18deg);background:#e9b949;opacity:.7}
 .lcinta{position:absolute;left:0;top:0;width:1920px;height:52px;display:flex;align-items:center;padding:0 34px;
  background:#fff;border-bottom:1px solid #e4e6ea;font-family:'Montserrat',sans-serif}
 .lcinta b{font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
 .lcinta span{font-size:18px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#6e737c}
 .lcinta .der{margin-left:auto;display:flex;align-items:center;gap:9px}
-.lhead{position:absolute;top:92px;height:86px;display:flex;align-items:stretch}
-.lhead.l{left:150px}.lhead.r{right:150px;flex-direction:row-reverse}
-.lhead .lgc{width:124px;background:#fff;border:1px solid #e4e6ea;display:grid;place-items:center;padding:8px}
-.lhead .lgc img{max-width:100%;max-height:100%;object-fit:contain}
-.lhead .tg{min-width:270px;padding:0 34px;background:var(--c);display:flex;align-items:center;justify-content:center;
- color:#fff;font-size:58px;font-weight:800;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;
- clip-path:polygon(0 0,100% 0,calc(100% - 26px) 100%,0 100%)}
-.lhead.r .tg{clip-path:polygon(26px 0,100% 0,100% 100%,0 100%)}
-.lhead .wins{width:104px;background:#fff;border:1px solid #e4e6ea;display:flex;align-items:center;
- justify-content:center;gap:7px}
-.lhead .wins i{width:9px;height:42px;background:#d6d9df;display:block}
-.lhead .wins i.on{background:var(--c)}
-/* El nombre (o el logo) del torneo y la ficha de la partida van en una sola columna
-   centrada, asi la ficha queda siempre pegada abajo del nombre y no flotando lejos. */
-/* arranca debajo de la cinta de arriba, asi el logo nunca la cruza */
-.lcen{position:absolute;left:50%;top:66px;transform:translateX(-50%);z-index:3;
- display:flex;flex-direction:column;align-items:center;gap:14px}
-.ltor{width:320px;display:grid;place-items:center}
-.ltor img{max-width:100%;max-height:170px;object-fit:contain}
-.ltor b{font-size:46px;font-weight:800;color:#e9b949;text-transform:uppercase;text-align:center;line-height:1}
-.lchips{display:flex;height:40px}
-.lchips b{display:flex;align-items:center;padding:0 26px;font-size:24px;font-weight:800;letter-spacing:1px;
- text-transform:uppercase;white-space:nowrap}
-.lchips .c1{background:#fff;border:1px solid #e4e6ea;clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
-.lchips .c2{background:linear-gradient(90deg,#f0cf78,#e9b949);color:#141821;margin-left:-14px;padding-left:34px;
- clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
-/* la banda del arte va justa al alto del heroe, asi no queda un hueco grande arriba */
-.lgrid{position:absolute;top:352px;height:520px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
-.lgrid.l{left:52px;width:890px}.lgrid.r{right:52px;width:890px}
 .lcard{position:relative;overflow:hidden;background:linear-gradient(#e9ecf0,#d8dce2)}
-/* El heroe entra entero y centrado en su banda, sin fondo borroso ni degradados
-   encima: lo que sobra a los costados queda del color liso de la carta. */
 .lcard .art{position:absolute;left:0;right:0;top:0;bottom:44px;overflow:hidden}
-/* el heroe llena la tarjeta entera: sin franjas vacias arriba ni abajo */
 .lcard .art>img,.lcard .art>video{position:absolute;inset:0;width:100%;height:100%;z-index:2;
  object-fit:cover;object-position:center top}
-/* El nombre del heroe va DENTRO del recuadro, apoyado abajo del arte. Lleva una
-   sombra degradada atras para que se lea sobre cualquier imagen. */
 .lcard .hname{position:absolute;left:0;right:0;bottom:44px;height:76px;display:flex;align-items:flex-end;
  justify-content:center;font-size:23px;font-weight:700;
  letter-spacing:1px;text-transform:uppercase;color:#fff;z-index:4;
@@ -144,10 +175,6 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .lcard .ln{position:absolute;left:0;bottom:0;width:34px;height:44px;background:rgba(0,0,0,.22);
  display:grid;place-items:center;z-index:4}
 .lcard .ln img{width:21px;height:21px;object-fit:contain;filter:brightness(0) invert(1);opacity:.95}
-.lpie{position:absolute;bottom:26px;display:flex;align-items:center;gap:10px;
- font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;text-transform:uppercase}
-.lpie.l{left:34px}.lpie.r{right:34px}
-.lpie span{font-weight:500;color:#5d636d}
 /* ===== ANALISIS DEL DRAFT ANTERIOR (dos paneles a los costados) ===== */
 #an{position:absolute;inset:0;font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;color:#eef2ff}
 .acamp{position:absolute;top:420px;width:470px;padding:0 0 14px;
@@ -223,9 +250,6 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
 .pvban i:after{content:'';position:absolute;left:-12%;right:-12%;top:50%;height:3px;background:#d8384a;
  transform:rotate(-30deg)}
 .pvban i.sin{background:#e3e6ea}.pvban i.sin:after{background:#b9bfc8}
-/* los mismos baneos, pero en el line-up: debajo de la placa de cada equipo */
-.luban{top:200px}
-.luban.l{left:150px}.luban.r{right:150px}
 .pvgrid{position:absolute;top:360px;height:520px;width:890px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
 .pvgrid.l{left:52px}.pvgrid.r{right:52px}
 .pvpie{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-size:21px;font-weight:700;
@@ -384,44 +408,46 @@ function draft(s){const[A,B]=s.teams,S2=s;
   </div></div>`}
 function lineup(s){const[A,B]=s.teams;
  const M=Object.assign({wins:[0,0],bestOf:3,game:1,stage:'',tournament:'',season:'',logo:'',
-   lemaIzq:'',lemaDer:'',lineupBg:true},s.match||{});
+   lemaIzq:'',lemaDer:''},s.match||{});
  const need=Math.max(1,Math.ceil((M.bestOf||3)/2));
- const FL2='<span class="pl">&#9654;&#9654;</span>';
- const sigla=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
-   return (String(T.name||'').trim().split(/\s+/)[0]||'').toUpperCase()};
- const cab=(T,i,c)=>`<div class="lhead ${c}" style="--c:${T.color}">
-   <div class="lgc">${T.logo?`<img src="${T.logo}">`:''}</div>
-   <div class="tg">${esc(sigla(T))}</div>
-   <div class="wins">${Array.from({length:need},(_,p)=>`<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</div>
- </div>`;
- /* los baneos del equipo, debajo de su placa. Si no hay ninguno, no se dibuja nada. */
- const baneos=(i,c)=>{const b=(s.bans&&s.bans[i])||[];
-   if(!b.some(h=>h))return '';
-   return `<div class="pvban luban ${c}"><em>Baneos</em>${b.map(h=>
-     `<i class="${h?'':'sin'}" title="${esc(h)}">${h?vid(h,'ban'):''}</i>`).join('')}</div>`};
+ /* placa del equipo: logo, lado, nombre y las fichas de partidas ganadas */
+ const placa=(T,i,c)=>`<div class="nplate ${c}" style="--c:${T.color}">
+   <div class="nlg">${T.logo?`<img src="${T.logo}">`:''}</div>
+   <div class="nwho">
+     <div class="nside">${i?'Lado rojo':'Lado azul'}</div>
+     <div class="nnm">${esc(T.name)||(i?'Equipo rojo':'Equipo azul')}</div>
+     <div class="npips">${Array.from({length:need},(_,p)=>`<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</div>
+   </div></div>`;
+ /* las cinco cartas, ordenadas por linea */
  const tarjetas=(i,T,c)=>{const lanes=T.lanes||[0,1,2,3,4];
    const ord=[0,1,2,3,4].sort((x,y)=>(lanes[x]-lanes[y])||(x-y));
-   return `<div class="lgrid ${c}">${ord.map(k=>{const h=s.picks[i][k],ln=lanes[k];
-     return `<div class="lcard${pop('lu'+i+k,h)}" style="--c:${T.color}">
-       ${h?`<div class="art">${vid(h,'pick')}</div><div class="hname">${esc(h)}</div>`
-          :`<div class="vacio"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></div>`}
-       <div class="nk">${esc(T.players[k])||'Jugador '+(k+1)}</div>
-       <span class="ln"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>
-     </div>`}).join('')}</div>`};
- const fondo=M.lineupBg!==false
-   ?'<div class="lubg"><i class="lb1"></i><i class="lb2"></i><i class="lb3"></i><i class="lb4"></i><i class="lb5"></i></div>':'';
- return `<div id="lu">${fondo}
-  <div class="lcinta">${FL2}&nbsp;<b>${esc(M.tournament||'')}</b>&nbsp;${FL2}
-    <span class="der">${FL2}&nbsp;<b>${esc(M.season||'')}</b>&nbsp;<span>${esc(M.stage||'')}</span>&nbsp;&#10033;</span></div>
-  ${cab(A,0,'l')}${cab(B,1,'r')}
-  ${baneos(0,'l')}${baneos(1,'r')}
-  <div class="lcen">
-    <div class="ltor">${M.logo?`<img src="${M.logo}">`:`<b>${esc(M.tournament||'')}</b>`}</div>
-    <div class="lchips">${M.stage?`<b class="c1">${esc(M.stage)}</b>`:''}<b class="c2">Partida ${esc(M.game)} &middot; BO${esc(M.bestOf)}</b></div>
+   return `<div class="nteam ${c}">${ord.map((k,n)=>{const h=s.picks[i][k],ln=lanes[k];
+     return `<div class="ncard${h?'':' vacia'}${pop('lu'+i+k,h)}" style="--c:${T.color}">
+       <div class="nin">
+         ${h?vid(h,'pick').replace('<img ','<img class="nart" ').replace('<video ','<video class="nart" '):''}
+         <div class="nsh"></div><span class="nno">${n+1}</span>
+         <div class="ninfo">
+           <img class="nln" src="${LANE_ICON[ln]}" onerror="this.remove()">
+           <div class="npn">${esc(T.players[k])||'Jugador '+(k+1)}</div>
+           <div class="nhn">${h?esc(h):'—'}</div>
+         </div>
+       </div><div class="nbar"></div></div>`}).join('')}</div>`};
+ /* los baneos del equipo, abajo */
+ const baneos=(i,c)=>`<div class="nbans ${c}"><span class="nlab">Baneos</span>${[0,1,2,3,4].map(k=>{
+   const h=(s.bans[i]||[])[k];
+   return `<div class="nban${h?'':' vacio'}">${h?vid(h,'ban'):''}</div>`}).join('')}</div>`;
+ const pie=[M.tournament,M.season,M.stage].filter(x=>String(x||'').trim()).join(' · ');
+ return `<div id="lu">
+  ${placa(A,0,'l')}${placa(B,1,'r')}
+  <div class="ncen">
+    <div class="ntl">${M.logo?`<img src="${M.logo}">`:''}</div>
+    <div class="ng">Partida ${esc(M.game)} &middot; BO${esc(M.bestOf)}</div>
+    <div class="nsc"><b>${M.wins[0]|0}</b> : <i>${M.wins[1]|0}</i></div>
   </div>
   ${tarjetas(0,A,'l')}${tarjetas(1,B,'r')}
-  ${M.lemaIzq?`<div class="lpie l">&#10006; <b>${esc(M.lemaIzq)}</b></div>`:''}
-  ${M.lemaDer?`<div class="lpie r"><b>${esc(M.lemaDer)}</b> ${FL2}</div>`:''}
+  <div class="nvs">VS</div>
+  ${baneos(0,'l')}${baneos(1,'r')}
+  ${pie?`<div class="nfoot">${esc(pie)}</div>`:''}
  </div>`}
 function previous(s){const g=s.history&&s.history[s.prev];
  const M=Object.assign({tournament:'',season:'',stage:'',bestOf:5},s.match||{});
@@ -577,7 +603,8 @@ function banpool(s){
  </div>`}
 let _s=null;
 function encajar(){[['.eqn b',27,13],['.pcel .nk',20,11],['.mcen .pie span',25,13],['.mcen .mg',23,14],
-   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16],['.bpcab b',34,17],['.bpit .nb',17,11]]
+   ['.lcard .nk',24,13],['.lcard .hname',23,13],
+   ['.nplate .nnm',74,34],['.ncard .nhn',36,17],['.ncard .npn',20,10],['.ncen .ng',17,12],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16],['.bpcab b',34,17],['.bpit .nb',17,11]]
   .forEach(([sel,max,min])=>document.querySelectorAll(sel).forEach(el=>{
     let f=max;el.style.fontSize=f+'px';
     while(el.scrollWidth>el.clientWidth&&f>min){f-=1;el.style.fontSize=f+'px'}}))}
