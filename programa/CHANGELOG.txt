@@ -4,6 +4,21 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.31.0 - EL DRAFT AHORA RESPETA LAS FASES. Mientras el draft corre, solo se puede
+         escribir en la casilla que esta en turno: las demas quedan rayadas y no dejan
+         escribir, como en un draft de verdad, donde nadie elige fuera de su fase.
+         La casilla que toca ahora late en dorado, asi se ve de lejos cual es.
+       - BOTON NUEVO "EDITAR LIBRE" (arriba, al lado de Corregir): destraba todas las
+         casillas para arreglar algo de una fase anterior, y queda marcado en dorado
+         mientras esta puesto. Se apaga tocandolo de nuevo y el draft sigue donde iba.
+         Ojo que no es lo mismo que "Corregir", que borra el ultimo heroe cargado y
+         vuelve a esa fase.
+       - Cuando el draft termina se desbloquea todo solo, para que puedas ajustar lo
+         que haga falta antes del line-up.
+       - Si preferis como estaba antes, apaga "Respetar las fases" en la tarjeta Torneo.
+       El orden de las fases no cambio: ya era el de un torneo (3+3 baneos, picks
+       1-2-2-1, 2+2 baneos, picks 1-2-1).
+
 0.30.2 - Dos ajustes del line-up:
        - SE FUE LA CINTA DE ARRIBA, la que mostraba el nombre del torneo a la izquierda
          y la season con la fase a la derecha. Esos datos ya estan en el centro y abajo.

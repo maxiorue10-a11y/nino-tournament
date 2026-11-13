@@ -40,7 +40,15 @@
 input,select{background:var(--input);border:1px solid var(--line);border-radius:5px;color:var(--tx);
  padding:8px 10px;font:14px 'Segoe UI',Arial;width:100%}
 input:focus,select:focus{outline:2px solid var(--acc);outline-offset:-1px}
-input.turno{outline:2px solid var(--acc);outline-offset:-1px;background:var(--acc-soft)}
+/* la casilla que esta en turno late, para que se vea de lejos cual toca */
+input.turno{outline:2px solid var(--acc);outline-offset:-1px;background:var(--acc-soft);
+ animation:enturno 1.4s ease-in-out infinite}
+@keyframes enturno{50%{box-shadow:0 0 0 3px var(--acc-soft),0 0 14px -2px var(--acc)}}
+/* las casillas que todavia no les toca */
+input.hin:disabled{opacity:.5;cursor:not-allowed;
+ background:repeating-linear-gradient(-45deg,var(--input) 0 5px,var(--card2) 5px 10px)}
+.acts button.on{background:var(--acc);border-color:var(--acc);color:var(--acc-tx)}
+.chk .mu{font-size:12px;color:var(--mut);font-weight:400}
 input::placeholder{color:#4a5873}
 .bans{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
 .lbl{font-weight:500;font-size:12px;color:var(--mut);margin:12px 0 4px}
@@ -209,6 +217,20 @@ function goStep(n){const M=S.match,T=M.timer;
   M.step=Math.max(0,Math.min(DRAFT_FLOW.length,n));T.left=T.secs;T.running=false;
   if(M.autoTimer&&M.step<DRAFT_FLOW.length){T.endsAt=Date.now()+T.left*1000;T.running=true}
   build();push();enfocarTurno()}
+
+/* ---------- fases del draft ----------
+   Mientras el draft corre, solo se puede escribir en la casilla que esta en turno.
+   Es como funciona un draft de verdad: nadie elige fuera de su fase.
+   "Editar libre" destraba todas las casillas para corregir algo de atras. */
+let editarLibre=false;
+function toggleEditarLibre(){editarLibre=!editarLibre;build();
+  if(!editarLibre)enfocarTurno()}
+/* true si esta casilla NO se puede tocar ahora */
+function bloqueada(tipo,i,k){
+  if(S.match.fases===false||editarLibre)return false;
+  const f=flowInfo(S.match.step);
+  if(!f)return false;                       /* draft terminado: todo se puede editar */
+  return !(f.type===tipo&&f.team===i&&f.slot===k)}
 
 function corregir(){const n=S.match.step-1;if(n<0)return;
   const f=flowInfo(n);(f.type==='ban'?S.bans:S.picks)[f.team][f.slot]='';goStep(n)}
@@ -493,7 +515,9 @@ function renderTop(){
      <button onclick="tmr('pause')">Detener</button>
      <button onclick="tmr('reset')">Reiniciar tiempo</button>
      <button onclick="goStep(S.match.step+1)">Forzar siguiente fase</button>
-     <button onclick="corregir()">Corregir</button>
+     <button onclick="corregir()" title="Borra el último héroe cargado y vuelve a esa fase">Corregir</button>
+     <button class="${editarLibre?'on':''}" onclick="toggleEditarLibre()"
+       title="Destraba todas las casillas para arreglar algo de una fase anterior">${editarLibre?'Editar libre: SÍ':'Editar libre'}</button>
      <button class="bad" onclick="reiniciarDraft()">Reiniciar draft</button>
    </div>
    <div class="atajos">${ATAJOS.map(([k,q])=>`<span><kbd>${k}</kbd>${q}</span>`).join('')}</div>`;
@@ -564,6 +588,7 @@ function renderLado(i){
     <td><input value="${esc(T.players[k])}" placeholder="Nick del jugador ${k+1}" oninput="set(['teams',${i},'players',${k}],this.value)"></td>
     <td style="width:120px"><select onchange="set(['teams',${i},'lanes',${k}],+this.value)">${LANES.map((l,n)=>`<option value="${n}" ${(T.lanes||[0,1,2,3,4])[k]===n?'selected':''}>${l}</option>`).join('')}</select></td>
     <td><input id="p${i}-${k}" class="hin${act('pick',k)}" autocomplete="off" value="${esc(S.picks[i][k])}" placeholder="Pick ${k+1}"
+        ${bloqueada('pick',i,k)?'disabled title="Todavía no es el turno de este pick"':''}
         oninput="abrirAC(this)" onfocus="abrirAC(this)" onblur="restaurar(this)"></td>
     <td style="width:132px"><select class="hmv" title="Pasarle este héroe a otro jugador"
         onchange="moverHeroe(${i},${k},this.value)">
@@ -575,6 +600,7 @@ function renderLado(i){
    <table class="ptab"><tr><th></th><th>Nick</th><th>Línea</th><th>Héroe (pick)</th><th>Pasar héroe</th><th></th></tr>${filas}</table>
    <div class="lbl">Baneos</div>
    <div class="bans">${[0,1,2,3,4].map(k=>`<input id="b${i}-${k}" class="hin${act('ban',k)}" autocomplete="off" value="${esc(S.bans[i][k])}" placeholder="Baneo ${k+1}"
+     ${bloqueada('ban',i,k)?'disabled title="Todavía no es el turno de este baneo"':''}
      oninput="abrirAC(this)" onfocus="abrirAC(this)" onblur="restaurar(this)">`).join('')}</div>
    <div class="acts" style="margin-top:8px">${[0,1,2,3,4].map(k=>`<button class="sw" title="Intercambiar baneo ${k+1} con el siguiente" onclick="moverBan(${i},${k})">⇄ ${k+1}</button>`).join('')}</div>`}
 
@@ -612,6 +638,8 @@ function renderTorneo(){
    <div class="hint" style="margin:4px 0 0">Suena en el overlay del <b>Draft pick</b>, con los archivos de <b>public/voces/</b>. Si esa carpeta está vacía no suena nada.</div>
    <label class="chk"><input type="checkbox" ${M.useTimer?'checked':''} onchange="set(['match','useTimer'],this.checked);renderTop()">Mostrar el temporizador en el overlay</label>
    <label class="chk"><input type="checkbox" ${M.autoTimer?'checked':''} onchange="set(['match','autoTimer'],this.checked)">Arrancar el temporizador solo en cada turno</label>
+   <label class="chk"><input type="checkbox" ${M.fases!==false?'checked':''} onchange="set(['match','fases'],this.checked);build()">Respetar las fases: solo se puede escribir en la casilla que está en turno
+     <span class="mu" style="display:block;margin-left:26px">Si necesitás arreglar algo de una fase anterior, usá el botón <b>Editar libre</b> de arriba.</span></label>
    <label class="chk"><input type="checkbox" ${M.usarReserva?'checked':''} onchange="set(['match','usarReserva'],this.checked);build()">Usar tiempo de reserva: cuando a un equipo se le acaban los segundos del turno, empieza a gastar su banco
      <button class="sm" style="margin-left:8px" onclick="event.preventDefault();reiniciarReserva()">Reiniciar los bancos</button></label>
    <label class="chk"><input type="checkbox" ${M.draftStage?'checked':''} onchange="set(['match','draftStage'],this.checked)">Mostrar el texto inferior central también en el Draft</label>

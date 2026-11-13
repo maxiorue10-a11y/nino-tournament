@@ -73,6 +73,21 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
   Marcador en vivo    http://localhost:3000/scoreboard.html
 Cada panel tiene los enlaces con un boton para copiarlos.
 
+LAS FASES DEL DRAFT
+El draft sigue el orden de un torneo de verdad:
+  3 baneos de cada equipo, alternando     (azul, rojo, azul, rojo, azul, rojo)
+  picks 1-2-2-1                           (azul 1, rojo 2, azul 2, rojo 1)
+  2 baneos mas de cada equipo             (rojo, azul, rojo, azul)
+  picks 1-2-1                             (rojo 1, azul 2, rojo 1)
+Mientras el draft corre, SOLO se puede escribir en la casilla que esta en turno; las
+demas quedan rayadas y no dejan escribir. Arriba, al lado del reloj, dice cual es la
+fase ("Baneo azul 1", "Pick rojo 3").
+Si necesitas arreglar algo de una fase anterior, toca "Editar libre" arriba: destraba
+todas las casillas hasta que lo vuelvas a tocar. "Corregir" hace otra cosa: borra el
+ultimo heroe cargado y vuelve a esa fase.
+Si preferis escribir libremente todo el tiempo, apaga "Respetar las fases" en la
+tarjeta Torneo.
+
 DISEÑO DE LOS OVERLAYS
 Los overlays usan el diseño "Midnight": vidrio oscuro, bordes de neon del color de cada
 equipo y brillos suaves. Alcanza a la barra del draft, al marcador en vivo, al post-draft
