@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Resultado de la partida</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>
+/* ============================================================================
+   RESULTADO DE LA PARTIDA (1920x1080, pantalla completa)
+   Arriba: los dos equipos con VICTORIA / DERROTA, las kills y las partidas ganadas.
+   A los costados: cada jugador con el arte de su heroe, su linea, nombre, KDA y oro.
+   En el centro: tiempo de juego, oro total y objetivos (torres, lords, tortugas).
+   Todo sale del Control del marcador (el ganador se elige ahi) y del draft.
+   ============================================================================ */
+:root{--gold:#e9b949;--gold2:#f6d98a;--linea:rgba(233,185,73,.45)}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
+body{background:radial-gradient(ellipse at 15% 60%,rgba(47,128,255,.18),transparent 50%),
+  radial-gradient(ellipse at 85% 60%,rgba(255,61,85,.16),transparent 50%),
+  repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),
+  linear-gradient(180deg,#0e1530,#070a12 75%)}
+/* ---------- cabecera ---------- */
+#cab{position:absolute;left:0;right:0;top:0;height:250px;border-bottom:2px solid var(--linea)}
+.ce{position:absolute;top:40px;display:flex;align-items:center;gap:26px}
+.ce.l{left:70px}.ce.r{right:70px;flex-direction:row-reverse;text-align:right}
+.ce .lg{width:150px;height:150px;display:grid;place-items:center}
+.ce .lg img{max-width:150px;max-height:150px;object-fit:contain}
+.ce .tx b{display:block;font-size:80px;font-weight:800;line-height:.95;white-space:nowrap;max-width:420px;overflow:hidden}
+.ce .tx small{display:block;font-size:34px;font-weight:800;letter-spacing:4px;margin-top:8px}
+.ce.gana .tx small{color:var(--gold)}
+.ce.pierde .tx small{color:#8d96b5}
+.ce.pierde .lg,.ce.pierde .tx b{opacity:.75}
+.kill{position:absolute;top:34px;width:180px;text-align:center}
+.kill b{display:block;font-size:130px;font-weight:800;line-height:1}
+.kill.l{left:640px}.kill.r{right:640px}
+.kill .pips{display:flex;justify-content:center;gap:8px;margin-top:10px}
+.pips i{width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.pips i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+.mid{position:absolute;left:820px;width:280px;white-space:nowrap;top:30px;text-align:center}
+.mid .lt{height:110px;display:grid;place-items:center}
+.mid .lt img{max-width:170px;max-height:110px;object-fit:contain}
+.mid b{display:block;font-size:38px;font-weight:800;color:var(--gold);line-height:1.05;margin-top:6px}
+.mid small{display:block;font-size:24px;font-weight:700;letter-spacing:2px;margin-top:4px}
+/* ---------- jugadores ---------- */
+.cl{position:absolute;top:285px;width:760px;display:flex;flex-direction:column;gap:14px}
+.cl.l{left:50px}.cl.r{right:50px}
+.fj{position:relative;height:144px;display:flex;background:rgba(7,10,18,.82);border-radius:8px;overflow:hidden;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.cl.r .fj{flex-direction:row-reverse}
+.fj .art{position:relative;width:300px;flex:none;overflow:hidden;background:#141d3d}
+.fj .art img,.fj .art video{width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.fj .art::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,var(--c))}
+.cl.r .fj .art::after{background:linear-gradient(270deg,transparent 55%,var(--c))}
+.fj .art .hn{position:absolute;left:12px;bottom:8px;z-index:1;font-size:24px;font-weight:800;text-shadow:0 2px 6px #000}
+.cl.r .fj .art .hn{left:auto;right:12px}
+.fj .dat{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 26px;min-width:0}
+.cl.r .fj .dat{text-align:right}
+.fj .nm{display:flex;align-items:center;gap:12px;font-size:38px;font-weight:800;line-height:1;white-space:nowrap;overflow:hidden}
+.cl.r .fj .nm{flex-direction:row-reverse}
+.fj .nm img{width:34px;height:34px;object-fit:contain;flex:none}
+.fj .nums{display:flex;gap:46px;margin-top:14px}
+.cl.r .fj .nums{flex-direction:row-reverse}
+.fj .nums small{display:block;font-size:18px;font-weight:700;letter-spacing:2px;color:var(--c);filter:brightness(1.5)}
+.fj .nums b{display:block;font-size:44px;font-weight:800;line-height:1}
+.fj .mvp{position:absolute;top:10px;padding:3px 12px;font-size:18px;font-weight:800;letter-spacing:2px;background:var(--gold);color:#111;border-radius:4px}
+.cl.l .fj .mvp{right:12px}.cl.r .fj .mvp{left:12px}
+/* ---------- centro ---------- */
+.cen{position:absolute;left:830px;width:260px;top:285px;text-align:center}
+.cen .tj small{display:block;font-size:22px;font-weight:700;letter-spacing:2px;white-space:nowrap}
+.cen .tj b{display:block;font-size:92px;font-weight:800;line-height:1;color:var(--gold)}
+.cen .sep{margin:18px 0 10px;font-size:20px;font-weight:700;letter-spacing:4px;color:var(--gold2);display:flex;align-items:center;gap:10px}
+.cen .sep::before,.cen .sep::after{content:'';flex:1;height:2px;background:var(--linea)}
+.cen .st{display:grid;grid-template-columns:1fr 96px 1fr;align-items:center;height:88px}
+.cen .st b{font-size:48px;font-weight:800}
+.cen .st b.mas{color:var(--gold)}
+.cen .st span{font-size:17px;font-weight:700;letter-spacing:1px;color:#8d96b5}
+.cen .st.oro b{font-size:40px}
+.cen .spo{margin-top:16px;height:110px;display:grid;place-items:center}
+.cen .spo img{max-width:240px;max-height:110px;object-fit:contain}
+</style></head><body>
+<div id="cab"></div><div class="cl l" id="cl"></div><div class="cen" id="cen"></div><div class="cl r" id="cr"></div>
+<script src="theme.js"></script>
+<script src="equipos.js"></script>
+<script src="heroes.js"></script>
+<script src="partida.js"></script>
+<script>
+const P=PARTIDA,esc=P.esc,$=id=>document.getElementById(id);
+let spi=0;
+function arte(h){if(!h)return '';const f=mediaFor(h,'pick');if(!f)return '';
+  return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline></video>`:`<img src="${f}">`}
+/* puntaje simple para marcar al MVP del equipo ganador: (kills + asistencias) / max(1, muertes) */
+function puntos(kda){const[k,d,a]=String(kda||'').split('/').map(x=>parseInt(x,10)||0);return (k+a)/Math.max(1,d)}
+function pintar(){const sb=P.sb||{},A=P.equipo(0),B=P.equipo(1),S=P.serie(),gan=sb.ganador==null?-1:+sb.ganador;
+  const est=i=>gan<0?'':gan===i?'gana':'pierde',txt=i=>gan<0?'':gan===i?'Victoria':'Derrota';
+  const ce=(T,i,c)=>`<div class="ce ${c} ${est(i)}"><span class="lg">${T.logo?`<img src="${T.logo}">`:''}</span>
+    <div class="tx"><b>${esc(T.tag||T.name)}</b><small>${txt(i)}</small></div></div>`;
+  $('cab').innerHTML=ce(A,0,'l')+ce(B,1,'r')+
+    `<div class="kill l"><b>${esc(A.kills||0)}</b><div class="pips">${P.pips(A.wins,S.bo,A.color)}</div></div>
+     <div class="kill r"><b>${esc(B.kills||0)}</b><div class="pips">${P.pips(B.wins,S.bo,B.color)}</div></div>
+     <div class="mid"><div class="lt">${S.logo?`<img src="${S.logo}">`:''}</div><b>${esc(S.stage||S.tournament)}</b>
+       <small>BO${S.bo} · Partida ${esc(S.game)}</small></div>`;
+  const mvp=gan<0?-1:(()=>{const J=[A,B][gan].jug;let m=0;J.forEach((j,k)=>{if(puntos(j.kda)>puntos(J[m].kda))m=k});return J[m].kda?m:-1})();
+  const fila=(T,i,j,k)=>`<div class="fj" style="--c:${T.color}">
+    <div class="art">${arte(j.hero)}${j.hero?`<span class="hn">${esc(j.hero)}</span>`:''}</div>
+    <div class="dat"><div class="nm"><img src="${LANE_ICON[j.lane]}" onerror="this.remove()"><span>${esc(j.name)||'Jugador '+(k+1)}</span></div>
+      <div class="nums"><div><small>KDA</small><b>${esc(j.kda||'0/0/0')}</b></div><div><small>Oro</small><b>${P.oroTxt(P.oroNum(j.gold))}</b></div></div></div>
+    ${gan===i&&mvp===k?'<span class="mvp">MVP</span>':''}</div>`;
+  $('cl').innerHTML=A.jug.map((j,k)=>fila(A,0,j,k)).join('');
+  $('cr').innerHTML=B.jug.map((j,k)=>fila(B,1,j,k)).join('');
+  const st=(a,b,et,cl)=>{const x=P.num(a),y=P.num(b);return `<div class="st ${cl||''}"><b class="${x>y?'mas':''}">${esc(a||0)}</b><span>${et}</span><b class="${y>x?'mas':''}">${esc(b||0)}</b></div>`};
+  const ga=A.gold||0,gb=B.gold||0;
+  $('cen').innerHTML=`<div class="tj"><small>Tiempo de juego</small><b>${esc((sb.clock||{}).value||'--:--')}</b></div>
+    <div class="sep">Stats</div>
+    <div class="st oro"><b class="${ga>gb?'mas':''}">${P.oroTxt(A.gold)}</b><span>Oro</span><b class="${gb>ga?'mas':''}">${P.oroTxt(B.gold)}</b></div>
+    ${st(A.kills,B.kills,'Kills')}${st(A.turrets,B.turrets,'Torres')}${st(A.lords,B.lords,'Lords')}${st(A.turtles,B.turtles,'Tortugas')}
+    <div class="spo" id="spon"></div>`;
+  pintarSpon()}
+function pintarSpon(){const e=$('spon'),L=P.sponsors();if(e)e.innerHTML=L.length?`<img src="${L[spi%L.length]}">`:''}
+setInterval(()=>{spi++;pintarSpon()},7000);
+document.addEventListener('tema',()=>{if(P.sb)pintar()});
+P.empezar(pintar);
+</script></body></html>

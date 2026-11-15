@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>In game</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>
+/* ============================================================================
+   IN GAME (1920x1080, transparente): va ARRIBA del juego en OBS.
+   - Arriba al centro, el marcador: kills, reloj, equipos, partidas ganadas y
+     tortugas / lords / torres / oro de cada lado.
+   - Arriba a la derecha, la etapa, la partida y el auspiciante.
+   - A los costados, los cinco jugadores de cada equipo con su heroe (sale del
+     draft), nombre, KDA y nivel (del Control del marcador).
+   Arriba a la izquierda queda libre para el minimapa del juego.
+   ============================================================================ */
+:root{--gold:#e9b949;--gold2:#f6d98a;--fondo:rgba(7,10,18,.9);--linea:rgba(233,185,73,.45)}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
+.oculto{display:none!important}
+/* ---------- marcador ---------- */
+#sb{position:absolute;left:375px;top:0;width:1170px;height:112px}
+#sb .lado{position:absolute;top:0;width:470px;height:112px;background:var(--fondo);
+ border-bottom:3px solid var(--c);box-shadow:inset 0 -40px 40px -40px var(--c)}
+#sb .lado.l{left:0;clip-path:polygon(0 0,100% 0,100% 100%,30px 100%)}
+#sb .lado.r{right:0;clip-path:polygon(0 0,100% 0,calc(100% - 30px) 100%,0 100%)}
+#sb .obj{position:absolute;top:8px;display:flex;gap:20px;font-size:22px;font-weight:700;color:#cfd6ea}
+#sb .l .obj{left:52px}#sb .r .obj{right:52px;flex-direction:row-reverse}
+#sb .obj span{display:flex;align-items:center;gap:5px}
+#sb .obj em{font-style:normal;font-size:14px;letter-spacing:1px;color:#8d96b5}
+#sb .obj .oro{color:var(--gold2)}
+#sb .eq{position:absolute;top:44px;display:flex;align-items:center;gap:14px;height:58px}
+#sb .l .eq{left:46px}#sb .r .eq{right:46px;flex-direction:row-reverse}
+#sb .eq img{height:52px;max-width:70px;object-fit:contain}
+#sb .eq b{font-size:40px;font-weight:800;line-height:1;white-space:nowrap;max-width:230px;overflow:hidden}
+#sb .pips{display:flex;gap:6px}
+#sb .pips i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+#sb .pips i.on{background:var(--c);box-shadow:0 0 8px var(--c)}
+#sb .cen{position:absolute;left:470px;width:230px;top:0;height:126px;background:linear-gradient(180deg,#141d3d,#070a12);
+ clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);border-top:3px solid var(--gold)}
+#sb .cen .rel{position:absolute;left:0;right:0;top:6px;text-align:center;font-size:24px;font-weight:700;color:var(--gold);letter-spacing:1px}
+#sb .cen .k{position:absolute;left:0;right:0;top:32px;display:flex;justify-content:center;align-items:center;gap:12px}
+#sb .cen .k b{font-size:58px;font-weight:800;line-height:1;min-width:58px;text-align:center}
+#sb .cen .k i{font-style:normal;font-size:26px;color:#8d96b5}
+/* ---------- esquina derecha ---------- */
+#esq{position:absolute;right:0;top:0;width:360px;height:150px;background:var(--fondo);
+ border-left:3px solid var(--gold);clip-path:polygon(24px 0,100% 0,100% 100%,0 100%)}
+#esq .sp{position:absolute;left:34px;top:16px;width:140px;height:80px;display:grid;place-items:center}
+#esq .sp img{max-width:100%;max-height:100%;object-fit:contain}
+#esq .tx{position:absolute;right:20px;top:14px;text-align:right}
+#esq .tx b{display:block;font-size:34px;font-weight:800;line-height:1;color:var(--gold)}
+#esq .tx small{display:block;font-size:20px;font-weight:700;letter-spacing:2px;margin-top:6px}
+#esq .tn{position:absolute;left:24px;right:0;bottom:0;height:42px;display:grid;place-items:center;font-size:20px;font-weight:700;
+ letter-spacing:3px;background:rgba(255,255,255,.05);border-top:1px solid var(--linea)}
+/* ---------- jugadores a los costados ---------- */
+.col{position:absolute;top:460px;width:280px;display:flex;flex-direction:column;gap:6px}
+.col.l{left:0}.col.r{right:0}
+.fj{position:relative;height:112px;background:var(--fondo);border-bottom:4px solid var(--c);display:flex;align-items:center;gap:12px;padding:0 12px}
+.col.l .fj{border-radius:0 8px 8px 0}
+.col.r .fj{flex-direction:row-reverse;border-radius:8px 0 0 8px;text-align:right}
+.fj .ret{width:88px;height:88px;flex:none;border-radius:50%;overflow:hidden;background:#1a2346;box-shadow:0 0 0 3px var(--c)}
+.fj .ret img,.fj .ret video{width:100%;height:100%;object-fit:cover}
+.fj .ret .ini{width:100%;height:100%;display:grid;place-items:center;font-size:30px;font-weight:800;color:#8d96b5}
+.fj .tx{flex:1;min-width:0}
+.fj .tx small{display:block;font-size:20px;font-weight:700;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#cfd6ea}
+.fj .tx b{display:block;font-size:36px;font-weight:800;line-height:1.05;letter-spacing:1px}
+.fj .tx em{display:block;font-style:normal;font-size:16px;color:var(--gold2);letter-spacing:1px;white-space:nowrap;overflow:hidden}
+.fj .lv{width:42px;flex:none;text-align:center;font-size:40px;font-weight:800;color:var(--gold)}
+.fj .lv:empty{display:none}
+</style></head><body>
+<div id="sb"></div><div id="esq"></div>
+<div class="col l" id="cl"></div><div class="col r" id="cr"></div>
+<script src="theme.js"></script>
+<script src="heroes.js"></script>
+<script src="partida.js"></script>
+<script>
+const P=PARTIDA,esc=P.esc,$=id=>document.getElementById(id);
+let spi=0;
+function retrato(h){if(!h)return '<span class="ini">?</span>';const f=mediaFor(h);
+  if(!f)return `<span class="ini">${esc(h.slice(0,2))}</span>`;
+  return /\.(webm|mp4)$/i.test(f)?`<video src="${f}" autoplay muted loop playsinline></video>`:`<img src="${f}">`}
+function pintar(){const sb=P.sb||{},A=P.equipo(0),B=P.equipo(1),S=P.serie();
+  const vivo=sb.onair!==false;
+  ['sb','esq','cl','cr'].forEach(id=>$(id).classList.toggle('oculto',!vivo));
+  const lado=(T,c)=>`<div class="lado ${c}" style="--c:${T.color}">
+    <div class="obj"><span>${esc(T.turtles||0)}<em>Tortugas</em></span><span>${esc(T.lords||0)}<em>Lords</em></span>
+      <span>${esc(T.turrets||0)}<em>Torres</em></span><span class="oro">${P.oroTxt(T.gold)}<em>Oro</em></span></div>
+    <div class="eq">${T.logo?`<img src="${T.logo}">`:''}<b>${esc(T.tag||T.name)}</b><span class="pips">${P.pips(T.wins,S.bo,T.color)}</span></div></div>`;
+  $('sb').innerHTML=lado(A,'l')+lado(B,'r')+`<div class="cen"><div class="rel">${esc((sb.clock||{}).value||'')}</div>
+    <div class="k"><b>${esc(A.kills||0)}</b><i>vs</i><b>${esc(B.kills||0)}</b></div></div>`;
+  $('esq').innerHTML=`<div class="sp" id="spon"></div><div class="tx"><b>${esc(S.stage||S.tournament)}</b>
+    <small>BO${S.bo} · Partida ${esc(S.game)}</small></div><div class="tn">${esc(S.tournament)}</div>`;
+  pintarSpon();
+  const fila=(T,j)=>`<div class="fj" style="--c:${T.color}"><span class="ret">${retrato(j.hero)}</span>
+    <div class="tx"><small>${esc(j.name)}</small><b>${esc(j.kda||'0/0/0')}</b>${j.hero?`<em>${esc(j.hero)}</em>`:''}</div>
+    <span class="lv">${esc(j.lvl)}</span></div>`;
+  const ver=vivo&&sb.showPlayers!==false;
+  $('cl').classList.toggle('oculto',!ver);$('cr').classList.toggle('oculto',!ver);
+  $('cl').innerHTML=A.jug.map(j=>fila(A,j)).join('');$('cr').innerHTML=B.jug.map(j=>fila(B,j)).join('')}
+function pintarSpon(){const e=$('spon'),L=P.sponsors();if(e)e.innerHTML=L.length?`<img src="${L[spi%L.length]}">`:''}
+setInterval(()=>{spi++;pintarSpon()},7000);
+document.addEventListener('tema',()=>{if(P.sb)pintar()});
+P.empezar(pintar);
+</script></body></html>

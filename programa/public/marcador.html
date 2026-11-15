@@ -41,25 +41,26 @@
   <div class="grid2"><section class="card" id="reloj"></section><section class="card" id="avisos"></section></div>
   <section class="card" id="stats"></section>
   <section class="card" id="jug"></section>
+  <section class="card" id="resul"></section>
 </main>
 
 <script src="nav.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const CLAVES=[['kills','Kills'],['gold','Oro'],['turrets','Torres'],['lords','Lords']];
+const CLAVES=[['kills','Kills'],['gold','Oro'],['turrets','Torres'],['lords','Lords'],['turtles','Tortugas']];
 /* El oro se puede escribir "12400" o "12.4k": el overlay siempre lo muestra como 12.4K */
 function oroNum(v){const t=String(v==null?'':v).trim().replace(/\s/g,'').replace(',','.');
   if(!t)return null;const m=/^(\d+(?:\.\d+)?)(k)?$/i.exec(t);if(!m)return null;
   return Math.round(parseFloat(m[1])*(m[2]?1000:1))}
 function oroTxt(n){if(n==null)return '—';
   return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':String(n)}
-const EQ=()=>({name:'',logo:'',flag:'',score:'',kills:'',gold:'',turrets:'',lords:''});
-const JUG=()=>[0,1,2,3,4].map(()=>({name:'',kda:''}));
+const EQ=()=>({name:'',logo:'',flag:'',score:'',kills:'',gold:'',turrets:'',lords:'',turtles:''});
+const JUG=()=>[0,1,2,3,4].map(()=>({name:'',kda:'',lvl:'',gold:''}));
 const def=()=>({onair:true,showPlayers:false,logo:'',blue:'#2f80ff',red:'#ff3d55',
   corner:{tournament:'',stage:'',game:'',casters:''},
   sponsor:{mode:'none',logos:[],secs:3},
-  clock:{value:''},
+  clock:{value:''},ganador:-1,
   teams:[EQ(),EQ()],players:[JUG(),JUG()]});
 let S=def(),conectado=false,tOut;
 
@@ -80,9 +81,10 @@ function elegir(alGuardar,anterior){const i=document.createElement('input');i.ty
 
 /* ---------- acciones ---------- */
 function alAire(){S.onair=!S.onair;build();push()}
-function nuevaPartida(){if(!confirm('¿Reiniciar los datos de la partida? Se ponen en cero kills, oro, torres, lords y el reloj.'))return;
-  S.teams.forEach(t=>{t.kills='';t.gold='';t.turrets='';t.lords=''});
-  S.clock={value:''};S.players=[JUG(),JUG()];build();push()}
+function nuevaPartida(){if(!confirm('¿Reiniciar los datos de la partida? Se ponen en cero kills, oro, torres, lords, tortugas, el reloj, el KDA, nivel y oro de cada jugador, y el ganador. Los nombres quedan.'))return;
+  S.teams.forEach(t=>{t.kills='';t.gold='';t.turrets='';t.lords='';t.turtles=''});
+  S.clock={value:''};S.ganador=-1;
+  S.players=S.players.map(l=>l.map(p=>({name:p.name||'',kda:'',lvl:'',gold:''})));build();push()}
 function copiarDelDraft(){fetch('/api/state?k=draft').then(r=>r.json()).then(d=>{
   if(!d||!d.teams)return alert('Todavía no hay datos en el control de draft.');
   d.teams.forEach((t,i)=>{S.teams[i].name=t.name||'';S.teams[i].logo=t.logo||'';
@@ -185,13 +187,15 @@ function renderStats(){
    </div>`).join('')}</div>`}
 
 function renderJug(){
-  $('jug').innerHTML=`<h2>Jugadores<span>salen debajo del marcador con el botón "Jugadores al aire" de arriba</span></h2>
+  $('jug').innerHTML=`<h2>Jugadores<span>Los héroes salen solos del draft. Nivel y oro se usan en In game y en el resultado de la partida.</span></h2>
    <div class="half2">${S.teams.map((t,i)=>`<div>
      <div class="sidet" style="color:${i?S.red:S.blue}">${i?'Equipo rojo':'Equipo azul'}</div>
-     <table class="ptab2"><tr><th>Jugador</th><th style="width:130px">KDA</th></tr>
+     <table class="ptab2"><tr><th>Jugador</th><th style="width:110px">KDA</th><th style="width:64px">Nivel</th><th style="width:90px">Oro</th></tr>
      ${S.players[i].map((p,k)=>`<tr>
        <td><input value="${esc(p.name)}" placeholder="Jugador ${k+1}" oninput="set(['players',${i},${k},'name'],this.value)"></td>
-       <td><input value="${esc(p.kda)}" placeholder="0/0/0" oninput="set(['players',${i},${k},'kda'],this.value)"></td></tr>`).join('')}
+       <td><input value="${esc(p.kda)}" placeholder="0/0/0" oninput="set(['players',${i},${k},'kda'],this.value)"></td>
+       <td><input value="${esc(p.lvl||'')}" placeholder="1" oninput="set(['players',${i},${k},'lvl'],this.value)"></td>
+       <td><input value="${esc(p.gold||'')}" placeholder="8.2k" oninput="set(['players',${i},${k},'gold'],this.value)"></td></tr>`).join('')}
      </table></div>`).join('')}</div>`}
 
 function renderAvisos(){
@@ -203,7 +207,16 @@ function renderAvisos(){
   $('avisos').innerHTML=`<h2>Avisos</h2>
    <ul class="avisos">${a.length?a.map(([c,t])=>`<li class="${c}">${t}</li>`).join(''):'<li class="ok2">Todo en orden.</li>'}</ul>`}
 
-function build(){renderTop();renderPrev();renderEsquina();renderReloj();renderStats();renderJug();renderAvisos();aplicarRol()}
+function renderResultado(){const g=S.ganador==null?-1:S.ganador,u=location.origin;
+  const bt=(v,t,c)=>`<button class="${g===v?'gold':''}" onclick="S.ganador=${v};build();push()" ${c?`style="border-color:${c}"`:''}>${t}</button>`;
+  $('resul').innerHTML=`<h2>In game y resultado de la partida<span>Usan todo lo de esta página, los héroes del draft y los auspiciantes de Programación</span></h2>
+   <div class="acts" style="align-items:center"><span class="opt">¿Quién ganó la partida?</span>
+     <span class="seg">${bt(0,esc(S.teams[0].name)||'Equipo azul',S.blue)}${bt(1,esc(S.teams[1].name)||'Equipo rojo',S.red)}${bt(-1,'Todavía no')}</span></div>
+   ${[['In game · marcador arriba y jugadores a los costados','ingame.html'],['Resultado de la partida','resultado.html']].map(([t,f])=>`
+   <div class="lbl">${t}</div><div class="urlrow"><input readonly value="${u}/${f}" onclick="this.select()">
+     <button class="sm" onclick="navigator.clipboard.writeText('${u}/${f}')">Copiar</button>
+     <button class="sm" onclick="window.open('${f}','_blank')">Abrir</button></div>`).join('')}`}
+function build(){renderTop();renderPrev();renderEsquina();renderReloj();renderStats();renderJug();renderResultado();renderAvisos();aplicarRol()}
 
 const es=new EventSource('/events?k=scoreboard');let primero=true;
 es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
@@ -213,7 +226,9 @@ es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
     S.sponsor=Object.assign(b.sponsor,d.sponsor||{});
     S.clock=Object.assign(b.clock,d.clock||{});
     S.teams=S.teams.map(t=>Object.assign(EQ(),t));
-    if(!S.players||!S.players[0])S.players=[JUG(),JUG()]}
+    if(!S.players||!S.players[0])S.players=[JUG(),JUG()];
+    S.players=S.players.map(l=>l.map(p=>Object.assign({name:'',kda:'',lvl:'',gold:''},p)));
+    if(S.ganador==null)S.ganador=-1}
   build();es.close()};
 es.onerror=()=>{conectado=false;setConn()};
 cargarRol(build);

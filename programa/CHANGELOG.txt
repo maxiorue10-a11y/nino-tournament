@@ -4,6 +4,27 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.36.0 - IN GAME Y RESULTADO DE LA PARTIDA
+       - IN GAME (http://localhost:3000/ingame.html): va arriba del juego en OBS.
+           * Arriba al centro, el marcador: kills, reloj, equipos, partidas ganadas y
+             tortugas, lords, torres y oro de cada lado.
+           * Arriba a la derecha: etapa, BO, numero de partida y el auspiciante.
+           * A los costados, los cinco jugadores de cada equipo con el retrato de su
+             heroe (sale solo del draft), nombre, KDA y nivel. Sin camaras.
+           * Arriba a la izquierda queda libre para el minimapa.
+           * Respeta "Al aire" y "Jugadores al aire" del Control del marcador.
+       - RESULTADO DE LA PARTIDA (http://localhost:3000/resultado.html): pantalla
+         completa con VICTORIA / DERROTA, las kills y las partidas ganadas de cada
+         equipo; cada jugador con el arte de su heroe, su linea, KDA y oro; y en el
+         centro el tiempo de juego, el oro total, kills, torres, lords y tortugas.
+         Marca como MVP al de mejor KDA del equipo ganador.
+       - CONTROL DEL MARCADOR: cada jugador tiene ahora Nivel y Oro, los equipos
+         tienen Tortugas, y hay una seccion nueva para elegir quien gano la partida,
+         con los enlaces de las dos pantallas. "Nueva partida" tambien los pone en
+         cero (los nombres quedan).
+       - Si no cargas el oro del equipo, se usa la suma del oro de los jugadores.
+       - No hay iconos de items: el programa no tiene esos datos.
+
 0.35.0 - FASE DE PICKS GRANDE
        - Pantalla completa nueva para los baneos y los picks:
          http://localhost:3000/overlay.html?view=grande
