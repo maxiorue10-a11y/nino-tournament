@@ -1,241 +1,290 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Programación</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Montserrat:wght@600;700;800;900&display=swap">
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Pantalla de espera</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap">
 <style>
-:root{--gold:#e9b949;--gold2:#f7dc8c;--tinta:#111;--papel:#f2f2f0}
+/* ============================================================================
+   PANTALLA DE ESPERA (1920x1080, fondo transparente)
+   - A la izquierda, la ventana principal: un video tuyo (queda transparente para
+     que se vea la fuente de OBS de abajo), los partidos del dia o el Swiss Stage.
+   - Abajo, el partido que viene.
+   - A la derecha, una columna con el logo del torneo, los comentaristas, la
+     cuenta regresiva "EMPEZAMOS EN" y los auspiciantes rotando.
+   ============================================================================ */
+:root{--gold:#e9b949;--gold2:#f6d98a;--blue:#2f80ff;--red:#ff3d55;
+ --noche:#070a12;--navy:#0e1530;--linea:rgba(233,185,73,.45)}
 *{box-sizing:border-box;margin:0}
-html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:var(--tinta);
- font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
 #app{position:relative;width:1920px;height:1080px;overflow:hidden}
+.panel{position:absolute;
+ background:radial-gradient(ellipse at 30% 0%,rgba(58,160,255,.14),transparent 60%),
+  radial-gradient(ellipse at 90% 100%,rgba(233,185,73,.10),transparent 55%),
+  repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),
+  linear-gradient(180deg,#0e1530,#070a12 75%)}
 
-/* ---------- fondo ---------- */
-#fondo{position:absolute;inset:0;background:linear-gradient(118deg,#fff 0 38%,#ededeb 38% 100%)}
-#fondo i{position:absolute;display:block}
-.d1{top:-60px;left:-120px;width:420px;height:1400px;transform:rotate(18deg);
- background:repeating-linear-gradient(90deg,rgba(0,0,0,.045) 0 2px,transparent 2px 70px)}
-.d2{top:200px;left:-40px;width:26px;height:230px;transform:skewX(-18deg);background:var(--gold)}
-.d3{top:430px;left:-55px;width:14px;height:150px;transform:skewX(-18deg);background:#2b3bd6}
-.d4{top:150px;right:-60px;width:30px;height:420px;transform:skewX(-18deg);background:var(--gold);opacity:.55}
-.d5{bottom:-40px;right:120px;width:18px;height:300px;transform:skewX(-18deg);background:#c8102e;opacity:.5}
-.d6{top:240px;left:300px;width:140px;height:26px;transform:skewX(-18deg);background:#2b3bd6}
+/* ---------- ventana principal ---------- */
+#main{position:absolute;left:0;top:0;width:1400px;height:848px}
+/* modo video: queda hueca para que se vea el video de OBS, solo con un filo */
+#main.video{background:transparent;box-shadow:inset 0 0 0 3px var(--linea)}
+#main.lleno{overflow:hidden}
+.mtit{position:absolute;left:60px;top:44px;font-size:64px;font-weight:800;letter-spacing:2px;line-height:1;
+ color:var(--gold);text-shadow:0 0 24px rgba(233,185,73,.35)}
+.msub{position:absolute;left:62px;top:112px;font-size:26px;letter-spacing:4px;color:#8d96b5}
+.mpag{position:absolute;right:60px;top:64px;display:flex;gap:8px}
+.mpag i{width:34px;height:7px;display:block;background:rgba(255,255,255,.16);transform:skewX(-20deg)}
+.mpag i.on{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+/* tarjetas de los partidos del dia */
+.mlist{position:absolute;left:60px;right:60px;top:180px;display:flex;flex-direction:column;gap:22px}
+.mc{position:relative;height:186px;display:grid;grid-template-columns:200px 1fr 120px 1fr;align-items:center;
+ background:linear-gradient(90deg,rgba(30,43,87,.55),rgba(7,10,18,.75));
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);border-radius:10px;overflow:hidden;
+ animation:entra .6s cubic-bezier(.2,.9,.2,1) both}
+.mc:nth-child(2){animation-delay:.08s}.mc:nth-child(3){animation-delay:.16s}
+@keyframes entra{from{opacity:0;transform:translateX(-40px)}}
+.mc.actual{box-shadow:inset 0 0 0 2px var(--gold),0 0 30px -8px var(--gold)}
+.mc .hora{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ background:rgba(7,10,18,.6);border-right:1px solid rgba(255,255,255,.08)}
+.mc .hora b{font-size:56px;font-weight:800;line-height:1;color:#fff}
+.mc .hora small{font-size:20px;letter-spacing:3px;color:var(--gold2);margin-top:6px}
+.mc .eq{display:flex;align-items:center;gap:22px;padding:0 30px;min-width:0}
+.mc .eq.r{flex-direction:row-reverse;text-align:right}
+.mc .eq .lg{width:96px;height:96px;flex:none;display:grid;place-items:center}
+.mc .eq .lg img{max-width:100%;max-height:100%;object-fit:contain}
+.mc .eq b{font-size:52px;font-weight:800;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mc .vs{text-align:center;line-height:1}
+.mc .vs b{font-size:58px;font-weight:800;color:var(--gold);display:block}
+.mc .vs small{font-size:20px;letter-spacing:3px;color:#8d96b5}
+.mc .sc{font-size:62px;font-weight:800;color:#fff}
 
-/* ---------- barra superior ---------- */
-#cinta{position:absolute;left:0;top:0;width:1920px;height:54px;display:flex;align-items:center;
- padding:0 34px;background:#fff;border-bottom:1px solid #e2e2de;font-family:'Montserrat',sans-serif}
-#cinta b{font-size:19px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
-#cinta span{font-size:19px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#6b6b6b}
-#cinta .der{margin-left:auto;display:flex;align-items:center;gap:10px}
-.pl{display:inline-block;color:var(--tinta);font-size:17px;letter-spacing:-3px}
+/* ---------- abajo: el partido que viene ---------- */
+#pie{position:absolute;left:0;top:848px;width:1400px;height:232px;border-top:2px solid var(--linea)}
+#pie .lab{position:absolute;left:0;right:0;top:18px;text-align:center;font-size:30px;font-weight:700;letter-spacing:3px}
+#pie .bo{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:30px;font-weight:700;letter-spacing:3px}
+#pie .fila{position:absolute;left:0;right:0;top:58px;height:118px;display:grid;
+ grid-template-columns:1fr 160px 1fr;align-items:center}
+#pie .eq{display:flex;align-items:center;gap:26px;justify-content:flex-end;min-width:0;padding:0 10px}
+#pie .eq.r{justify-content:flex-start;flex-direction:row-reverse}
+#pie .eq.r{flex-direction:row}
+#pie .eq .lg{width:118px;height:118px;flex:none;display:grid;place-items:center}
+#pie .eq .lg img{max-width:100%;max-height:100%;object-fit:contain}
+#pie .eq b{font-size:92px;font-weight:800;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#pie .vs{text-align:center;font-size:110px;font-weight:800;line-height:1;color:var(--gold);
+ text-shadow:0 0 24px rgba(233,185,73,.45)}
+#pie .nada{position:absolute;inset:0;display:grid;place-items:center;font-size:64px;font-weight:800;
+ letter-spacing:3px;color:var(--gold)}
 
-/* ---------- encabezado ---------- */
-#hd{position:absolute;left:0;top:54px;width:1920px;height:186px;background:#fff;border-bottom:2px solid #dedede}
-#hd:after{content:'';position:absolute;inset:0;pointer-events:none;
- background:repeating-linear-gradient(108deg,rgba(0,0,0,.035) 0 3px,transparent 3px 90px)}
-.elogo{position:absolute;left:34px;top:8px;width:170px;height:170px;display:grid;place-items:center}
-.elogo img{max-width:100%;max-height:100%;object-fit:contain}
-.elogo span{font-size:52px;font-weight:800;color:var(--gold)}
-.ttl{position:absolute;left:218px;top:16px;right:620px}
-.ttl b{display:block;font-size:84px;font-weight:800;font-style:italic;line-height:.92;letter-spacing:1px;
- text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
- color:var(--gold);-webkit-text-stroke:2px #c9972a;text-shadow:0 4px 0 rgba(0,0,0,.12)}
-.chips{display:flex;margin-top:8px}
-.chips b{font-size:28px;font-weight:800;font-style:normal;letter-spacing:2px;text-transform:uppercase;padding:5px 26px;
- white-space:nowrap;-webkit-text-stroke:0}
-.chips .c1{background:#111;color:#fff;clip-path:polygon(0 0,100% 0,calc(100% - 16px) 100%,0 100%)}
-.chips .c2{background:var(--gold);color:#111;margin-left:-10px;padding-left:30px;
- clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%)}
-.qr{position:absolute;right:368px;top:28px;width:160px;text-align:center}
-.qr small{display:block;font-family:'Montserrat',sans-serif;font-size:17px;font-weight:700;
- text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.qr .img{width:96px;height:96px;margin:0 auto;display:grid;place-items:center;overflow:hidden;background:#fff}
-.qr .img img{width:100%;height:100%;object-fit:contain}
-.spon{position:absolute;right:34px;top:28px;width:300px}
-.spon .lb{min-height:34px;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--gold);color:#111;
- font-size:19px;line-height:1.1;font-weight:800;letter-spacing:2px;text-transform:uppercase;
- padding:4px 8px}
-.spon .bx{height:84px;background:#fff;border:1px solid #e6e6e6;border-top:0;display:grid;place-items:center;padding:8px}
-.spon .bx img{max-width:92%;max-height:68px;object-fit:contain}
+/* ---------- columna derecha ---------- */
+#col{position:absolute;left:1400px;top:0;width:520px;height:1080px;border-left:2px solid var(--linea)}
+#col .tlogo{position:absolute;left:30px;right:30px;top:30px;height:180px;display:grid;place-items:center}
+#col .tlogo img{max-width:100%;max-height:100%;object-fit:contain}
+#col .tlogo b{display:block;overflow:hidden;max-width:100%;font-size:56px;font-weight:800;line-height:.95;text-align:center;color:var(--gold)}
+#col .tlogo small{display:block;font-size:24px;letter-spacing:3px;color:#8d96b5;margin-top:8px}
+/* los comentaristas */
+#col .cast{position:absolute;left:0;right:0;top:226px;height:420px}
+#col .fotos{position:absolute;left:0;right:0;top:0;bottom:56px;display:flex;align-items:flex-end;justify-content:center}
+#col .fotos{padding:0 14px}
+#col .fotos img{flex:1 1 0;min-width:0;height:100%;object-fit:contain;object-position:bottom;
+ filter:drop-shadow(0 8px 18px rgba(0,0,0,.6))}
+#col .nombres{position:absolute;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;
+ justify-content:center;gap:14px;padding:0 10px;background:rgba(7,10,18,.85);
+ border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+#col .nombres b{font-size:28px;font-weight:700;letter-spacing:1px;color:var(--gold2);white-space:nowrap}
+#col .nombres i{font-style:normal;color:var(--gold);font-size:18px}
+#col .cast.sinfotos{height:120px}
+#col .cast.sinfotos .nombres{flex-direction:column;height:auto;gap:4px;padding:12px 10px;top:auto}
+/* la cuenta regresiva */
+#col .cd{position:absolute;left:0;right:0;top:680px;text-align:center}
+#col .cd small{display:block;font-size:34px;font-weight:700;letter-spacing:2px}
+#col .cd b{display:block;font-size:150px;font-weight:800;line-height:.95;letter-spacing:2px;
+ font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(255,255,255,.18)}
+#col .cd b.largo{font-size:112px}
+#col .cd em{display:block;font-style:normal;font-size:54px;font-weight:800;line-height:1.05;color:var(--gold);margin-top:20px}
+/* los auspiciantes */
+#col .spon{position:absolute;left:30px;right:30px;bottom:30px;height:140px;display:grid;place-items:center}
+#col .spon img{max-width:100%;max-height:100%;object-fit:contain;animation:aparece .7s ease both}
+@keyframes aparece{from{opacity:0;transform:scale(.94)}}
 
-/* ---------- panel izquierdo ---------- */
-#izq{position:absolute;left:34px;top:286px;width:600px}
-.ph{height:62px;line-height:62px;text-align:center;background:linear-gradient(180deg,var(--gold2),var(--gold));
- clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,22px 100%);
- font-size:40px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#111}
-.foto{height:434px;background:linear-gradient(#f7f7f5,#e8e8e4);border-left:1px solid #e0e0dc;border-right:1px solid #e0e0dc;
- display:flex;align-items:flex-end;justify-content:center;overflow:hidden;position:relative}
-.foto .gr{display:flex;align-items:flex-end;justify-content:center;gap:0;height:100%;width:100%}
-.foto .p{flex:1;min-width:0;height:100%;display:flex;align-items:flex-end;justify-content:center;position:relative;overflow:hidden}
-.foto .p img{width:100%;height:100%;object-fit:contain;object-position:bottom}
-.foto .p svg{width:72%;height:76%;fill:#c9c9c4}
-.foto .uno img{width:74%}
-.nombres{min-height:44px;background:var(--gold);display:flex;align-items:center;justify-content:center;gap:12px;
- padding:5px 14px;font-size:26px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#111;
- flex-wrap:wrap;line-height:1.1}
-.nombres i{font-style:normal;opacity:.6}
-
-/* ---------- cuenta regresiva ---------- */
-#cd{position:absolute;left:34px;top:838px;width:600px;text-align:center}
-#cd small{display:block;font-family:'Montserrat',sans-serif;font-size:34px;font-weight:800;
- letter-spacing:.5px;text-transform:uppercase}
-#cd small em{font-style:normal;font-weight:600}
-#cd b{display:block;font-size:136px;font-weight:800;line-height:.92;letter-spacing:-2px;
- font-variant-numeric:tabular-nums;margin-top:2px}
-
-/* ---------- ventana ---------- */
-#win{position:absolute;left:646px;top:256px;width:1246px;height:700px;border:2px solid #d6d6d2;background:transparent}
-#win.feat{background:linear-gradient(#fff,#efefec)}
-.fm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px}
-.fm .fl{font-size:32px;font-weight:800;letter-spacing:6px;text-transform:uppercase;color:#666}
-.fr{display:flex;align-items:center;justify-content:center;gap:46px;width:100%;padding:0 40px}
-.ft{flex:1;max-width:420px;text-align:center}
-.ft .fg{height:210px;display:grid;place-items:center;margin-bottom:16px}
-.ft .fg img{max-width:100%;max-height:100%;object-fit:contain}
-.ft .fg span{font-size:96px;font-weight:800;color:#d8d8d4}
-.ft b{display:block;font-size:48px;font-weight:800;text-transform:uppercase;line-height:1.05;
- overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.fsc{font-family:'Montserrat',sans-serif;font-size:96px;font-weight:900;line-height:1}
-.fsc span{color:var(--gold)}
-
-/* ---------- partidas del día (panel izquierdo) ---------- */
-.mlist{border-left:1px solid #e0e0dc;border-right:1px solid #e0e0dc;background:#fbfbf9;padding:12px;
- display:flex;flex-direction:column;gap:12px;height:434px;overflow:hidden}
-.mc{background:#fff;border:1px solid #e4e4e0;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-.mch{display:flex;justify-content:space-between;align-items:center;padding:5px 12px;background:#111;color:#fff;
- font-size:21px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
-.mch em{font-style:normal;color:var(--gold)}
-.mt2{display:flex;align-items:center;gap:11px;padding:8px 12px;border-top:1px solid #eee}
-.mt2 i{width:5px;height:40px;flex:none;background:var(--c)}
-.mt2 .lg{width:48px;height:42px;flex:none;display:grid;place-items:center;overflow:hidden}
-.mt2 .lg img{max-width:100%;max-height:100%;object-fit:contain}
-.mt2 b{flex:1;min-width:0;font-size:28px;font-weight:700;text-transform:uppercase;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mt2 em{font-style:normal;font-size:30px;font-weight:800}
-
-/* ---------- pie ---------- */
-#tick{position:absolute;left:630px;top:1002px;width:900px;height:52px;display:flex}
-#tick .tg{flex:none;max-width:330px;padding:0 42px 0 26px;background:#111;color:#fff;display:flex;align-items:center;
- font-size:27px;font-weight:800;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;overflow:hidden;
- clip-path:polygon(0 0,100% 0,calc(100% - 26px) 100%,0 100%)}
-#tick .tx{flex:1;min-width:0;margin-left:-24px;background:var(--gold);display:flex;align-items:center;overflow:hidden;
- clip-path:polygon(26px 0,100% 0,calc(100% - 26px) 100%,0 100%)}
-#tick .tx div{white-space:nowrap;font-size:28px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
- color:#111;animation:sl 24s linear infinite;padding-left:100%}
-@keyframes sl{from{transform:translateX(0)}to{transform:translateX(-100%)}}
-#lema{position:absolute;left:34px;top:1016px;display:flex;align-items:center;gap:10px;
- font-family:'Montserrat',sans-serif;font-size:21px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-#lema b{font-weight:800}#lema span{font-weight:500;color:#555}
-#lemad{position:absolute;right:34px;top:1016px;display:flex;align-items:center;gap:10px;
- font-family:'Montserrat',sans-serif;font-size:21px;font-weight:800;text-transform:uppercase}
-.fade{animation:fd .4s ease-out}
-@keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-</style></head><body>
-<div id="app">
-  <div id="fondo"><i class="d1"></i><i class="d2"></i><i class="d3"></i><i class="d4"></i><i class="d5"></i><i class="d6"></i></div>
-  <div id="cinta"></div><div id="hd"></div>
-  <div id="izq"></div><div id="cd"></div><div id="win"></div>
-  <div id="tick"></div><div id="lema"></div><div id="lemad"></div>
+/* ---------- Swiss Stage ---------- */
+.swgrid{position:absolute;left:40px;right:40px;top:160px;bottom:30px;display:grid;gap:14px}
+.swcol{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
+.swcol>*{flex-shrink:0}
+.swcol .medio{flex-shrink:1}
+.swcol .cab{text-align:center;font-size:20px;font-weight:700;letter-spacing:3px;color:#8d96b5;
+ padding-bottom:8px;border-bottom:2px solid rgba(233,185,73,.35);margin-bottom:10px}
+.swcol .medio{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;min-height:0}
+.swbox{flex:none;background:rgba(7,10,18,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);border-radius:6px;overflow:hidden}
+.swbox .rec{display:flex;justify-content:space-between;align-items:baseline;padding:4px 10px 3px;
+ font-size:24px;font-weight:800;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.08)}
+.swbox .rec small{font-size:15px;letter-spacing:2px;color:#8d96b5;font-weight:700}
+.swbox.dec .rec small{color:var(--gold)}
+.swbox.vacia{opacity:.45}
+.swbox.vacia .pd{padding:14px;text-align:center;font-size:18px;letter-spacing:2px;color:#8d96b5}
+.swm+.swm{border-top:1px solid rgba(255,255,255,.1)}
+.swt{display:flex;align-items:center;gap:8px;height:var(--fila,36px);padding:0 10px}
+.swt img,.swt .sl{width:calc(var(--fila,36px) - 8px);height:calc(var(--fila,36px) - 8px);object-fit:contain;flex:none}
+.swt span{flex:1;min-width:0;font-size:calc(var(--fila,36px) * .58);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.swt b{font-size:calc(var(--fila,36px) * .66);font-weight:800;min-width:20px;text-align:right;color:#5b6482}
+.swt.gana b{color:var(--gold)}
+.swt.pierde{opacity:.42}
+.swt.bye span{color:#8d96b5;font-style:italic}
+.swres{display:flex;align-items:center;gap:8px;height:var(--fila,36px);padding:0 10px;border-radius:5px;margin-bottom:6px}
+.swres.ok{background:linear-gradient(90deg,#17834c,#35c978);color:#03140a}
+.swres.out{background:linear-gradient(90deg,#8e1229,#e23a51);color:#fff;margin:6px 0 0}
+.swres img{width:calc(var(--fila,36px) - 8px);height:calc(var(--fila,36px) - 8px);object-fit:contain}
+.swres span{flex:1;min-width:0;font-size:calc(var(--fila,36px) * .58);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.swres b{font-size:calc(var(--fila,36px) * .55);font-weight:800}
+.swlab{text-align:center;font-size:14px;font-weight:700;letter-spacing:3px;margin:0 0 6px}
+.swlab.ok{color:#35c978}.swlab.out{color:#ff5d70;margin:8px 0 0}
+/* pantalla completa (schedule-overlay.html?swiss) */
+body.solo #pie,body.solo #col{display:none}
+body.solo #main{width:1920px;height:1080px}
+</style></head><body><div id="app">
+ <div id="main"></div>
+ <div id="pie" class="panel"></div>
+ <div id="col" class="panel">
+   <div class="tlogo" id="tlogo"></div>
+   <div class="cast" id="cast"></div>
+   <div class="cd" id="cd"></div>
+   <div class="spon" id="spon"></div>
+ </div>
 </div>
 <script src="theme.js"></script>
+<script src="swiss.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const SIL='<svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4.2"/><path d="M3.5 24c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5z"/></svg>';
-const FLE='<span class="pl">&#9654;&#9654;</span>';
-let S=null,vista=0,spi=0;
+let S=null,pag=0,spi=0,SW=null;
+const SOLO=/[?&]swiss\b/.test(location.search);
 
-/* ---------- cuenta regresiva ---------- */
-function faltan(at){if(!at)return null;const[h,m]=at.split(':').map(Number);if(isNaN(h))return null;
-  const d=new Date(),o=new Date();o.setHours(h,m,0,0);
-  let s=Math.round((o-d)/1000);if(s<-3600)s+=86400;return s}
-function textoReloj(s){if(s<=0)return null;
-  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),g=s%60;
-  return (h?h+':':'')+String(m).padStart(2,'0')+':'+String(g).padStart(2,'0')}
+/* ---------- cuenta regresiva ----------
+   Dos formas de cargarla desde el panel: "en N minutos" (guarda el momento exacto
+   en cd.hasta) o una hora fija del dia (cd.at, por ejemplo 20:30). */
+function faltan(){const C=S.cd||{};
+  if(C.hasta)return Math.round((C.hasta-Date.now())/1000);
+  if(!C.at)return null;const[h,m]=C.at.split(':').map(Number);if(isNaN(h))return null;
+  const o=new Date();o.setHours(h,m||0,0,0);let s=Math.round((o-Date.now())/1000);
+  if(s<-3600)s+=86400;return s}
+function reloj(s){const h=Math.floor(s/3600),m=Math.floor(s%3600/60),g=s%60;
+  return (h?h+':'+String(m).padStart(2,'0'):String(m).padStart(2,'0'))+':'+String(g).padStart(2,'0')}
+function pintarCd(){const el=$('cd'),C=S.cd||{};
+  if(S.sw&&S.sw.countdown===false){el.innerHTML='';return}
+  const s=faltan();if(s===null){el.innerHTML='';return}
+  if(s>0){const t=reloj(s);
+    el.innerHTML=`<small>${esc(C.label||'Empezamos en:')}</small><b class="${t.length>5?'largo':''}">${t}</b>`}
+  else el.innerHTML=`<em>${esc(C.end||'¡Empezamos!')}</em>`}
 
-/* ---------- vistas que rotan ---------- */
-function vistas(){const v=[];
-  ['hosts','casters','analysts'].forEach((k,i)=>{if(S.show[k]&&S.talent[i].people.some(p=>p.name))v.push({t:'tal',i})});
-  const ms=S.matches.filter(m=>m.on);
-  if(S.show.matches&&ms.length){const n=Math.max(1,S.perPage||2);
-    for(let i=0;i<ms.length;i+=n)v.push({t:'mat',lista:ms.slice(i,i+n)})}
-  return v}
+/* ---------- columna ---------- */
+function pintarCol(){const E=S.ev||{};
+  $('tlogo').innerHTML=E.logo?`<img src="${E.logo}">`
+    :`<b>${esc(E.title||'Torneo')}${E.stage?`<small>${esc(E.stage)}</small>`:''}</b>`;
+  /* comentaristas: los grupos prendidos en el panel, hasta cuatro personas */
+  const gente=[];[['hosts',0],['casters',1],['analysts',2]].forEach(([k,i])=>{
+    if(S.show&&S.show[k]&&S.talent&&S.talent[i])S.talent[i].people.forEach(p=>{if(p.name)gente.push(p)})});
+  const g=gente.slice(0,4),conFoto=g.some(p=>p.photo);
+  $('cast').className='cast'+(conFoto?'':' sinfotos');
+  $('cast').innerHTML=g.length?`${conFoto?`<div class="fotos">${g.filter(p=>p.photo).map(p=>`<img src="${p.photo}">`).join('')}</div>`:''}
+    <div class="nombres">${g.map(p=>`<b>${esc(p.name)}</b>`).join('<i>✖</i>')}</div>`:'';
+  encajarTitulo();pintarSpon()}
+function pintarSpon(){const L=(S.sponsors||[]).filter(Boolean);
+  if(!L.length||(S.sw&&S.sw.sponsor===false)){$('spon').innerHTML='';return}
+  $('spon').innerHTML=`<img src="${L[spi%L.length]}">`}
 
-/* ---------- dibujo ---------- */
-function pintarCinta(){const E=S.ev;
-  $('cinta').innerHTML=`${FLE}&nbsp;<b>${esc((E.title||'').split(' ')[0]||'Torneo')}</b>&nbsp;<span>${esc((E.title||'').split(' ').slice(1).join(' '))}</span>&nbsp;${FLE}
-    <span class="der">${FLE}&nbsp;<b style="font-size:19px">${esc(E.sub||'')}</b>&nbsp;<span>${esc(E.stage||'')}</span>&nbsp;&#10033;</span>`}
+/* ---------- abajo ---------- */
+function partidosDelDia(){return (S.matches||[]).map((m,i)=>Object.assign({i},m)).filter(m=>m.on)}
+function pintarPie(){const ms=partidosDelDia();
+  let m=ms.find(x=>x.i===S.actual);if(!m)m=ms[0];
+  if(!m){$('pie').innerHTML=`<div class="nada">${esc((S.ev&&S.ev.title)||'Bienvenidos')}</div>`;return}
+  const eq=(t,c)=>`<div class="eq ${c}"><b>${esc(t.name)||'Por definir'}</b><span class="lg">${t.logo?`<img src="${t.logo}">`:''}</span></div>`;
+  $('pie').innerHTML=`<div class="lab">${esc(m.label||'Partida')}</div>
+   <div class="fila">${eq(m.teams[0],'l')}<div class="vs">VS</div>${eq(m.teams[1],'r')}</div>
+   ${m.bo?`<div class="bo">Al mejor de ${esc(m.bo)}</div>`:''}`;
+  /* del lado derecho el logo va primero */
+  const r=$('pie').querySelector('.eq.r');if(r)r.insertBefore(r.querySelector('.lg'),r.firstChild);
+  encajar()}
 
-function pintarHd(){const E=S.ev,sp=sponsorActual();
-  $('hd').innerHTML=`
-   <div class="elogo">${E.logo?`<img src="${E.logo}">`:`<span>${esc((E.title||'ML').slice(0,2))}</span>`}</div>
-   <div class="ttl"><b>${esc(E.title||'Torneo')}</b>
-     <div class="chips">${E.sub?`<b class="c1">${esc(E.sub)}</b>`:''}${E.stage?`<b class="c2">${esc(E.stage)}</b>`:''}</div></div>
-   ${E.qr?`<div class="qr"><small>${esc(E.qrLabel||'')}</small><div class="img"><img src="${E.qr}"></div></div>`:''}
-   ${S.sw.sponsor&&(sp.etq||sp.logo)?`<div class="spon"><div class="lb">${esc(sp.etq||'')}</div>
-     <div class="bx">${sp.logo?`<img src="${sp.logo}">`:''}</div></div>`:''}`}
+/* ---------- ventana principal ---------- */
+const POR_PAG=3;
+function pintarMain(){const el=$('main'),modo=S.main||'video';
+  if(modo==='swiss'&&SW){el.className='panel lleno';el.innerHTML=htmlSwiss();encajarSwiss();return}
+  if(modo==='partidos'){const ms=partidosDelDia();
+    if(ms.length){el.className='panel lleno';
+      const n=Math.ceil(ms.length/POR_PAG),p=pag%n,vis=ms.slice(p*POR_PAG,p*POR_PAG+POR_PAG);
+      const actual=(ms.find(x=>x.i===S.actual)||ms[0]).i;
+      el.innerHTML=`<div class="mtit">Partidos de hoy</div>
+       ${S.ev&&S.ev.stage?`<div class="msub">${esc(S.ev.stage)}</div>`:''}
+       ${n>1?`<div class="mpag">${Array.from({length:n},(_,k)=>`<i class="${k===p?'on':''}"></i>`).join('')}</div>`:''}
+       <div class="mlist">${vis.map(m=>`<div class="mc${m.i===actual?' actual':''}">
+         <div class="hora"><b>${esc(m.time||'--:--')}</b><small>${esc(m.label||'')}</small></div>
+         <div class="eq"><span class="lg">${m.teams[0].logo?`<img src="${m.teams[0].logo}">`:''}</span><b>${esc(m.teams[0].name)||'Por definir'}</b></div>
+         <div class="vs">${m.teams[0].score!==''||m.teams[1].score!==''
+           ?`<b class="sc">${esc(m.teams[0].score||0)} - ${esc(m.teams[1].score||0)}</b>`
+           :`<b>VS</b>`}${m.bo?`<small>BO${esc(m.bo)}</small>`:''}</div>
+         <div class="eq r"><span class="lg">${m.teams[1].logo?`<img src="${m.teams[1].logo}">`:''}</span><b>${esc(m.teams[1].name)||'Por definir'}</b></div>
+       </div>`).join('')}</div>`;
+      return}}
+  /* video: hueco transparente */
+  el.className='video';el.innerHTML=''}
 
-function pintarIzq(){const V=vistas();
-  if(!V.length){$('izq').style.display='none';return}
-  $('izq').style.display='';const v=V[vista%V.length];
-  if(v.t==='tal'){const T=S.talent[v.i],g=T.people.filter(p=>p.name);
-    $('izq').innerHTML=`<div class="ph">${esc(T.title)}</div>
-     <div class="foto"><div class="gr fade ${g.length===1?'uno':''}">${g.map(p=>`<span class="p">${p.photo?`<img src="${p.photo}">`:SIL}</span>`).join('')}</div></div>
-     <div class="nombres">${g.map(p=>esc(p.name)).join(' <i>-</i> ')}</div>`}
-  else{$('izq').innerHTML=`<div class="ph">Partidas de hoy</div>
-     <div class="mlist fade">${v.lista.map(m=>`<div class="mc">
-       <div class="mch"><span>${esc(m.label)}</span><em>${esc(m.time)}${m.bo?' · BO'+esc(m.bo):''}</em></div>
-       ${m.teams.map((t,k)=>`<div class="mt2" style="--c:${colorLado(k,k?'#ff3d55':'#2f80ff')}"><i></i>
-         <span class="lg">${t.logo?`<img src="${t.logo}">`:''}</span>
-         <b>${esc(t.name)||'Por definir'}</b><em>${esc(t.score)}</em></div>`).join('')}</div>`).join('')}</div>
-     <div class="nombres">${esc(S.ev.stage||'Programación')}</div>`}}
+/* ---------- Swiss Stage ---------- */
+function htmlSwiss(){const W=SW,C=SWISS.calcular(W),T=W.teams,meta=C.meta,nr=meta*2-1;
+  const tm=i=>T[i]||{name:'',logo:''};
+  const nom=i=>esc(tm(i).name)||'Equipo '+(i+1);
+  const lg=t=>t.logo?`<img src="${t.logo}">`:`<i class="sl"></i>`;
+  const fila=(i,m,lado)=>{if(i==null||i<0)return `<div class="swt bye"><i class="sl"></i><span>Libre</span><b></b></div>`;
+    const g=SWISS.ganador(m),sc=lado?m.sb:m.sa;
+    return `<div class="swt ${g<0?'':g===i?'gana':'pierde'}">${lg(tm(i))}<span>${nom(i)}</span><b>${sc===''||sc==null?'':esc(sc)}</b></div>`};
+  /* los grupos de mejor record van arriba */
+  const clave=k=>{const v=k.split(' / ').map(x=>{const[w,l]=x.split('-').map(Number);return w-l});return -(v.reduce((a,b)=>a+b,0)/v.length)};
+  const res=(r,tipo)=>{const L=T.map((t,i)=>i).filter(i=>C.fin[i]===r&&C.estado[i]===tipo);
+    if(!L.length)return '';
+    const chips=L.map(i=>`<div class="swres ${tipo}">${lg(tm(i))}<span>${nom(i)}</span><b>${C.rec[i].w}-${C.rec[i].l}</b></div>`).join('');
+    return tipo==='ok'?`<div class="swlab ok">Clasificado${L.length>1?'s':''}</div>${chips}`:`${chips}<div class="swlab out">Eliminado${L.length>1?'s':''}</div>`};
+  let cols='';
+  for(let r=0;r<=nr;r++){
+    const R=(W.rounds||[])[r];let medio='';
+    if(r<nr){
+      if(R&&R.length){const grupos=[];
+        R.forEach(m=>{const k=SWISS.grupoDe(C,r,m);let g=grupos.find(x=>x.k===k);if(!g)grupos.push(g={k,ms:[]});g.ms.push(m)});
+        grupos.sort((a,b)=>clave(a.k)-clave(b.k));
+        medio=grupos.map(g=>{const dec=g.ms.some(m=>SWISS.esDecisivo(C,r,m));
+          return `<div class="swbox ${dec?'dec':''}"><div class="rec">${esc(g.k)}<small>BO${dec?(W.boDec||5):(W.bo||3)}</small></div>
+            ${g.ms.map(m=>`<div class="swm">${fila(m.a,m,0)}${fila(m.b,m,1)}</div>`).join('')}</div>`}).join('')}
+      else medio=`<div class="swbox vacia"><div class="pd">Por definir</div></div>`}
+    cols+=`<div class="swcol"><div class="cab">${r<nr?'Ronda '+(r+1):'Final'}</div>
+      ${r>0?res(r-1,'ok'):''}<div class="medio">${medio}</div>${r>0?res(r-1,'out'):''}</div>`}
+  const alto=T.length>8?(SOLO?36:30):(SOLO?44:38);
+  return `<div class="mtit">Swiss Stage</div>${S.ev&&S.ev.stage?`<div class="msub">${esc(S.ev.stage)}</div>`:''}
+   <div class="swgrid" style="grid-template-columns:repeat(${nr+1},1fr);--fila:${alto}px">${cols}</div>`}
 
-function pintarCd(){const C=S.cd;
-  if(!S.sw.countdown||!C.at){$('cd').style.display='none';return}
-  $('cd').style.display='';const s=faltan(C.at),t=s===null?null:textoReloj(s);
-  const et=esc(t?C.label:C.end),p=et.lastIndexOf(' ');
-  $('cd').innerHTML=t
-    ?`<small>${p>0?et.slice(0,p)+' <em>'+et.slice(p+1)+'</em>':et}</small><b>${t}</b>`
-    :`<b style="font-size:74px">${et}</b>`}
+/* si alguna columna no entra, achica las filas hasta que entre */
+function encajarSwiss(){const g=document.querySelector('.swgrid');if(!g)return;
+  let f=parseInt(g.style.getPropertyValue('--fila'))||36;
+  const sobra=()=>[...g.querySelectorAll('.swcol')].some(c=>c.scrollHeight>c.clientHeight+1);
+  while(sobra()&&f>18){f--;g.style.setProperty('--fila',f+'px')}
+  g.querySelectorAll('.medio').forEach(m=>m.style.gap=f<28?'8px':'')}
 
-function pintarWin(){const w=$('win'),d=S.matches.find(m=>m.on);
-  if(S.main==='featured'&&d){w.className='feat';
-    const eq=t=>`<div class="ft"><div class="fg">${t.logo?`<img src="${t.logo}">`:`<span>${esc((t.name||'?')[0])}</span>`}</div><b>${esc(t.name)||'Por definir'}</b></div>`;
-    w.innerHTML=`<div class="fm"><div class="fl">${esc(d.label)} · ${esc(d.time)}${d.bo?' · BO'+esc(d.bo):''}</div>
-      <div class="fr">${eq(d.teams[0])}
-        <div class="fsc">${esc(d.teams[0].score||'0')} <span>–</span> ${esc(d.teams[1].score||'0')}</div>
-        ${eq(d.teams[1])}</div></div>`}
-  else{w.className='';w.innerHTML=''}
-  if(w.className==='feat'){$('fondo').style.clipPath='none';return}
-  const r=w.getBoundingClientRect(),W=1920,H=1080;
-  const x1=(r.left/W*100).toFixed(3)+'%',x2=(r.right/W*100).toFixed(3)+'%';
-  const y1=(r.top/H*100).toFixed(3)+'%',y2=(r.bottom/H*100).toFixed(3)+'%';
-  $('fondo').style.clipPath=`polygon(0 0,100% 0,100% ${y1},${x1} ${y1},${x1} ${y2},${x2} ${y2},${x2} ${y1},100% ${y1},100% 100%,0 100%)`}
+/* achica los nombres largos para que entren */
+function encajarTitulo(){const el=document.querySelector('#col .tlogo b');if(!el)return;
+  let f=56;el.style.fontSize=f+'px';while((el.scrollWidth>el.clientWidth||el.scrollHeight>180)&&f>24){f-=2;el.style.fontSize=f+'px'}}
+function encajar(){document.querySelectorAll('#pie .eq b').forEach(el=>{
+  let f=92;el.style.fontSize=f+'px';while(el.scrollWidth>el.clientWidth&&f>40){f-=2;el.style.fontSize=f+'px'}})}
 
-function pintarPie(){
-  if(S.sw.ticker&&S.ticker){$('tick').style.display='';
-    const tg=esc(S.tickerTag||S.ev.sub||S.ev.title||'');
-    if($('tick').dataset.t!==S.ticker+'|'+tg){$('tick').dataset.t=S.ticker+'|'+tg;
-      $('tick').innerHTML=`<span class="tg">${tg}</span><span class="tx"><div>${esc(S.ticker)} &nbsp;&nbsp;&bull;&nbsp;&nbsp; ${esc(S.ticker)}</div></span>`}}
-  else $('tick').style.display='none';
-  const L=(S.ev.left||'').trim(),R=(S.ev.right||'').trim(),p=L.indexOf(' ');
-  $('lema').innerHTML=L?`&#10006; ${p>0?`<b>${esc(L.slice(0,p))}</b> <span>${esc(L.slice(p+1))}</span>`:`<b>${esc(L)}</b>`}`:'';
-  $('lemad').innerHTML=R?`${esc(R)} ${FLE}`:''}
+function pintar(){if(!S)return;pintarMain();pintarPie();pintarCol();pintarCd()}
 
-function sponsorActual(){
-  const et=(S.sponsorLabels||'').split(',').map(x=>x.trim()).filter(Boolean),lg=S.sponsors||[];
-  const n=Math.max(et.length,lg.length);if(!n)return{};
-  const i=spi%n;
-  return{etq:et.length?et[i%et.length]:'',logo:lg.length?lg[i%lg.length]:''}}
-
-function pintar(){if(!S)return;pintarCinta();pintarHd();pintarIzq();pintarCd();pintarWin();pintarPie()}
-
-let tv=null,ts=null;
-function ciclos(){clearInterval(tv);clearInterval(ts);
-  tv=setInterval(()=>{const n=vistas().length;if(n>1){vista=(vista+1)%n;pintarIzq()}},Math.max(2,S.secs||7)*1000);
-  ts=setInterval(()=>{spi++;pintarHd()},Math.max(1,S.sponsorSecs||3)*1000)}
+/* ---------- lo que rota ---------- */
+let tp=null,ts=null;
+function ciclos(){clearInterval(tp);clearInterval(ts);
+  /* los partidos del dia pasan de a tres; se puede apagar desde el panel */
+  if(S.rotar!==false)tp=setInterval(()=>{if((S.main||'')==='partidos'){pag++;pintarMain()}},Math.max(2,S.matchSecs||5)*1000);
+  ts=setInterval(()=>{spi++;pintarSpon()},Math.max(2,S.sponsorSecs||7)*1000)}
 setInterval(()=>{if(S)pintarCd()},500);
 
 document.addEventListener('tema',()=>{if(S)pintar()});
 new EventSource('/events?k=schedule').onmessage=e=>{
   const d=JSON.parse(e.data);if(!d||!d.matches)return;
   S=d;S.show=S.show||{};S.sw=S.sw||{};S.cd=S.cd||{};S.ev=S.ev||{};
-  vista=0;pintar();ciclos()};
+  /* nombres de modos de versiones anteriores */
+  if(S.main==='featured')S.main='partidos';if(S.main==='videos')S.main='video';
+  SW=S.swiss&&Array.isArray(S.swiss.teams)?S.swiss:null;
+  if(SOLO){S.main='swiss';document.body.classList.add('solo')}
+  pag=0;pintar();ciclos()};
 </script></body></html>

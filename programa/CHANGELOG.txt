@@ -4,6 +4,39 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.33.0 - PANTALLA DE ESPERA NUEVA Y SWISS STAGE
+       - LA PANTALLA DE PROGRAMACION SE REHIZO con el esquema de las transmisiones
+         grandes, en el estilo oscuro del programa:
+           * A la izquierda, una ventana grande que puede ser: tu video (queda
+             transparente para que se vea la fuente de OBS de abajo), los partidos del
+             dia o el Swiss Stage.
+           * Abajo, el partido actual: MATCH N, los dos equipos con su logo, VS y
+             "Al mejor de N". Lo elegis con el boton "Marcar actual" de cada partido.
+           * A la derecha: el logo del torneo arriba, los comentaristas con su foto y
+             nombre, la cuenta regresiva "EMPEZAMOS EN:" y los auspiciantes.
+       - PARTIDOS DEL DIA: hasta 6. Se muestran de a 3 y, si hay mas, van pasando
+         solos cada 5 segundos (se puede cambiar el tiempo o apagar la rotacion).
+       - CUENTA REGRESIVA MANUAL: cargas minutos y segundos y tocas "Empezar". Hay
+         botones +1, +5 y -1 minuto y "Apagar". Tambien se puede poner una hora fija.
+         Los textos ("EMPEZAMOS EN:" y el de cuando termina) se pueden cambiar.
+       - AUSPICIANTES: carga los que quieras; rotan cada 7 segundos abajo a la
+         derecha (el tiempo se puede cambiar).
+       - COMENTARISTAS: cada uno tiene ahora un campo @usuario (se usa en las escenas
+         de comentaristas que vienen).
+       - SWISS STAGE (nuevo, en el control de programacion):
+           * 8 o 16 equipos. El que llega a 3 victorias clasifica y el que llega a 3
+             derrotas queda eliminado (se puede cambiar a 2). Hasta 5 rondas.
+           * "Armar ronda" cruza solo a los equipos con el mismo record (el mejor
+             sembrado contra el peor y sin repetir rivales). Cualquier cruce se puede
+             cambiar a mano, agregar o quitar.
+           * Cargas los resultados y los equipos suben y bajan solos de columna; los
+             clasificados salen en verde y los eliminados en rojo.
+           * Al mejor de 3 en partidos normales y de 5 en los decisivos (los que pueden
+             clasificar o eliminar a alguien). Se pueden cambiar.
+           * Los equipos se pueden elegir de los que ya tenes cargados en el draft.
+           * Se ve en la ventana grande de la pantalla de espera, o solo a pantalla
+             completa en http://localhost:3000/schedule-overlay.html?swiss
+
 0.32.0 - LAS RANURAS DE EQUIPOS PASAN DE 8 A 2, Y SE AUTOGUARDAN
        - Ahora son dos ranuras y arrancan vacias: cargas los equipos a mano, uno para
          cada lado. Las dos se ven siempre editables, aunque esten vacias.

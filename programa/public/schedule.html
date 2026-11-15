@@ -32,6 +32,21 @@
 .mts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:1400px){.mts{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){.mts{grid-template-columns:1fr}}
+.swteams{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.swtr{display:flex;align-items:center;gap:8px;background:var(--input);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.swtr em{font-style:normal;font-weight:700;color:var(--mut);width:22px;text-align:center}
+.swtr .mlogo{width:42px;height:38px}
+.swtr input{flex:1;min-width:0}
+.swtr select{width:130px}
+.swrec{font-weight:800;min-width:34px;text-align:center}
+.swok{color:#35c978;font-size:12px}.swout{color:#ff5d70;font-size:12px}
+.swr{margin-top:14px;background:var(--input);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.swrh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.swx{display:grid;grid-template-columns:110px 1fr 56px 14px 56px 1fr 34px;gap:8px;align-items:center;margin-top:6px}
+.swx .swg{font-weight:800}.swx .swg small{margin-left:6px;color:var(--mut);font-weight:600}
+.swx select.gana{border-color:#35c978;color:#35c978}
+.swx .sc{text-align:center}
+.swvs{text-align:center;color:var(--mut)}
 .mt{background:var(--input);border:1px solid var(--line);border-radius:8px;padding:12px}
 .mt.on{border-color:var(--acc)}
 .mth{display:flex;align-items:center;gap:10px;margin-bottom:10px}
@@ -61,21 +76,23 @@
   <div class="grid2"><section class="card" id="evento"></section><section class="card" id="prev"></section></div>
   <section class="card" id="talento"></section>
   <section class="card" id="partidas"></section>
+  <section class="card" id="swiss"></section>
 </main>
 
 <script src="nav.js"></script>
+<script src="swiss.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const P=()=>[0,1,2,3].map(()=>({name:'',photo:''}));
+const P=()=>[0,1,2,3].map(()=>({name:'',photo:'',handle:''}));
 const def=()=>({
   ev:{title:'',sub:'',stage:'',logo:'',qr:'',qrLabel:'',left:'',right:''},
-  cd:{at:'',label:'EL SHOW EMPIEZA EN',end:'EMPEZAMOS PRONTO'},
+  cd:{at:'',hasta:0,label:'EMPEZAMOS EN:',end:'¡EMPEZAMOS!'},
   show:{hosts:false,casters:true,analysts:false,matches:true},
-  secs:7,perPage:2,main:'video',
+  secs:7,perPage:2,main:'video',rotar:true,matchSecs:5,actual:0,
   sw:{countdown:true,sponsor:true,ticker:true},
   ticker:'BIENVENIDOS A LA TRANSMISIÓN',tickerTag:'',
-  sponsorLabels:'PATROCINADOR OFICIAL',sponsors:[],sponsorSecs:3,
+  sponsorLabels:'PATROCINADOR OFICIAL',sponsors:[],sponsorSecs:7,
   talent:[{title:'PRESENTADORES',color:'#f0b429',people:P()},
           {title:'NARRADORES',color:'#f0b429',people:P()},
           {title:'ANALISTAS',color:'#f0b429',people:P()}],
@@ -99,16 +116,28 @@ function elegir(alGuardar,anterior){const i=document.createElement('input');i.ty
   i.accept='image/png,image/jpeg,image/webp,image/gif';
   i.onchange=()=>subir(i.files[0],alGuardar,anterior);i.click()}
 
-/* ---------- cuenta regresiva ---------- */
-function sumarMin(m){const c=S.cd;let [h,mi]=(c.at||'').split(':').map(Number);
-  if(isNaN(h)){const d=new Date();h=d.getHours();mi=d.getMinutes()}
-  let t=(h*60+mi+m+1440)%1440;
-  c.at=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');build();push()}
+/* ---------- cuenta regresiva ----------
+   "Empezar" arranca el reloj con los minutos cargados a mano (guarda el momento exacto
+   en que termina, asi no se desfasa). Tambien se puede poner una hora fija. */
+function cdArrancar(){const m=parseFloat($('cdmin').value),g=parseFloat(($('cdseg')||{}).value)||0;
+  if(!(m>0)&&!(g>0))return;S.cd.hasta=Date.now()+Math.round(((m||0)*60+g)*1000);S.cd.at='';build();push()}
+function cdSumar(n){const base=S.cd.hasta&&S.cd.hasta>Date.now()?S.cd.hasta:Date.now();
+  S.cd.hasta=Math.max(Date.now(),base+n*60000);S.cd.at='';build();push()}
+function cdHora(v){S.cd.at=v;S.cd.hasta=0;build();push()}
+function cdLimpiar(){S.cd.at='';S.cd.hasta=0;build();push()}
+function cdTexto(){const C=S.cd;let s=null;
+  if(C.hasta)s=Math.round((C.hasta-Date.now())/1000);
+  else if(C.at){const[h,m]=C.at.split(':').map(Number);const o=new Date();o.setHours(h,m||0,0,0);s=Math.round((o-Date.now())/1000);if(s<-3600)s+=86400}
+  if(s===null)return 'Apagada';if(s<=0)return 'Terminó';
+  const h=Math.floor(s/3600),mi=Math.floor(s%3600/60),g=s%60;
+  return (h?h+':'+String(mi).padStart(2,'0'):String(mi).padStart(2,'0'))+':'+String(g).padStart(2,'0')}
+setInterval(()=>{const e=$('cdvivo');if(e)e.textContent=cdTexto()},500);
 
 /* ---------- partidas ---------- */
 function todas(v){S.matches.forEach(m=>m.on=v);build();push()}
 function invertir(i){const m=S.matches[i];m.teams.reverse();build();push()}
 function limpiar(i){S.matches[i]=def().matches[i];build();push()}
+function marcarActual(i){S.actual=i;S.matches[i].on=true;build();push()}
 
 /* ================= RENDER ================= */
 function renderTop(){
@@ -119,66 +148,55 @@ function renderTop(){
    <div class="acts"><button class="gold" onclick="window.open('schedule-overlay.html','_blank')">Abrir pantalla</button></div>`;setConn()}
 
 function renderAire(){
-  const paneles=[['hosts','Presentadores','Panel de presentadores'],['casters','Narradores','Panel de narradores'],
-                 ['analysts','Analistas','Panel de analistas'],['matches','Partidas de hoy','Las partidas marcadas, por páginas']];
-  const sw=(k,t)=>`<label class="sw ${S.sw[k]?'on':''}" onclick="set(['sw','${k}'],!S.sw.${k});build()"><i></i>${t}</label>`;
-  $('aire').innerHTML=`<h2>En transmisión<span>Marca todo lo que debe ir rotando en el panel izquierdo</span></h2>
-   <div class="onair">${paneles.map(([k,t,d])=>`
-     <label class="oa ${S.show[k]?'on':''}"><input type="checkbox" ${S.show[k]?'checked':''} onchange="set(['show','${k}'],this.checked);build()">
-       <span><b>${t}</b><small>${d}</small></span></label>`).join('')}</div>
+  const sw=(k,t)=>`<label class="sw ${S.sw[k]!==false?'on':''}" onclick="set(['sw','${k}'],S.sw.${k}===false);build()"><i></i>${t}</label>`;
+  const modo=(v,t)=>`<button class="${S.main===v?'on':''}" onclick="set(['main'],'${v}');build()">${t}</button>`;
+  $('aire').innerHTML=`<h2>Pantalla de espera<span>Qué se ve en la ventana grande de la izquierda</span></h2>
    <div class="opts">
-     <label class="opt">Segundos por panel<input type="number" min="2" max="60" value="${S.secs}" oninput="set(['secs'],+this.value||7)"></label>
-     <label class="opt">Partidas por página<select onchange="set(['perPage'],+this.value)">${[1,2,3,4].map(n=>`<option ${S.perPage==n?'selected':''}>${n}</option>`).join('')}</select></label>
-     <span class="opt">Ventana principal</span>
-     <span class="seg"><button class="${S.main==='video'?'on':''}" onclick="set(['main'],'video');build()">Ventana de video</button><button class="${S.main==='featured'?'on':''}" onclick="set(['main'],'featured');build()">Partida destacada</button></span>
-     ${sw('countdown','Cuenta regresiva')}${sw('sponsor','Patrocinador')}${sw('ticker','Ticker')}
+     <span class="seg">${modo('video','Video (hueco transparente)')}${modo('partidos','Partidos del día')}${modo('swiss','Swiss Stage')}</span>
    </div>
-   <div class="hint" style="margin:12px 0 0">Ventana de video = un hueco transparente: pon el video o la cámara <b>debajo</b> de esta fuente de navegador en OBS. Partida destacada = la primera partida marcada ocupa ese hueco.</div>`}
+   <div class="opts" style="margin-top:10px">
+     <label class="sw ${S.rotar!==false?'on':''}" onclick="set(['rotar'],S.rotar===false);build()"><i></i>Rotar los partidos</label>
+     <label class="opt">cada<input type="number" min="2" max="60" value="${S.matchSecs||5}" style="width:70px" oninput="set(['matchSecs'],+this.value||5)">seg</label>
+     ${sw('countdown','Cuenta regresiva')}${sw('sponsor','Auspiciantes')}
+   </div>
+   <div class="hint" style="margin:12px 0 0"><b>Video</b>: la ventana queda transparente; poné tu video o cámara <b>debajo</b> de esta fuente en OBS.
+     <b>Partidos del día</b>: se muestran de a 3 y, si hay más, van pasando solos. Abajo siempre va el partido marcado como <b>Actual</b>.</div>`}
 
 function renderEvento(){
   const E=S.ev,C=S.cd,ei=(k,v)=>`oninput="set(['ev','${k}'],${v})"`,ci=(k,v)=>`oninput="set(['cd','${k}'],${v})"`;
-  $('evento').innerHTML=`<h2>Evento</h2>
+  $('evento').innerHTML=`<h2>Torneo</h2>
    <div class="mg">
-     <label>Título<input value="${esc(E.title)}" placeholder="Ej: Copa Nacional MLBB" ${ei('title','this.value')}></label>
-     <label>Subtítulo<input value="${esc(E.sub)}" placeholder="Ej: tu organización" ${ei('sub','this.value')}></label>
+     <label>Nombre del torneo<input value="${esc(E.title)}" placeholder="Ej: Copa Nacional MLBB" ${ei('title','this.value')}></label>
      <label>Fase / día<input value="${esc(E.stage)}" placeholder="Ej: PLAYOFFS" ${ei('stage','this.value')}></label>
-     <label>Texto de la esquina izquierda<input value="${esc(E.left||'')}" placeholder="Ej: Lamayo Esports" ${ei('left','this.value')}></label>
-     <label>Texto de la esquina derecha<input value="${esc(E.right||'')}" placeholder="Ej: ¡Vamos!" ${ei('right','this.value')}></label>
    </div>
-   <div class="lbl">Logo del evento y código QR</div>
+   <div class="lbl">Logo del torneo (va arriba a la derecha)</div>
    <div class="acts" style="align-items:center">
      <div class="lgbox" style="width:70px;height:70px;border:1px solid var(--line);border-radius:8px;background:var(--input);display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--mut)">${E.logo?`<img src="${E.logo}" style="max-width:100%;max-height:100%;object-fit:contain">`:'Sin logo'}</div>
      <button class="sm" onclick="elegir(u=>S.ev.logo=u,S.ev.logo)">${E.logo?'Cambiar logo':'Subir logo'}</button>
      ${E.logo?'<button class="sm" onclick="borrarArchivo(S.ev.logo);S.ev.logo=\'\';build();push()">Quitar</button>':''}
-     <div class="lgbox" style="width:70px;height:70px;border:1px solid var(--line);border-radius:8px;background:var(--input);display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--mut);margin-left:18px">${E.qr?`<img src="${E.qr}" style="max-width:100%;max-height:100%;object-fit:contain">`:'Sin QR'}</div>
-     <button class="sm" onclick="elegir(u=>S.ev.qr=u,S.ev.qr)">${E.qr?'Cambiar QR':'Subir QR'}</button>
-     ${E.qr?'<button class="sm" onclick="borrarArchivo(S.ev.qr);S.ev.qr=\'\';build();push()">Quitar</button>':''}
-     <input style="width:190px" value="${esc(E.qrLabel||'')}" placeholder="Texto sobre el QR" ${ei('qrLabel','this.value')}>
    </div>
 
-   <h2 style="margin-top:18px">Cuenta regresiva</h2>
-   <div class="mg">
-     <label>El show empieza a las<input type="time" value="${esc(C.at)}" ${ci('at','this.value')}></label>
-     <label>Etiqueta<input value="${esc(C.label)}" ${ci('label','this.value')}></label>
+   <h2 style="margin-top:18px">Cuenta regresiva<span>Ahora: <b id="cdvivo">${cdTexto()}</b></span></h2>
+   <div class="acts" style="align-items:flex-end">
+     <label class="opt">Minutos<input id="cdmin" type="number" min="0" value="10" style="width:80px"></label>
+     <label class="opt">Segundos<input id="cdseg" type="number" min="0" max="59" value="0" style="width:80px"></label>
+     <button class="gold sm" onclick="cdArrancar()">Empezar</button>
+     ${[1,5].map(n=>`<button class="sm" onclick="cdSumar(${n})">+${n} min</button>`).join('')}
+     <button class="sm" onclick="cdSumar(-1)">−1 min</button>
+     <button class="sm bad" onclick="cdLimpiar()">Apagar</button>
+   </div>
+   <div class="mg" style="margin-top:8px">
+     <label>…o a una hora fija<input type="time" value="${esc(C.at)}" onchange="cdHora(this.value)"></label>
+     <label>Texto de arriba<input value="${esc(C.label)}" ${ci('label','this.value')}></label>
      <label>Texto al terminar<input value="${esc(C.end)}" ${ci('end','this.value')}></label>
    </div>
-   <div class="acts" style="margin-top:8px">
-     ${[5,10,15,30].map(n=>`<button class="sm" onclick="sumarMin(${n})">+${n} min</button>`).join('')}
-     <button class="sm" onclick="set(['cd','at'],'');build()">Limpiar</button>
-   </div>
 
-   <h2 style="margin-top:18px">Ticker y patrocinadores</h2>
-   <div class="mg"><label>Etiqueta negra del ticker<input value="${esc(S.tickerTag||'')}" placeholder="Ej: COPA NACIONAL" oninput="set(['tickerTag'],this.value)"></label></div>
-   <div class="lbl">Texto que se desplaza</div>
-   <input value="${esc(S.ticker)}" placeholder="Ej: ¡Bienvenidos a la transmisión!" oninput="set(['ticker'],this.value)">
-   <div class="lbl">Etiquetas de patrocinador (separadas por comas, rotan con los logos)</div>
-   <input value="${esc(S.sponsorLabels)}" placeholder="Ej: Patrocinador oficial, Auspiciante" oninput="set(['sponsorLabels'],this.value)">
-   <div class="lbl">Logos de patrocinadores</div>
+   <h2 style="margin-top:18px">Auspiciantes<span>Cargá los que quieras; van rotando abajo a la derecha</span></h2>
    <div class="spon">
      ${S.sponsors.map((u,i)=>`<div class="sp"><img src="${u}"><button class="sm" onclick="borrarArchivo(S.sponsors[${i}]);S.sponsors.splice(${i},1);build();push()">×</button></div>`).join('')}
      <div class="sp add" onclick="elegir(u=>S.sponsors.push(u))">+ Agregar</div>
    </div>
-   <div class="mg" style="margin-top:10px"><label>Segundos por logo<input type="number" min="1" value="${S.sponsorSecs}" oninput="set(['sponsorSecs'],+this.value||3)"></label></div>`}
+   <div class="mg" style="margin-top:10px"><label>Segundos por auspiciante<input type="number" min="2" value="${S.sponsorSecs||7}" oninput="set(['sponsorSecs'],+this.value||7)"></label></div>`}
 
 function renderPrev(){
   $('prev').innerHTML=`<h2>Vista previa en vivo<span>así se verá en OBS</span></h2>
@@ -192,7 +210,10 @@ function ajustarPreview(){const w=$('pvwrap');if(!w)return;const s=w.clientWidth
 addEventListener('resize',ajustarPreview);
 
 function renderTalento(){
-  $('talento').innerHTML=`<h2>Talento<span>Haz clic en una foto para subirla. Un PNG con fondo transparente queda mejor.</span></h2>
+  $('talento').innerHTML=`<h2>Comentaristas<span>Tocá la foto para subirla (PNG sin fondo queda mejor). Se muestran los grupos prendidos abajo, hasta 4 personas.</span></h2>
+   <div class="onair" style="margin-bottom:12px">${[['hosts',0],['casters',1],['analysts',2]].map(([k,i])=>`
+     <label class="oa ${S.show[k]?'on':''}"><input type="checkbox" ${S.show[k]?'checked':''} onchange="set(['show','${k}'],this.checked);build()">
+       <span><b>${esc(S.talent[i].title)}</b><small>Mostrar en pantalla</small></span></label>`).join('')}</div>
    <div class="tal">${S.talent.map((t,i)=>`<div class="talp">
      <div class="lbl" style="margin-top:0">Título del panel</div>
      <input value="${esc(t.title)}" oninput="set(['talent',${i},'title'],this.value)">
@@ -202,19 +223,21 @@ function renderTalento(){
      ${t.people.map((p,k)=>`<div class="per">
        <div class="photo" onclick="elegir(u=>S.talent[${i}].people[${k}].photo=u,S.talent[${i}].people[${k}].photo)">${p.photo?`<img src="${p.photo}">`:'FOTO'}</div>
        <input value="${esc(p.name)}" placeholder="Nombre ${k+1}" oninput="set(['talent',${i},'people',${k},'name'],this.value)">
-       <button class="sm" title="Borrar" onclick="borrarArchivo(S.talent[${i}].people[${k}].photo);S.talent[${i}].people[${k}]={name:'',photo:''};build();push()">×</button>
+       <input value="${esc(p.handle||'')}" placeholder="@usuario" style="max-width:130px" oninput="set(['talent',${i},'people',${k},'handle'],this.value)">
+       <button class="sm" title="Borrar" onclick="borrarArchivo(S.talent[${i}].people[${k}].photo);S.talent[${i}].people[${k}]={name:'',photo:'',handle:''};build();push()">×</button>
      </div>`).join('')}
    </div>`).join('')}</div>`}
 
 function renderPartidas(){
   const n=S.matches.filter(m=>m.on).length;
-  $('partidas').innerHTML=`<h2>Partidas<span>${n} en transmisión</span>
+  $('partidas').innerHTML=`<h2>Partidos del día<span>${n} marcados (hasta 6)</span>
      <span style="float:right"><button class="sm" onclick="todas(true)">Marcar todas</button>
      <button class="sm" onclick="todas(false)">Desmarcar todas</button></span></h2>
    <div class="mts">${S.matches.map((m,i)=>`<div class="mt ${m.on?'on':''}">
      <div class="mth"><em>${i+1}</em>
-       <label><input type="checkbox" ${m.on?'checked':''} onchange="set(['matches',${i},'on'],this.checked);build()">En transmisión</label>
-       <span class="acts"><button class="sm" title="Intercambiar equipos" onclick="invertir(${i})">⇄</button>
+       <label><input type="checkbox" ${m.on?'checked':''} onchange="set(['matches',${i},'on'],this.checked);build()">Partido del día</label>
+       <span class="acts"><button class="sm ${S.actual===i?'gold':''}" title="Es el partido que se muestra abajo" onclick="marcarActual(${i})">${S.actual===i?'★ Actual':'Marcar actual'}</button>
+       <button class="sm" title="Intercambiar equipos" onclick="invertir(${i})">⇄</button>
        <button class="sm bad" onclick="limpiar(${i})">Limpiar</button></span></div>
      <div class="mg" style="grid-template-columns:1fr 1fr 90px">
        <label>Etiqueta<input value="${esc(m.label)}" oninput="set(['matches',${i},'label'],this.value)"></label>
@@ -228,7 +251,75 @@ function renderPartidas(){
      </div>`).join('')}
    </div>`).join('')}</div>`}
 
-function build(){renderTop();renderAire();renderEvento();renderPrev();renderTalento();renderPartidas();aplicarRol()}
+/* ================= SWISS STAGE ================= */
+let MIS=[];   /* equipos ya cargados en el draft, para elegirlos rapido */
+fetch('/api/state').then(r=>r.json()).then(d=>{const v=new Map();
+  [...(d.saved||[]),...(d.lib||[])].forEach(e=>{if(e&&e.n&&!v.has(e.n))v.set(e.n,{name:e.n,logo:e.logo||''})});
+  MIS=[...v.values()];if(S.swiss)renderSwiss()}).catch(()=>{});
+function swNuevo(n){if(S.swiss&&S.swiss.rounds.length&&!confirm('Se borran los cruces y resultados cargados. ¿Seguir?'))return;
+  const viejo=S.swiss;S.swiss=SWISS.nuevo(n);
+  if(viejo)viejo.teams.slice(0,n).forEach((t,i)=>S.swiss.teams[i]=t);
+  build();push()}
+function swBorrarTodo(){if(!confirm('¿Borrar el Swiss Stage completo?'))return;S.swiss=null;if(S.main==='swiss')S.main='video';build();push()}
+function swDeMis(i,v){const e=MIS[+v];if(!e)return;S.swiss.teams[i]={name:e.name,logo:e.logo};build();push()}
+function swArmar(){const W=S.swiss;
+  if(W.rounds.length){const falta=W.rounds[W.rounds.length-1].some(m=>m.b>=0&&SWISS.ganador(m)<0);
+    if(falta&&!confirm('Hay partidos de la ronda anterior sin resultado. Si armás la ronda ahora, esos equipos quedan con el récord que tienen. ¿Seguir?'))return}
+  W.rounds.push(W.rounds.length?SWISS.armarRonda(W):SWISS.primeraRonda(W));build();push()}
+function swQuitarRonda(){if(!confirm('¿Borrar la última ronda?'))return;S.swiss.rounds.pop();build();push()}
+function swCruce(r,k,lado,v){S.swiss.rounds[r][k][lado]=+v;build();push()}
+function swAgregarCruce(r){S.swiss.rounds[r].push({a:0,b:1,sa:'',sb:''});build();push()}
+function swQuitarCruce(r,k){S.swiss.rounds[r].splice(k,1);build();push()}
+
+function renderSwiss(){const el=$('swiss');if(!el)return;const W=S.swiss;
+  if(!W){el.innerHTML=`<h2>Swiss Stage<span>Fase suiza: el que llega a 3 victorias avanza, el que llega a 3 derrotas queda afuera</span></h2>
+    <div class="acts"><button class="gold" onclick="swNuevo(8)">Armar con 8 equipos</button><button class="gold" onclick="swNuevo(16)">Armar con 16 equipos</button></div>`;return}
+  const C=SWISS.calcular(W),nr=C.meta*2-1,T=W.teams;
+  const nom=i=>i<0?'Libre':(T[i]&&T[i].name)||'Equipo '+(i+1);
+  const opc=sel=>`<option value="-1" ${sel<0?'selected':''}>— Libre —</option>`+T.map((t,i)=>`<option value="${i}" ${i===sel?'selected':''}>${i+1}. ${esc(nom(i))}</option>`).join('');
+  const sel=(v,f)=>`<select onchange="${f}">${v}</select>`;
+  const est=i=>C.estado[i]==='ok'?'<b class="swok">Clasificado</b>':C.estado[i]==='out'?'<b class="swout">Eliminado</b>':'';
+  const puedeArmar=W.rounds.length<nr&&!SWISS.terminado(W);
+  el.innerHTML=`<h2>Swiss Stage<span>${T.length} equipos · ${C.meta} victorias avanzan · ${C.meta} derrotas eliminan</span>
+     <span style="float:right"><button class="sm ${S.main==='swiss'?'gold':''}" onclick="set(['main'],'swiss');build()">Mostrar en pantalla</button>
+     <button class="sm" onclick="window.open('schedule-overlay.html?swiss','_blank')">Abrir sola (pantalla completa)</button>
+     <button class="sm bad" onclick="swBorrarTodo()">Borrar</button></span></h2>
+   <div class="acts" style="align-items:flex-end">
+     <span class="seg"><button class="${T.length===8?'on':''}" onclick="swNuevo(8)">8 equipos</button><button class="${T.length===16?'on':''}" onclick="swNuevo(16)">16 equipos</button></span>
+     <label class="opt">Para avanzar${sel([2,3].map(n=>`<option ${C.meta===n?'selected':''}>${n}</option>`).join(''),"S.swiss.meta=+this.value;build();push()")}victorias</label>
+     <label class="opt">Partidos normales${sel([1,3,5].map(n=>`<option value="${n}" ${W.bo==n?'selected':''}>BO${n}</option>`).join(''),"S.swiss.bo=+this.value;push()")}</label>
+     <label class="opt">Partidos decisivos${sel([1,3,5,7].map(n=>`<option value="${n}" ${W.boDec==n?'selected':''}>BO${n}</option>`).join(''),"S.swiss.boDec=+this.value;push()")}</label>
+   </div>
+   <div class="hint" style="margin:8px 0 0">Los decisivos son los que pueden clasificar o eliminar a alguien (por ejemplo 2-0, 2-1, 2-2 y 0-2).</div>
+
+   <div class="lbl">Equipos, en orden de siembra (el 1 es el mejor)</div>
+   <div class="swteams">${T.map((t,i)=>`<div class="swtr">
+     <em>${i+1}</em>
+     <div class="mlogo" onclick="elegir(u=>S.swiss.teams[${i}].logo=u,S.swiss.teams[${i}].logo)">${t.logo?`<img src="${t.logo}">`:'LOGO'}</div>
+     <input value="${esc(t.name)}" placeholder="Equipo ${i+1}" oninput="S.swiss.teams[${i}].name=this.value;push()" onchange="build()">
+     ${MIS.length?`<select title="Elegir de tus equipos" onchange="swDeMis(${i},this.value)"><option value="">Mis equipos…</option>${MIS.map((e,k)=>`<option value="${k}">${esc(e.name)}</option>`).join('')}</select>`:''}
+     <span class="swrec">${C.rec[i].w}-${C.rec[i].l}</span>${est(i)}
+   </div>`).join('')}</div>
+
+   ${W.rounds.map((R,r)=>`<div class="swr"><div class="swrh"><b>Ronda ${r+1}</b>
+       <span class="acts"><button class="sm" onclick="swAgregarCruce(${r})">+ Cruce</button>
+       ${r===W.rounds.length-1?`<button class="sm bad" onclick="swQuitarRonda()">Borrar ronda</button>`:''}</span></div>
+     ${R.map((m,k)=>{const g=SWISS.ganador(m),dec=SWISS.esDecisivo(C,r,m);return `<div class="swx">
+       <span class="swg">${esc(SWISS.grupoDe(C,r,m))}<small>BO${dec?W.boDec:W.bo}</small></span>
+       <select class="${g===m.a&&g>=0?'gana':''}" onchange="swCruce(${r},${k},'a',this.value)">${opc(m.a)}</select>
+       <input class="sc" value="${esc(m.sa)}" placeholder="0" oninput="S.swiss.rounds[${r}][${k}].sa=this.value;push()" onchange="build()">
+       <span class="swvs">-</span>
+       <input class="sc" value="${esc(m.sb)}" placeholder="0" oninput="S.swiss.rounds[${r}][${k}].sb=this.value;push()" onchange="build()">
+       <select class="${g===m.b&&g>=0?'gana':''}" onchange="swCruce(${r},${k},'b',this.value)">${opc(m.b)}</select>
+       <button class="sm" title="Quitar cruce" onclick="swQuitarCruce(${r},${k})">×</button>
+     </div>`}).join('')}</div>`).join('')}
+   <div class="acts" style="margin-top:14px">
+     ${puedeArmar?`<button class="gold" onclick="swArmar()">Armar ronda ${W.rounds.length+1}</button>
+       <span class="hint" style="margin:0">${W.rounds.length?'Cruza a los equipos con el mismo récord (el mejor sembrado contra el peor) y evita que se repitan rivales. Después podés cambiar cualquier cruce a mano.':'Ronda 1: el 1 contra el último, el 2 contra el penúltimo, etc. Después podés cambiar cualquier cruce a mano.'}</span>`
+       :`<span class="hint" style="margin:0">${SWISS.terminado(W)?'¡Swiss Stage terminado!':'Ya están las '+nr+' rondas.'}</span>`}
+   </div>`}
+
+function build(){renderTop();renderAire();renderEvento();renderPrev();renderTalento();renderPartidas();renderSwiss();aplicarRol()}
 
 /* ---------- arranque ---------- */
 const es=new EventSource('/events?k=schedule');let primero=true;
@@ -237,7 +328,13 @@ es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
   if(d&&d.matches){S=Object.assign(b,d);
     S.ev=Object.assign(b.ev,d.ev||{});S.cd=Object.assign(b.cd,d.cd||{});
     S.show=Object.assign(b.show,d.show||{});S.sw=Object.assign(b.sw,d.sw||{});
-    if(!Array.isArray(S.sponsors))S.sponsors=[]}
+    if(!Array.isArray(S.sponsors))S.sponsors=[];
+    /* valores de versiones anteriores */
+    if(S.main==='featured')S.main='partidos';if(S.main==='videos')S.main='video';
+    if(S.cd.label==='EL SHOW EMPIEZA EN')S.cd.label='EMPEZAMOS EN:';
+    if(S.cd.end==='EMPEZAMOS PRONTO')S.cd.end='¡EMPEZAMOS!';
+    if(S.sponsorSecs===3)S.sponsorSecs=7;
+    S.talent.forEach(t=>t.people.forEach(p=>{if(p.handle==null)p.handle=''}))}
   build();es.close()};
 es.onerror=()=>{conectado=false;setConn()};
 cargarRol(build);

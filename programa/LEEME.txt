@@ -70,6 +70,7 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
                       (MVP, equipo ganador y fin de transmision; se eligen desde
                        el panel "Cierre" con el boton "Al aire")
   Programacion        http://localhost:3000/schedule-overlay.html
+  Swiss Stage solo    http://localhost:3000/schedule-overlay.html?swiss
   Marcador en vivo    http://localhost:3000/scoreboard.html
 Cada panel tiene los enlaces con un boton para copiarlos.
 
