@@ -400,9 +400,22 @@ function norm(e){if(!e||typeof e!=='object')return vacio();
   while(v.s.length<3)v.s.push(['',0]);return v}
 function vacia(e){return !e||(!String(e.n).trim()&&!e.j.some(x=>String(x).trim()))}
 
-/* ---------- las 8 ranuras ---------- */
-function guardados(){if(!Array.isArray(S.saved)||S.saved.length!==8)
-   S.saved=EQUIPOS_BASE.map(norm);
+/* ---------- las 2 ranuras ----------
+   Antes eran 8 y venian con equipos de fabrica. Ahora son 2 y arrancan vacias:
+   los equipos se cargan a mano, o con "Cargar equipo..." desde la lista. */
+const RANURAS=2;
+function guardados(){
+  if(!Array.isArray(S.saved))S.saved=[];
+  /* venis de una version con 8 ranuras: lo que tenias cargado no se pierde,
+     pasa a la lista de equipos hechos y quedan las dos primeras */
+  if(S.saved.length>RANURAS){
+    const L=biblio(),k=s=>String(s||'').trim().toLowerCase();
+    S.saved.slice(RANURAS).map(norm).forEach(e=>{
+      if(vacia(e))return;
+      if(!L.some(x=>k(x.n)===k(e.n)))L.push(e)});
+    S.saved=S.saved.slice(0,RANURAS);
+  }
+  while(S.saved.length<RANURAS)S.saved.push(vacio());
   S.saved=S.saved.map(norm);return S.saved}
 /* ---------- biblioteca de equipos ya hechos ---------- */
 function biblio(){if(!Array.isArray(S.lib))S.lib=EQUIPOS_BASE.map(norm);
@@ -423,27 +436,46 @@ function cargarEquipo(n,lado){const e=guardados()[n],T=S.teams[lado];
 function guardarEquipo(n,lado){const T=S.teams[lado],e=guardados()[n];
   if(!confirm('¿Poner "'+(T.name||'el equipo')+'" en la ranura '+(n+1)+'?'+(vacia(e)?'':' Se reemplaza "'+e.n+'".')))return;
   e.n=T.name;e.tag=T.tag||'';e.c=T.color;e.logo=T.logo||'';e.j=T.players.slice(0,5);
-  build();push()}
+  recordarNombre(n);autoguardar(n);build();push()}
 
 function vaciarRanura(n){const e=guardados()[n];
   if(vacia(e))return;
   if(!confirm('¿Vaciar la ranura '+(n+1)+' ("'+e.n+'")? El equipo sigue en la lista de equipos hechos si lo guardaste ahí.'))return;
-  S.saved[n]=vacio();build();push()}
+  S.saved[n]=vacio();ultNom[n]='';build();push()}
 function cargarDeLib(n,i){if(i==='')return;const L=biblio()[+i];if(!L)return;
-  S.saved[n]=norm(L);build();push()}
-function guardarEnLib(n){const e=guardados()[n];
-  if(vacia(e))return alert('La ranura está vacía.');
-  const L=biblio(),y=L.findIndex(x=>x.n.toLowerCase()===e.n.toLowerCase());
-  if(y>=0){if(!confirm('"'+e.n+'" ya está en la lista. ¿Reemplazarlo?'))return;L[y]=norm(e)}
-  else L.push(norm(e));
-  build();push();alert('Listo: "'+e.n+'" quedó en la lista de equipos hechos.')}
+  S.saved[n]=norm(L);recordarNombre(n);build();push()}
+/* ---------- autoguardado ----------
+   Lo que escribis en una ranura se guarda solo en la lista de equipos hechos,
+   asi la proxima vez lo cargas con "Cargar equipo..." y listo.
+   Espera a que dejes de escribir, para no llenar la lista con nombres a medias,
+   y NO redibuja el panel: si lo hiciera, te sacaria el cursor de la casilla. */
+let tAuto=[null,null],ultNom=['',''];
+function autoguardar(n){
+  clearTimeout(tAuto[n]);
+  tAuto[n]=setTimeout(()=>{
+    const e=guardados()[n],nom=String(e.n||'').trim();
+    if(nom.length<2)return;
+    const L=biblio(),k=s=>String(s||'').trim().toLowerCase();
+    /* si le cambiaste el nombre, se actualiza esa misma entrada en vez de crear otra */
+    let y=L.findIndex(x=>k(x.n)===k(nom));
+    if(y<0&&ultNom[n])y=L.findIndex(x=>k(x.n)===k(ultNom[n]));
+    if(y>=0)L[y]=norm(e);else L.push(norm(e));
+    ultNom[n]=nom;push();
+    const c=document.getElementById('auto'+n);
+    if(c)c.textContent='Guardado en la lista';
+  },1200)}
+/* al cargar un equipo en una ranura, el autoguardado tiene que saber de cual viene */
+function recordarNombre(n){ultNom[n]=String((guardados()[n]||{}).n||'').trim()}
+
 function borrarDeLib(i){const L=biblio(),e=L[i];if(!e)return;
   if(!confirm('¿Borrar "'+e.n+'" de la lista de equipos hechos? Las ranuras que ya lo tengan no cambian.'))return;
   L.splice(i,1);build();push()}
-function vaciarTodas(){if(!confirm('¿Vaciar las ocho ranuras?'))return;
-  S.saved=[0,1,2,3,4,5,6,7].map(vacio);build();push()}
-function restaurarEquipos(){if(!confirm('¿Volver a los ocho equipos que vienen con el programa? También se restaura la lista.'))return;
-  S.saved=EQUIPOS_BASE.map(norm);S.lib=EQUIPOS_BASE.map(norm);build();push()}
+function vaciarTodas(){if(!confirm('¿Vaciar las dos ranuras? Los equipos siguen en la lista de equipos hechos.'))return;
+  S.saved=[vacio(),vacio()];ultNom=['',''];build();push()}
+function restaurarEquipos(){if(!confirm('¿Volver a poner en la lista los equipos que vienen con el programa? Los tuyos se mantienen.'))return;
+  const L=biblio(),k=s=>String(s||'').trim().toLowerCase();
+  EQUIPOS_BASE.map(norm).forEach(e=>{if(!L.some(x=>k(x.n)===k(e.n)))L.push(e)});
+  build();push()}
 
 function elegirLogoEq(n){const i=document.createElement('input');i.type='file';
   i.accept='image/png,image/jpeg,image/webp,image/gif';
@@ -453,33 +485,32 @@ function elegirLogoEq(n){const i=document.createElement('input');i.type='file';
     .then(j=>{guardados()[n].logo=j.url;build();push()}).catch(e=>alert('No se pudo subir el logo: '+e))};
   i.click()}
 
+/* true si este equipo ya figura en la lista de equipos hechos */
+function enLista(e){const k=s=>String(s||'').trim().toLowerCase();
+  return !!k(e.n)&&biblio().some(x=>k(x.n)===k(e.n))}
 function renderGuardados(){const G=guardados(),L=biblio();
   const opc=n=>`<select class="selib" onchange="cargarDeLib(${n},this.value);this.value=''">
      <option value="">Cargar equipo…</option>
      ${L.map((x,i)=>`<option value="${i}">${esc(x.n||'(sin nombre)')}</option>`).join('')}</select>`;
   const llenas=G.filter(e=>!vacia(e)).length;
-  $('guardados').innerHTML=`<h2>Ranuras de equipos<span>${llenas} de 8 ocupadas · cárgalos en el lado azul o en el rojo con un clic</span>
-   <span style="float:right"><button class="sm" onclick="vaciarTodas()">Vaciar todas</button>
-   <button class="sm" onclick="restaurarEquipos()">Restaurar los de fábrica</button></span></h2>
-   <div class="eqs">${G.map((e,n)=>vacia(e)?`<div class="eq libre">
-     <div class="rtit">Ranura ${n+1}<small>vacía</small></div>
-     ${opc(n)}
-     <div class="eqb" style="margin-top:8px"><button class="sm" onclick="guardarEquipo(${n},0)">Poner el azul</button>
-       <button class="sm" onclick="guardarEquipo(${n},1)">Poner el rojo</button></div>
-   </div>`:`<div class="eq">
-     <div class="rtit">Ranura ${n+1}
+  $('guardados').innerHTML=`<h2>Ranuras de equipos<span>${llenas} de ${RANURAS} ocupadas · cárgalos en el lado azul o en el rojo con un clic</span>
+   <span style="float:right"><button class="sm" onclick="vaciarTodas()">Vaciar las dos</button>
+   <button class="sm" onclick="restaurarEquipos()">Traer los de fábrica a la lista</button></span></h2>
+   <div class="hint" style="margin:0 0 10px">Lo que escribas acá se guarda solo en la lista de abajo. La próxima vez lo cargás con <b>“Cargar equipo…”</b> y listo.</div>
+   <div class="eqs">${G.map((e,n)=>`<div class="eq">
+     <div class="rtit">Ranura ${n+1}${vacia(e)?'<small>vacía</small>':''}
        <span style="margin-left:auto;display:flex;gap:5px">${opc(n)}
        <button class="sm" title="Vaciar esta ranura" onclick="vaciarRanura(${n})">Vaciar</button></span></div>
      <div class="eqh">
        <div class="lg" title="Cambiar logo" onclick="elegirLogoEq(${n})">${e.logo?`<img src="${e.logo}">`:'Sin logo'}</div>
-       <input type="text" value="${esc(e.n)}" placeholder="Nombre del equipo" oninput="guardados()[${n}].n=this.value;push()">
+       <input type="text" value="${esc(e.n)}" placeholder="Nombre del equipo" oninput="guardados()[${n}].n=this.value;push();autoguardar(${n})">
        <input class="tagin" value="${esc(e.tag||'')}" maxlength="4" placeholder="TAG" title="Sigla de hasta 4 letras"
-         oninput="this.value=this.value.toUpperCase();guardados()[${n}].tag=this.value;push()">
-       <input type="color" value="${e.c||'#888888'}" title="Color del equipo" oninput="guardados()[${n}].c=this.value;push()">
+         oninput="this.value=this.value.toUpperCase();guardados()[${n}].tag=this.value;push();autoguardar(${n})">
+       <input type="color" value="${e.c||'#888888'}" title="Color del equipo" oninput="guardados()[${n}].c=this.value;push();autoguardar(${n})">
      </div>
      <div class="lblmini">Titulares</div>
      <div class="eqj">${[0,1,2,3,4].map(k=>`<div><img src="${LANE_ICON[k]}" title="${LANES[k]}" onerror="this.remove()">
-       <input value="${esc(e.j[k]||'')}" placeholder="${LANES[k]}" oninput="guardados()[${n}].j[${k}]=this.value;push()"></div>`).join('')}</div>
+       <input value="${esc(e.j[k]||'')}" placeholder="${LANES[k]}" oninput="guardados()[${n}].j[${k}]=this.value;push();autoguardar(${n})"></div>`).join('')}</div>
      <div class="lblmini">Suplentes · "Entra" lo cambia por el titular</div>
      ${e.s.map((sp,k)=>`<div class="sub">
        <select onchange="guardados()[${n}].s[${k}][1]=+this.value;push()">${LANES.map((l,x)=>`<option value="${x}" ${(+sp[1]||0)===x?'selected':''}>${l}</option>`).join('')}</select>
@@ -489,9 +520,9 @@ function renderGuardados(){const G=guardados(),L=biblio();
        <button class="ro" onclick="cargarEquipo(${n},1)">→ Rojo</button></div>
      <div class="eqb" style="margin-top:5px"><button class="sm" onclick="guardarEquipo(${n},0)">Poner el azul</button>
        <button class="sm" onclick="guardarEquipo(${n},1)">Poner el rojo</button></div>
-     <div class="eqb" style="margin-top:5px"><button class="sm" onclick="guardarEnLib(${n})">Guardar en la lista</button></div>
+     <div class="lblmini" id="auto${n}" style="margin-top:7px">${enLista(e)?'Guardado en la lista':'Se guarda solo en cuanto le pongas nombre'}</div>
    </div>`).join('')}</div>
-   <div class="lbl">Equipos hechos (${L.length}) · se cargan en cualquier ranura con "Cargar equipo…"</div>
+   <div class="lbl">Equipos hechos (${L.length}) · se cargan en cualquiera de las dos ranuras con "Cargar equipo…"</div>
    <div class="libl">${L.length?L.map((x,i)=>`<span class="lib">${x.logo?`<img src="${x.logo}">`:''}${esc(x.n||'(sin nombre)')}
      <button class="sm" title="Borrar de la lista" onclick="borrarDeLib(${i})">×</button></span>`).join(''):'<span style="color:var(--mut);font-size:13px">La lista está vacía.</span>'}</div>`}
 
@@ -782,7 +813,7 @@ es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
     /* "cap" (el capitan) ya no existe: se limpia de los estados viejos */
     S.teams.forEach((t,i)=>{if(!t.lanes)t.lanes=[0,1,2,3,4];if(t.logo===undefined)t.logo='';
       if(t.tag===undefined)t.tag='';delete t.cap});
-    if(!Array.isArray(S.saved)||S.saved.length!==8)S.saved=null;
+    if(!Array.isArray(S.saved))S.saved=null;
     if(!Array.isArray(S.lib))S.lib=null}
   loadMedia().then(build);es.close()};
 es.onerror=()=>{conectado=false;setConn()};

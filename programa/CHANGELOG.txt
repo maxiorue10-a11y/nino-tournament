@@ -4,6 +4,25 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.32.0 - LAS RANURAS DE EQUIPOS PASAN DE 8 A 2, Y SE AUTOGUARDAN
+       - Ahora son dos ranuras y arrancan vacias: cargas los equipos a mano, uno para
+         cada lado. Las dos se ven siempre editables, aunque esten vacias.
+       - AUTOGUARDADO: lo que escribis en una ranura (nombre, TAG, color, logo y los
+         cinco titulares) se guarda solo en la lista de equipos hechos, en cuanto dejas
+         de escribir. La proxima vez lo traes con "Cargar equipo..." y listo. Abajo de
+         cada ranura dice si ya quedo guardado.
+         Se fue el boton "Guardar en la lista": ya no hace falta.
+         Si le cambias el nombre a un equipo, se actualiza esa misma entrada de la
+         lista en vez de crear una nueva.
+       - LOS EQUIPOS DE FABRICA pasan a vivir en la lista, como equipos genericos para
+         cargar cuando los necesites, en vez de ocupar ranuras.
+       - SI VENIS DE LA VERSION ANTERIOR no perdes nada: los equipos que tenias en las
+         8 ranuras pasan solos a la lista de equipos hechos, y quedan en las ranuras los
+         dos primeros.
+       - "Vaciar las dos" limpia las ranuras pero NO toca la lista.
+         "Traer los de fabrica a la lista" agrega los ocho equipos del programa a la
+         lista sin pisar los tuyos.
+
 0.31.0 - EL DRAFT AHORA RESPETA LAS FASES. Mientras el draft corre, solo se puede
          escribir en la casilla que esta en turno: las demas quedan rayadas y no dejan
          escribir, como en un draft de verdad, donde nadie elige fuera de su fase.

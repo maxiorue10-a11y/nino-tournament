@@ -73,6 +73,15 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
   Marcador en vivo    http://localhost:3000/scoreboard.html
 Cada panel tiene los enlaces con un boton para copiarlos.
 
+LAS RANURAS DE EQUIPOS
+Hay dos ranuras, una para cada lado. Escribis el equipo a mano (nombre, TAG, color,
+logo y los cinco titulares) y con "-> Azul" o "-> Rojo" lo mandas al draft.
+Todo lo que escribis se guarda SOLO en la lista de equipos hechos de abajo. La proxima
+vez no hace falta volver a escribirlo: lo traes con "Cargar equipo..." de la ranura.
+Si le cambias el nombre a un equipo, se actualiza el que ya estaba en la lista.
+"Vaciar las dos" limpia las ranuras pero deja la lista intacta.
+"Traer los de fabrica a la lista" suma los equipos que vienen con el programa.
+
 LAS FASES DEL DRAFT
 El draft sigue el orden de un torneo de verdad:
   3 baneos de cada equipo, alternando     (azul, rojo, azul, rojo, azul, rojo)
