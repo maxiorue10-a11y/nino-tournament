@@ -592,7 +592,7 @@ function renderSerie(){
      ${lado(1,'r')}</div>
    <div class="acts" style="margin:14px 0 0">
      <span class="opt2">Vista previa</span>
-     <span class="seg2">${[['draft','Draft pick'],['lineup','Post-Draft Line-up'],['scoreboard','Marcador en vivo']].map(([v,n])=>
+     <span class="seg2">${[['draft','Draft pick'],['grande','Picks grande'],['lineup','Post-Draft Line-up'],['scoreboard','Marcador en vivo']].map(([v,n])=>
        `<button class="${vistaPrev===v?'on':''}" onclick="vistaPrev='${v}';build()">${n}</button>`).join('')}</span>
      <button class="sm" onclick="window.open(urlPrev(),'_blank')">Abrir aparte</button></div>
    <div id="pvwrap"><iframe id="pv" src="${urlPrev()}" scrolling="no"></iframe></div>
@@ -604,7 +604,7 @@ function urlPrev(){return vistaPrev==='scoreboard'?'scoreboard.html':'overlay.ht
 function ajustarPreview(){const w=$('pvwrap');if(!w)return;
   /* cada vista ocupa un alto distinto: la barra del draft, el marcador de arriba
      o la pantalla entera del line-up */
-  const s=w.clientWidth/1920,alto=(vistaPrev==='lineup'?1080:vistaPrev==='scoreboard'?300:276);
+  const s=w.clientWidth/1920,alto=(vistaPrev==='lineup'||vistaPrev==='grande'?1080:vistaPrev==='scoreboard'?300:276);
   w.style.height=Math.round(alto*s)+'px';
   /* el draft se recorta desde abajo; el marcador desde arriba */
   const f=$('pv');f.style.transform=`scale(${s})`;
@@ -709,7 +709,7 @@ function renderHist(){
 function renderLinks(){
   const base=location.origin;
   $('links').innerHTML=`<h2>Enlaces para OBS<span>Fuente de navegador · 1920 × 1080</span></h2>
-   ${[['Draft pick','draft'],['Post-Draft Line-up','lineup'],['Draft anterior','previous'],
+   ${[['Draft pick','draft'],['Fase de picks grande (pantalla completa)','grande'],['Post-Draft Line-up','lineup'],['Draft anterior','previous'],
       ['Estadísticas de la serie','stats'],['Pool de baneos','banpool'],
       ['Análisis del draft anterior','analisis']].map(([n,v])=>`
      <div class="lbl">${n}</div><div class="urlrow">

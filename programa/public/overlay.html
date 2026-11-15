@@ -336,6 +336,85 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;font
  text-transform:uppercase;letter-spacing:2px;color:#9aa1ad}
 .bppie{position:absolute;left:0;right:0;bottom:44px;text-align:center;font-size:21px;font-weight:700;
  letter-spacing:3px;text-transform:uppercase;color:#6d737e}
+/* =================== FASE DE PICKS GRANDE (view=grande) =================== */
+#pgr{position:absolute;inset:0;overflow:hidden;color:#eef2ff;text-transform:uppercase;
+ background:radial-gradient(ellipse at 18% 40%,rgba(47,128,255,.22),transparent 50%),
+  radial-gradient(ellipse at 82% 40%,rgba(255,61,85,.20),transparent 50%),
+  repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),
+  linear-gradient(180deg,#0e1530,#070a12 75%)}
+#pgr .gbl{position:absolute;top:22px;font-size:18px;font-weight:700;letter-spacing:4px;color:#8d96b5}
+#pgr .gbans{position:absolute;top:50px;display:flex;gap:12px}
+#pgr .gb{width:96px;height:96px;position:relative;border-radius:6px;overflow:hidden;background:rgba(7,10,18,.8);
+ box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+#pgr .gb img,#pgr .gb video{width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.75)}
+#pgr .gb.lleno::after{content:'';position:absolute;left:-10%;top:50%;width:120%;height:5px;background:#ff3d55;
+ transform:rotate(-45deg);box-shadow:0 0 8px rgba(255,61,85,.8)}
+#pgr .gb.act{box-shadow:inset 0 0 0 3px var(--gold),0 0 22px var(--gold);animation:gpulso 1.2s ease-in-out infinite}
+@keyframes gpulso{50%{box-shadow:inset 0 0 0 3px var(--gold),0 0 6px var(--gold)}}
+#pgr .gcards{position:absolute;top:180px;display:flex;gap:12px}
+#pgr .gc{position:relative;width:136px;height:620px;border-radius:8px;overflow:hidden;background:#0b1022;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+#pgr .gc::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--c),transparent 75%);opacity:.38}
+/* sin heroe: el fondo es el rol */
+#pgr .gc .rol{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#pgr .gc .rol .ri{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;
+ background:rgba(7,10,18,.7);box-shadow:0 0 0 3px var(--c),0 0 26px var(--c)}
+#pgr .gc .rol .ri img{width:54px;height:54px;object-fit:contain;border-radius:8px}
+#pgr .gc .rol span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:84px;font-weight:800;letter-spacing:6px;
+ color:rgba(255,255,255,.09);position:absolute;top:30px;line-height:1}
+#pgr .gc .rol b{position:relative;margin-top:16px;font-size:26px;letter-spacing:3px;color:rgba(255,255,255,.55)}
+/* con heroe */
+#pgr .gc .art{position:absolute;inset:0}
+#pgr .gc .art img,#pgr .gc .art video{width:100%;height:100%;object-fit:cover}
+#pgr .gc .art::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(7,10,18,.95) 88%)}
+#pgr .gc .hn{position:absolute;left:0;right:0;bottom:62px;text-align:center;font-size:24px;font-weight:800;padding:0 6px;
+ white-space:nowrap;overflow:hidden;text-shadow:0 2px 8px #000}
+#pgr .gc .ic{position:absolute;left:8px;top:8px;width:34px;height:34px;border-radius:50%;background:rgba(7,10,18,.75);
+ display:grid;place-items:center;box-shadow:0 0 0 2px var(--c)}
+#pgr .gc .ic img{width:24px;height:24px;object-fit:contain}
+#pgr .gc .pl{position:absolute;left:0;right:0;bottom:0;height:54px;display:flex;align-items:center;justify-content:center;
+ background:rgba(7,10,18,.92);border-top:4px solid var(--c);font-size:22px;font-weight:700;padding:0 6px;
+ white-space:nowrap;overflow:hidden;letter-spacing:.5px}
+#pgr .gc.act{box-shadow:inset 0 0 0 3px var(--gold),0 0 28px rgba(233,185,73,.7)}
+#pgr .gc.act .rol b{color:var(--gold)}
+#pgr .gc.act::after{content:'ELIGIENDO';position:absolute;left:0;right:0;top:0;padding:6px 0;text-align:center;
+ font-size:17px;font-weight:800;letter-spacing:3px;background:var(--gold);color:#111}
+/* placas de equipo abajo */
+#pgr .gpl{position:absolute;top:832px;width:740px;height:200px;display:flex;align-items:center;gap:26px;padding:0 26px;
+ background:linear-gradient(90deg,rgba(7,10,18,.9),rgba(7,10,18,.55));border-bottom:6px solid var(--c);border-radius:8px}
+#pgr .gpl.r{flex-direction:row-reverse;text-align:right;background:linear-gradient(270deg,rgba(7,10,18,.9),rgba(7,10,18,.55))}
+#pgr .gpl .lg{width:150px;height:150px;flex:none;display:grid;place-items:center}
+#pgr .gpl .lg img{max-width:150px;max-height:150px;object-fit:contain}
+#pgr .gpl .tx{min-width:0;flex:1}
+#pgr .gpl .tx small{display:block;font-size:22px;letter-spacing:4px;font-weight:700;color:var(--c);filter:brightness(1.4)}
+#pgr .gpl .tx b{display:block;font-size:72px;font-weight:800;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pgr .gpl .gpip{display:flex;gap:8px;margin-top:10px}
+#pgr .gpl.r .gpip{justify-content:flex-end}
+#pgr .gpl .gpip i{width:34px;height:8px;background:rgba(255,255,255,.18);transform:skewX(-20deg)}
+#pgr .gpl .gpip i.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+#pgr .gpl.turno{box-shadow:0 0 40px -8px var(--c)}
+/* centro */
+#pgr .gcen{position:absolute;left:790px;width:340px;top:0;bottom:0;text-align:center}
+#pgr .gcen .glogo{position:absolute;left:20px;right:20px;top:30px;height:170px;display:grid;place-items:center}
+#pgr .gcen .glogo img{max-width:300px;max-height:170px;object-fit:contain}
+#pgr .gcen .glogo span{font-size:46px;font-weight:800;line-height:1;color:var(--gold)}
+#pgr .gcen .gst{position:absolute;left:0;right:0;top:214px;font-size:34px;font-weight:800;letter-spacing:2px;color:var(--gold);
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pgr .gcen .ggm{position:absolute;left:0;right:0;top:258px;font-size:26px;font-weight:700;letter-spacing:3px}
+#pgr .gcen .gvs{position:absolute;left:0;right:0;top:318px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:0 10px}
+#pgr .gcen .gvs .lg{height:96px;display:grid;place-items:center}
+#pgr .gcen .gvs .lg img{max-width:96px;max-height:96px;object-fit:contain}
+#pgr .gcen .gvs b{font-size:64px;font-weight:800;line-height:1}
+#pgr .gcen .gvs b i{font-style:normal;color:var(--gold);margin:0 8px}
+#pgr .gcen .gtm{position:absolute;left:30px;right:30px;top:460px;height:220px;border-radius:12px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;background:rgba(7,10,18,.7);box-shadow:inset 0 0 0 2px rgba(233,185,73,.4)}
+#pgr .gcen .gtm small{font-size:26px;font-weight:700;letter-spacing:4px;color:#8d96b5}
+#pgr .gcen .gtm b{font-size:132px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+#pgr .gcen .gtm.hot b{color:#ff3d55;text-shadow:0 0 24px rgba(255,61,85,.7)}
+#pgr .gcen .gtu{position:absolute;left:30px;right:30px;top:700px;padding:12px 6px;border-radius:8px;font-size:26px;font-weight:800;
+ letter-spacing:2px;background:var(--c);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pgr .gcen .gsp{position:absolute;left:30px;right:30px;bottom:40px;height:150px;display:grid;place-items:center}
+#pgr .gcen .gsp img{max-width:280px;max-height:150px;object-fit:contain}
 </style>
 <link rel="stylesheet" href="disenos.css"></head><body><div id="app"></div>
 <script src="theme.js"></script>
@@ -368,6 +447,14 @@ function tocarVoz(h,M){
     vozEl=new Audio(u);
     vozEl.volume=Math.max(0,Math.min(1,(M.vozVol===undefined?80:M.vozVol)/100));
     const pr=vozEl.play();if(pr&&pr.catch)pr.catch(()=>{})}catch(e){}}
+/* se arma el HTML y recien despues suena, asi no suena de un draft a medio dibujar */
+function sonarNuevos(s,M,hoy){setTimeout(()=>{
+   const entraron=[...hoy].filter(k=>!vozEnDraft.has(k));
+   vozEnDraft=hoy;
+   if(!vozPrimera&&entraron.length===1){
+     const h=[...(s.picks[0]||[]),...(s.picks[1]||[])].find(x=>x&&_key(x)===entraron[0]);
+     if(h)tocarVoz(h,M)}
+   vozPrimera=false},0)}
 const FL='<svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21z"/></svg>';
 function numText(M){const T=M.timer;if(M.useTimer&&T){const n=T.running?Math.max(0,Math.ceil((T.endsAt-Date.now())/1000)):T.left;
   return String(n)}return M.score}
@@ -407,14 +494,7 @@ function draft(s){const[A,B]=s.teams,S2=s;
  const corto=T=>{const t=String(T.tag||'').trim();if(t)return t.toUpperCase();
    const p=String(T.name||'').trim().split(/\s+/);
    return (p[0]||'').length<=3&&p.length>1?(p[0]+' '+p[1]):(p[0]||'')};
- /* se arma el HTML y recien despues suena, asi no suena de un draft a medio dibujar */
- setTimeout(()=>{
-   const entraron=[...hoy].filter(k=>!vozEnDraft.has(k));
-   vozEnDraft=hoy;
-   if(!vozPrimera&&entraron.length===1){
-     const h=[...(s.picks[0]||[]),...(s.picks[1]||[])].find(x=>x&&_key(x)===entraron[0]);
-     if(h)tocarVoz(h,M)}
-   vozPrimera=false},0);
+ sonarNuevos(s,M,hoy);
  return `<div id="mb">
   <div class="r1">
    ${cab(A,'l',0)}
@@ -438,6 +518,54 @@ function draft(s){const[A,B]=s.teams,S2=s;
        <span style="background:${B.color}">${esc(corto(B))}</span></div>
    </div>
    <div class="mpk" style="left:1176px">${R.map(k=>cel(1,k,B,s.picks[1][k])).join('')}</div>
+  </div></div>`}
+/* =================== FASE DE PICKS GRANDE ===================
+   Pantalla completa para la fase de baneos y picks: arriba los baneos, al costado las
+   cartas de los cinco jugadores de cada equipo (sin heroe, el fondo es el rol de la
+   linea; con heroe, el arte del heroe) y en el centro el torneo, la partida y el reloj. */
+const ROL_NOM=['EXP','JUNGLA','MID','GOLD','ROAM'];
+let SPON=[],spI=0;
+function cargarSpon(){fetch('/api/state?k=schedule').then(r=>r.json()).then(d=>{SPON=((d&&d.sponsors)||[]).filter(Boolean);ponerSpon()}).catch(()=>{})}
+function ponerSpon(){const e=document.getElementById('gsp');if(e)e.innerHTML=SPON.length?`<img src="${SPON[spI%SPON.length]}">`:''}
+if(view==='grande'){cargarSpon();setInterval(cargarSpon,30000);setInterval(()=>{spI++;ponerSpon()},7000)}
+function grande(s){const[A,B]=s.teams;
+ const M=Object.assign({game:1,bestOf:3,wins:[0,0],score:'00',stage:'',tournament:'',logo:'',useTimer:false,step:0},s.match||{});curM=M;
+ const act=flowInfo(M.step),esAct=(t,i,k)=>act&&act.type===t&&act.team===i&&act.slot===k;
+ const lanes=T=>T.lanes||[0,1,2,3,4],L=[0,1,2,3,4],R=[4,3,2,1,0];
+ const need=Math.max(1,Math.ceil(M.bestOf/2));
+ const hoy=new Set();[0,1].forEach(i=>(s.picks[i]||[]).forEach(h=>{if(h)hoy.add(_key(h))}));
+ sonarNuevos(s,M,hoy);
+ const ban=(i,k)=>{const h=s.bans[i][k];return `<div class="gb${h?' lleno':''}${esAct('ban',i,k)?' act':''}">${h?vid(h,'ban'):''}</div>`};
+ const carta=(i,k,T)=>{const h=s.picks[i][k],ln=lanes(T)[k];
+   return `<div class="gc${esAct('pick',i,k)?' act':''}${pop('g'+i+k,h)}" style="--c:${T.color}">
+    ${h?`<div class="art">${vid(h,'pick')}</div><div class="hn">${esc(h)}</div>
+         <span class="ic"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></span>`
+       :`<div class="rol"><span>${ROL_NOM[ln]||''}</span><i class="ri"><img src="${LANE_ICON[ln]}" onerror="this.remove()"></i><b>${ROL_NOM[ln]||''}</b></div>`}
+    <div class="pl">${esc(T.players[k])||'Jugador '+(k+1)}</div></div>`};
+ const placa=(T,i,c)=>`<div class="gpl ${c}${act&&act.team===i?' turno':''}" style="--c:${T.color};left:${i?1150:30}px">
+   <span class="lg">${T.logo?`<img src="${T.logo}">`:''}</span>
+   <div class="tx"><small>${i?'Lado rojo':'Lado azul'}</small><b>${esc(T.name)}</b>
+   <div class="gpip">${Array.from({length:need},(_,p)=>`<i class="${p<(M.wins[i]||0)?'on':''}"></i>`).join('')}</div></div></div>`;
+ const T0=M.timer||{},enRsv=T0.modo==='reserva'&&act;
+ const fase=enRsv?'Reserva':(act?(act.type==='ban'?'Baneo':'Pick'):'Draft listo');
+ const turno=act?[A,B][act.team]:null;
+ return `<div id="pgr">
+  <div class="gbl" style="left:30px">Baneos · ${esc(A.tag||A.name)}</div>
+  <div class="gbl" style="right:30px">Baneos · ${esc(B.tag||B.name)}</div>
+  <div class="gbans" style="left:30px">${L.map(k=>ban(0,k)).join('')}</div>
+  <div class="gbans" style="right:30px">${R.map(k=>ban(1,k)).join('')}</div>
+  <div class="gcards" style="left:30px">${L.map(k=>carta(0,k,A)).join('')}</div>
+  <div class="gcards" style="right:30px">${R.map(k=>carta(1,k,B)).join('')}</div>
+  ${placa(A,0,'l')}${placa(B,1,'r')}
+  <div class="gcen">
+    <div class="glogo">${M.logo?`<img src="${M.logo}">`:`<span>${esc(M.tournament||'')}</span>`}</div>
+    ${M.stage?`<div class="gst">${esc(M.stage)}</div>`:''}
+    <div class="ggm">BO${esc(M.bestOf)} · Partida ${esc(M.game)}</div>
+    <div class="gvs"><span class="lg">${A.logo?`<img src="${A.logo}">`:''}</span>
+      <b>${M.wins[0]||0}<i>-</i>${M.wins[1]||0}</b><span class="lg">${B.logo?`<img src="${B.logo}">`:''}</span></div>
+    <div class="gtm${enRojo(M)?' hot':''}"><small>${fase}</small><b id="num">${esc(numText(M))}</b></div>
+    ${turno?`<div class="gtu" style="--c:${turno.color}">Turno de ${esc(turno.tag||turno.name)}</div>`:''}
+    <div class="gsp" id="gsp"></div>
   </div></div>`}
 function lineup(s){const[A,B]=s.teams;
  const M=Object.assign({wins:[0,0],bestOf:3,game:1,stage:'',tournament:'',season:'',logo:'',
@@ -636,12 +764,12 @@ function banpool(s){
  </div>`}
 let _s=null;
 function encajar(){[['.eqn b',27,13],['.pcel .nk',20,11],['.mcen .pie span',25,13],['.mcen .mg',23,14],
-   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.nplate .nnm',74,30],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16],['.bpcab b',34,17],['.bpit .nb',17,11]]
+   ['.lcard .nk',24,13],['.lcard .hname',23,13],['.nplate .nnm',74,30],['.lhead .tg',58,26],['.pvhead .tg',46,22],['.pvpie',21,13],['.sxmarc .nm',36,18],['.sxfila .hn2',30,16],['.bpcab b',34,17],['.bpit .nb',17,11],['#pgr .gpl .tx b',72,30],['#pgr .gc .pl',22,12],['#pgr .gc .hn',24,13],['#pgr .gcen .gst',34,18]]
   .forEach(([sel,max,min])=>document.querySelectorAll(sel).forEach(el=>{
     let f=max;el.style.fontSize=f+'px';
     while(el.scrollWidth>el.clientWidth&&f>min){f-=1;el.style.fontSize=f+'px'}}))}
 function render(s){if(!s.teams)return;_s=s;
- s.teams.forEach((t,i)=>t.color=colorLado(i,t.color));$.innerHTML=({draft,lineup,previous,stats,banpool,analisis}[view]||draft)(s);
+ s.teams.forEach((t,i)=>t.color=colorLado(i,t.color));$.innerHTML=({draft,lineup,previous,stats,banpool,analisis,grande}[view]||draft)(s);
  encajar();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(encajar)}
 document.addEventListener('tema',()=>{if(_s)render(_s)});
 let lastS=null;new EventSource('/events').onmessage=e=>{lastS=JSON.parse(e.data);loadMedia().then(()=>render(lastS))};

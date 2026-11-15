@@ -55,6 +55,7 @@ El boton redondo del final de esa barra cambia entre modo claro y modo oscuro.
 
 ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
   Draft pick          http://localhost:3000/overlay.html?view=draft
+  Picks grande        http://localhost:3000/overlay.html?view=grande
   Post-Draft Line-up  http://localhost:3000/overlay.html?view=lineup
                       (usa los mismos datos del draft; el arte sale de la carpeta public/picks/)
   Draft anterior      http://localhost:3000/overlay.html?view=previous

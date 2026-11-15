@@ -4,6 +4,23 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.35.0 - FASE DE PICKS GRANDE
+       - Pantalla completa nueva para los baneos y los picks:
+         http://localhost:3000/overlay.html?view=grande
+           * Arriba, los cinco baneos de cada equipo (en gris y tachados).
+           * A los costados, una carta alta por jugador. Mientras no tiene heroe, el
+             fondo es su ROL (EXP, Jungla, Mid, Gold, Roam) con el icono de la linea;
+             cuando elige, aparece el arte del heroe con su nombre.
+           * La carta que esta eligiendo se marca en dorado con "ELIGIENDO".
+           * Abajo, las placas de los equipos (lado azul y rojo) con las partidas ganadas.
+           * En el centro: logo del torneo, etapa, BO y numero de partida, el resultado
+             de la serie, el reloj (rojo en los ultimos 10 segundos), de quien es el turno
+             y los auspiciantes del Control de programacion rotando.
+       - Usa los mismos datos del Control de draft (no hay que cargar nada aparte) y
+         tambien hace sonar las voces de los heroes.
+       - Se puede ver en la vista previa del Control de draft ("Picks grande").
+       - La barra de Draft pick de siempre queda igual.
+
 0.34.0 - ESCENAS DE COMENTARISTAS
        - Dos pantallas nuevas para cuando hablan los comentaristas:
            * AL COSTADO (casters-overlay.html?escena=lado): los comentaristas apilados a
