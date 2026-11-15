@@ -75,6 +75,7 @@
   <section class="card" id="aire"></section>
   <div class="grid2"><section class="card" id="evento"></section><section class="card" id="prev"></section></div>
   <section class="card" id="talento"></section>
+  <section class="card" id="escenas"></section>
   <section class="card" id="partidas"></section>
   <section class="card" id="swiss"></section>
 </main>
@@ -228,6 +229,16 @@ function renderTalento(){
      </div>`).join('')}
    </div>`).join('')}</div>`}
 
+function urlFila(u,t){return `<div class="lbl">${t}</div><div class="urlrow"><input readonly value="${location.origin}/${u}" onclick="this.select()">
+  <button class="sm" onclick="navigator.clipboard.writeText('${location.origin}/${u}')">Copiar</button>
+  <button class="sm" onclick="window.open('${u}','_blank')">Abrir</button></div>`}
+function renderEscenas(){const E=S.escenas||(S.escenas={fotos:false});
+  $('escenas').innerHTML=`<h2>Escenas de comentaristas<span>Usan los comentaristas, el logo del torneo y los auspiciantes de esta página</span></h2>
+   <div class="opts"><label class="sw ${E.fotos?'on':''}" onclick="S.escenas.fotos=!S.escenas.fotos;build();push()"><i></i>Mostrar la foto de cada uno (si no tenés cámara)</label></div>
+   <div class="hint" style="margin:10px 0 0">Los recuadros quedan <b>huecos</b>: en OBS poné cada cámara <b>debajo</b> de esta fuente y acomodala dentro de su recuadro. En la escena <b>al costado</b>, la ventana grande es para el juego o la repetición.</div>
+   ${urlFila('casters-overlay.html?escena=lado','Escena 1 · comentaristas al costado + ventana grande')}
+   ${urlFila('casters-overlay.html?escena=fila','Escena 2 · comentaristas en fila, logo arriba y auspiciante abajo')}`}
+
 function renderPartidas(){
   const n=S.matches.filter(m=>m.on).length;
   $('partidas').innerHTML=`<h2>Partidos del día<span>${n} marcados (hasta 6)</span>
@@ -319,7 +330,7 @@ function renderSwiss(){const el=$('swiss');if(!el)return;const W=S.swiss;
        :`<span class="hint" style="margin:0">${SWISS.terminado(W)?'¡Swiss Stage terminado!':'Ya están las '+nr+' rondas.'}</span>`}
    </div>`}
 
-function build(){renderTop();renderAire();renderEvento();renderPrev();renderTalento();renderPartidas();renderSwiss();aplicarRol()}
+function build(){renderTop();renderAire();renderEvento();renderPrev();renderTalento();renderEscenas();renderPartidas();renderSwiss();aplicarRol()}
 
 /* ---------- arranque ---------- */
 const es=new EventSource('/events?k=schedule');let primero=true;

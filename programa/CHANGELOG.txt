@@ -4,6 +4,20 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.34.0 - ESCENAS DE COMENTARISTAS
+       - Dos pantallas nuevas para cuando hablan los comentaristas:
+           * AL COSTADO (casters-overlay.html?escena=lado): los comentaristas apilados a
+             la izquierda, una ventana grande a la derecha (para el juego o una
+             repeticion) y abajo el logo del torneo y el auspiciante.
+           * EN FILA (casters-overlay.html?escena=fila): los comentaristas uno al lado
+             del otro, el logo del torneo arriba y el auspiciante abajo.
+       - Cada recuadro lleva el nombre y el @usuario del comentarista.
+       - Los recuadros quedan huecos: en OBS pone cada camara debajo de la fuente y
+         acomodala dentro de su recuadro. Si no tenes camara, en el Control de
+         programacion se puede prender "Mostrar la foto de cada uno".
+       - Usan los comentaristas, el logo y los auspiciantes que ya cargas en el Control
+         de programacion (hasta 4 personas). Los enlaces estan ahi y en el Inicio.
+
 0.33.0 - PANTALLA DE ESPERA NUEVA Y SWISS STAGE
        - LA PANTALLA DE PROGRAMACION SE REHIZO con el esquema de las transmisiones
          grandes, en el estilo oscuro del programa:

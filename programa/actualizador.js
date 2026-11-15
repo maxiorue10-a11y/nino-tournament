@@ -19,7 +19,7 @@ const PERMITIDOS = [
   'public/custom.html', 'public/overlay.html', 'public/scoreboard.html', 'public/schedule-overlay.html',
   'public/cierre.html', 'public/cierre-overlay.html',
   'public/panel.css', 'public/disenos.css', 'public/nav.js', 'public/theme.js', 'public/heroes.js', 'public/equipos.js',
-  'public/swiss.js'
+  'public/swiss.js', 'public/casters-overlay.html'
 ];
 /* Ademas de la lista de arriba, se aceptan paginas y hojas de estilo NUEVAS que vengan
    sueltas dentro de public/ (por ejemplo public/cierre.html). Sin esto, cada vez que el

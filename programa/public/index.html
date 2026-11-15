@@ -91,7 +91,8 @@ const OV=[['Draft pick','overlay.html?view=draft'],['Post-Draft Line-up','overla
           ['Draft anterior','overlay.html?view=previous'],
           ['Estadísticas de la serie','overlay.html?view=stats'],
           ['Pool de baneos','overlay.html?view=banpool'],['Pantallas de cierre','cierre-overlay.html'],
-          ['Programación','schedule-overlay.html'],
+          ['Pantalla de espera','schedule-overlay.html'],['Swiss Stage (pantalla completa)','schedule-overlay.html?swiss'],
+          ['Comentaristas · al costado','casters-overlay.html?escena=lado'],['Comentaristas · en fila','casters-overlay.html?escena=fila'],
           ['Marcador en vivo','scoreboard.html']];
 $('links').innerHTML=OV.map(([n,u])=>{const full=location.origin+'/'+u;
   return `<div><div class="lbl" style="margin-top:0">${n}</div><div class="urlrow">

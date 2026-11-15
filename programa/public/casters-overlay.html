@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Comentaristas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>
+/* ============================================================================
+   ESCENAS DE COMENTARISTAS (1920x1080)
+   casters-overlay.html?escena=lado  -> comentaristas apilados a la izquierda y una
+                                        ventana grande a la derecha
+   casters-overlay.html?escena=fila  -> comentaristas en fila, logo arriba y
+                                        auspiciantes abajo
+   Los recuadros quedan HUECOS: en OBS pone las camaras (o el juego, en la ventana
+   grande) DEBAJO de esta fuente y acomodalas dentro de cada recuadro. Si no tenes
+   camara, en el panel se puede elegir mostrar la foto de cada comentarista.
+   Los datos salen del Control de programacion (torneo, comentaristas, auspiciantes).
+   ============================================================================ */
+:root{--gold:#e9b949;--gold2:#f6d98a;--linea:rgba(233,185,73,.5)}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
+#fondo{position:absolute;inset:0;
+ background:radial-gradient(ellipse at 20% 0%,rgba(58,160,255,.16),transparent 55%),
+  radial-gradient(ellipse at 85% 100%,rgba(233,185,73,.12),transparent 55%),
+  repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),
+  linear-gradient(180deg,#0e1530,#070a12 75%)}
+#cosas{position:absolute;inset:0}
+.marco{position:absolute;border:3px solid var(--linea);border-radius:4px}
+.marco::before,.marco::after{content:'';position:absolute;width:34px;height:34px;border:4px solid var(--gold)}
+.marco::before{left:-6px;top:-6px;border-right:0;border-bottom:0}
+.marco::after{right:-6px;bottom:-6px;border-left:0;border-top:0}
+.marco .fi{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#1c2a55,#0a0f1f 70%)}
+.marco .fi img{position:absolute;left:0;right:0;bottom:0;margin:auto;height:94%;max-width:100%;object-fit:contain;object-position:bottom}
+.placa{position:absolute;display:flex;flex-direction:column;justify-content:center;padding:0 18px;
+ background:linear-gradient(90deg,rgba(7,10,18,.95),rgba(20,30,62,.95));border-left:6px solid var(--gold)}
+.placa b{font-size:var(--pn,38px);font-weight:800;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.placa small{font-size:calc(var(--pn,38px) * .55);font-weight:700;letter-spacing:1px;color:var(--gold2);text-transform:none;margin-top:3px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo{position:absolute;display:grid;place-items:center}
+.logo img{max-width:100%;max-height:100%;object-fit:contain}
+.logo b{font-size:64px;font-weight:800;line-height:.95;color:var(--gold);text-align:center}
+.logo b small{display:block;font-size:26px;letter-spacing:4px;color:#8d96b5;margin-top:6px}
+.spon{position:absolute;display:grid;place-items:center}
+.spon img{max-width:100%;max-height:100%;object-fit:contain;animation:aparece .7s ease both}
+@keyframes aparece{from{opacity:0;transform:scale(.94)}}
+.sep{position:absolute;width:2px;background:var(--linea)}
+.titulo{position:absolute;font-weight:800;letter-spacing:3px;color:#8d96b5}
+.titulo b{color:var(--gold)}
+</style></head><body>
+<div id="fondo"></div><div id="cosas"></div>
+<script src="theme.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ESCENA=(new URLSearchParams(location.search).get('escena')||'lado').toLowerCase()==='fila'?'fila':'lado';
+let S=null,spi=0;
+
+function gente(){const g=[];[['hosts',0],['casters',1],['analysts',2]].forEach(([k,i])=>{
+  if(S.show&&S.show[k]&&S.talent&&S.talent[i])S.talent[i].people.forEach(p=>{if(p.name)g.push(p)})});
+  return g.slice(0,4)}
+const fotos=()=>!!(S.escenas&&S.escenas.fotos);
+
+/* cada recuadro: {x,y,w,h} — se usan para dibujar los marcos y para recortar el fondo */
+function marco(r,p){return `<div class="marco${fotos()&&p?' foto':''}" style="left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px">
+  ${fotos()&&p?`<div class="fi">${p.photo?`<img src="${p.photo}">`:''}</div>`:''}</div>`}
+function placa(x,y,w,h,p,tam){return `<div class="placa" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;--pn:${tam}px">
+  <b>${esc(p.name)}</b>${p.handle?`<small>${esc(p.handle)}</small>`:''}</div>`}
+function logoTorneo(x,y,w,h){const E=S.ev||{};return `<div class="logo" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px">
+  ${E.logo?`<img src="${E.logo}">`:`<b>${esc(E.title||'Torneo')}${E.stage?`<small>${esc(E.stage)}</small>`:''}</b>`}</div>`}
+function spon(x,y,w,h){return `<div class="spon" id="spon" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"></div>`}
+
+function escenaLado(){const G=gente(),n=Math.max(1,Math.min(G.length,4)),huecos=[];let h='';
+  /* columna izquierda: los comentaristas apilados */
+  const X=40,W=480,PL=56,GAP=20,top=40,alto=1000;
+  const fh=Math.min(270,Math.floor((alto-n*PL-(n-1)*GAP)/n)),fw=Math.round(Math.min(W,fh*16/9));
+  const bloque=n*(fh+PL)+(n-1)*GAP,y0=top+Math.round((alto-bloque)/2);
+  (G.length?G:[null]).slice(0,n).forEach((p,i)=>{const y=y0+i*(fh+PL+GAP),x=X+Math.round((W-fw)/2);
+    const r={x,y,w:fw,h:fh};huecos.push(r);h+=marco(r,p);
+    if(p)h+=placa(x,y+fh,fw,PL,p,n>3?30:34)});
+  /* ventana grande */
+  const big={x:560,y:40,w:1320,h:742};huecos.push(big);h+=`<div class="marco" style="left:${big.x}px;top:${big.y}px;width:${big.w}px;height:${big.h}px"></div>`;
+  /* abajo: logo del torneo | auspiciante */
+  h+=logoTorneo(580,806,640,234)+`<div class="sep" style="left:1240px;top:830px;height:186px"></div>`+spon(1260,816,600,214);
+  return {h,huecos}}
+
+function escenaFila(){const G=gente(),n=Math.max(1,Math.min(G.length,4)),huecos=[];let h='';
+  h+=logoTorneo(560,30,800,220);
+  const GAP=36,fw=Math.min(580,Math.floor((1840-(n-1)*GAP)/n)),fh=Math.round(fw*9/16),PL=64;
+  const total=n*fw+(n-1)*GAP,x0=Math.round((1920-total)/2),y=290+Math.round((520-fh-PL)/2);
+  (G.length?G:[null]).slice(0,n).forEach((p,i)=>{const x=x0+i*(fw+GAP),r={x,y,w:fw,h:fh};
+    huecos.push(r);h+=marco(r,p);if(p)h+=placa(x,y+fh,fw,PL,p,40)});
+  h+=spon(660,850,600,200);
+  return {h,huecos}}
+
+/* recorta el fondo dejando los recuadros transparentes */
+function recortar(huecos){if(fotos()){$('fondo').style.clipPath='';return}
+  let d='M0 0H1920V1080H0Z';huecos.forEach(r=>{d+=`M${r.x} ${r.y}h${r.w}v${r.h}h${-r.w}Z`});
+  $('fondo').style.clipPath=`path(evenodd,'${d}')`}
+
+function pintarSpon(){const el=$('spon');if(!el)return;const L=(S.sponsors||[]).filter(Boolean);
+  el.innerHTML=L.length?`<img src="${L[spi%L.length]}">`:''}
+function pintar(){if(!S)return;const E=ESCENA==='fila'?escenaFila():escenaLado();
+  $('cosas').innerHTML=E.h;recortar(E.huecos);pintarSpon()}
+
+let ts=null;
+function ciclos(){clearInterval(ts);ts=setInterval(()=>{spi++;pintarSpon()},Math.max(2,S.sponsorSecs||7)*1000)}
+document.addEventListener('tema',()=>{if(S)pintar()});
+new EventSource('/events?k=schedule').onmessage=e=>{const d=JSON.parse(e.data);if(!d||!d.talent)return;
+  S=d;S.show=S.show||{};S.ev=S.ev||{};pintar();ciclos()};
+</script></body></html>
