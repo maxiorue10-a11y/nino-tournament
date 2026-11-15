@@ -13,7 +13,8 @@
 *{box-sizing:border-box;margin:0}
 html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#eef2ff;
  font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
-#fondo{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 10%,rgba(58,160,255,.16),transparent 50%),
+#fondo{position:absolute;inset:0}
+.fbg{position:absolute;width:1920px;height:1080px;background:radial-gradient(ellipse at 15% 10%,rgba(58,160,255,.16),transparent 50%),
  radial-gradient(ellipse at 85% 100%,rgba(233,185,73,.12),transparent 55%),
  repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),linear-gradient(180deg,#0e1530,#070a12 75%)}
 .chico{position:absolute;top:22px;font-size:22px;font-weight:700;letter-spacing:2px;color:#cfd6ea}
@@ -69,7 +70,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;colo
 const P=PROG,esc=P.esc,$=id=>document.getElementById(id);
 document.head.insertAdjacentHTML('beforeend',`<style>${P.tickerCSS}</style>`);
 const WIN={x:700,y:330,w:1180,h:664};
-$('fondo').style.clipPath=`path(evenodd,'M0 0H1920V1080H0ZM${WIN.x} ${WIN.y}h${WIN.w}v${WIN.h}h${-WIN.w}Z')`;
+P.huecos($('fondo'),[WIN]);
 let vista=0,tv=null;
 function agenda(S){const L=P.partidos().slice(0,Math.min(4,Math.max(2,+S.agendaN||4))),a=P.actual(),h=L.length<=3?150:132;
   const eq=t=>`<div class="eq"><b>${esc(P.corto(t))}</b><div class="l">${t.logo?`<img src="${t.logo}">`:''}</div></div>`;

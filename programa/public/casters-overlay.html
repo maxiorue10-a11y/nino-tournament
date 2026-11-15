@@ -16,7 +16,8 @@
 *{box-sizing:border-box;margin:0}
 html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#eef2ff;
  font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
-#fondo{position:absolute;inset:0;
+#fondo{position:absolute;inset:0}
+.fbg{position:absolute;width:1920px;height:1080px;
  background:radial-gradient(ellipse at 20% 0%,rgba(58,160,255,.16),transparent 55%),
   radial-gradient(ellipse at 85% 100%,rgba(233,185,73,.12),transparent 55%),
   repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),
@@ -111,9 +112,7 @@ function escenaFila(){const G=gente(),n=Math.max(1,Math.min(G.length,4)),huecos=
   return {h,huecos}}
 
 /* recorta el fondo dejando los recuadros transparentes */
-function recortar(huecos){if(fotos()){$('fondo').style.clipPath='';return}
-  let d='M0 0H1920V1080H0Z';huecos.forEach(r=>{d+=`M${r.x} ${r.y}h${r.w}v${r.h}h${-r.w}Z`});
-  $('fondo').style.clipPath=`path(evenodd,'${d}')`}
+function recortar(huecos){PROG.huecos($('fondo'),fotos()?[]:huecos)}
 
 /* escena 3: el partido actual arriba a la izquierda, el auspiciante (con su texto) arriba a la
    derecha, los comentaristas en fila (2, 3 o 4) y el ticker abajo */

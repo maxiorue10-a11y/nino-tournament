@@ -4,6 +4,13 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.37.1 - ARREGLO: IMAGENES QUE NO SALIAN EN OBS
+       - En la espera "Fase" y en las escenas de comentaristas no se veia ninguna
+         imagen dentro de OBS (fotos, auspiciantes, logos), aunque en el navegador si.
+         El fondo con la ventana hueca se recortaba de una forma que el navegador de
+         OBS no dibuja bien. Ahora el fondo se arma con rectangulos alrededor de la
+         ventana y las imagenes se ven. Se ve igual que antes.
+
 0.37.0 - KNOCKOUT STAGE, AGENDA DEL DIA, ESPERA "FASE" Y COMENTARISTAS CON PARTIDO
        - KNOCKOUT STAGE (knockout-overlay.html): doble eliminacion de 8 equipos.
          Llave de ganadores (Match 1 a 6 y 11), llave de perdedores (Match 7 a 10, 12

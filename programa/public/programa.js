@@ -45,6 +45,16 @@
   P.ticker=()=>{const S=P.S,t=String(S.ticker||'').trim();if(!t||S.sw.ticker===false)return '';
     const partes=t.split('|').map(x=>x.trim()).filter(Boolean),uno=partes.map(x=>`<span>${P.esc(x)}</span><i>➤</i>`).join('');
     return `<div class="tick"><div class="tk">${uno.repeat(8)}</div></div>`};
+  /* Fondo con ventanas huecas, armado con rectangulos alrededor de los huecos.
+     (Antes se recortaba con clip-path: path(), que el navegador de OBS no dibuja bien:
+     con eso dejaban de verse todas las imagenes de la pagina.) */
+  P.huecos=(el,H)=>{const ys=[0,1080];H.forEach(r=>ys.push(r.y,r.y+r.h));
+    const Y=[...new Set(ys)].filter(y=>y>=0&&y<=1080).sort((a,b)=>a-b);let html='';
+    const pieza=(x,y,w,h)=>{if(w>0&&h>0)html+=`<div style="position:absolute;overflow:hidden;left:${x}px;top:${y}px;width:${w}px;height:${h}px"><div class="fbg" style="left:${-x}px;top:${-y}px"></div></div>`};
+    for(let i=0;i<Y.length-1;i++){const y0=Y[i],y1=Y[i+1];
+      const fuera=H.filter(r=>r.y<y1&&r.y+r.h>y0).map(r=>[r.x,r.x+r.w]).sort((a,b)=>a[0]-b[0]);
+      let x=0;fuera.forEach(([a,b])=>{pieza(x,y0,a-x,y1-y0);x=Math.max(x,b)});pieza(x,y0,1920-x,y1-y0)}
+    el.innerHTML=html};
   /* achica el texto hasta que entre en su caja */
   P.encajar=(sel,max,min)=>document.querySelectorAll(sel).forEach(el=>{let f=max;el.style.fontSize=f+'px';
     while(el.scrollWidth>el.clientWidth+1&&f>min){f--;el.style.fontSize=f+'px'}});
