@@ -205,6 +205,11 @@ function pintarPie(){const ms=partidosDelDia();
 const POR_PAG=3;
 function pintarMain(){const el=$('main'),modo=S.main||'video';
   if(modo==='swiss'&&SW){el.className='panel lleno';el.innerHTML=htmlSwiss();encajarSwiss();return}
+  /* el knockout se muestra achicado adentro de la ventana (y no se recarga en cada cambio) */
+  if(modo==='knockout'&&S.ko){if(!el.querySelector('iframe.ko')){const W=SOLO?1920:1400,H=SOLO?1080:848,k=Math.min(W/1920,H/1080);
+      el.className='panel lleno';el.innerHTML=`<iframe class="ko" src="knockout-overlay.html?embed" scrolling="no" style="position:absolute;border:0;width:1920px;height:1080px;
+        transform-origin:0 0;transform:scale(${k});left:${Math.round((W-1920*k)/2)}px;top:${Math.round((H-1080*k)/2)}px;background:transparent"></iframe>`}
+    return}
   if(modo==='partidos'){const ms=partidosDelDia();
     if(ms.length){el.className='panel lleno';
       const n=Math.ceil(ms.length/POR_PAG),p=pag%n,vis=ms.slice(p*POR_PAG,p*POR_PAG+POR_PAG);

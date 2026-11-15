@@ -43,14 +43,35 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;colo
 .sep{position:absolute;width:2px;background:var(--linea)}
 .titulo{position:absolute;font-weight:800;letter-spacing:3px;color:#8d96b5}
 .titulo b{color:var(--gold)}
+/* escena con partido */
+.bug{position:absolute;left:50px;top:30px;width:760px}
+.bug .bt{display:flex;justify-content:space-between;align-items:center;padding:4px 40px;font-size:22px;font-weight:700;color:#2a2108;
+ background:linear-gradient(90deg,var(--gold2),var(--gold));clip-path:polygon(18px 0,calc(100% - 18px) 0,100% 100%,0 100%);margin:0 40px}
+.bug .bt b{font-size:26px;font-weight:800}
+.bug .bb{display:grid;grid-template-columns:1fr 90px 70px 90px 1fr;align-items:center;height:104px;
+ background:linear-gradient(90deg,rgba(47,128,255,.35),#0e1530 30%,#0e1530 70%,rgba(255,61,85,.32));border:2px solid var(--linea);
+ clip-path:polygon(40px 0,calc(100% - 40px) 0,100% 50%,calc(100% - 40px) 100%,40px 100%,0 50%)}
+.bug .bl{display:grid;place-items:center;height:84px}.bug .bl img{max-width:120px;max-height:84px;object-fit:contain}
+.bug .bb b{font-size:76px;font-weight:800;text-align:center;line-height:1}
+.bug .bb i{font-style:normal;font-size:42px;font-weight:800;color:var(--gold);text-align:center}
+.spon2{position:absolute;right:60px;top:20px;width:320px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.spon2 small{font-size:22px;font-weight:700;letter-spacing:2px;color:#cfd6ea}
+.spon2 img{max-width:280px;max-height:110px;object-fit:contain}
+.placa2{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ background:linear-gradient(90deg,#24366e,#141d3d);border-bottom:4px solid var(--gold);clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.placa2 b{font-size:50px;font-weight:800;line-height:1;white-space:nowrap}
+.placa2 small{font-size:22px;font-weight:700;color:var(--gold2);text-transform:none;letter-spacing:1px}
 </style></head><body>
-<div id="fondo"></div><div id="cosas"></div>
+<div id="fondo"></div><div id="cosas"></div><div id="tic2"></div>
 <script src="theme.js"></script>
+<script src="programa.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const ESCENA=(new URLSearchParams(location.search).get('escena')||'lado').toLowerCase()==='fila'?'fila':'lado';
+/* lado | fila | partido */
+const ESCENA=(e=>['fila','partido'].includes(e)?e:'lado')((new URLSearchParams(location.search).get('escena')||'lado').toLowerCase());
 let S=null,spi=0;
+document.head.insertAdjacentHTML('beforeend',`<style>${PROG.tickerCSS}</style>`);
 
 function gente(){const g=[];[['hosts',0],['casters',1],['analysts',2]].forEach(([k,i])=>{
   if(S.show&&S.show[k]&&S.talent&&S.talent[i])S.talent[i].people.forEach(p=>{if(p.name)g.push(p)})});
@@ -94,10 +115,27 @@ function recortar(huecos){if(fotos()){$('fondo').style.clipPath='';return}
   let d='M0 0H1920V1080H0Z';huecos.forEach(r=>{d+=`M${r.x} ${r.y}h${r.w}v${r.h}h${-r.w}Z`});
   $('fondo').style.clipPath=`path(evenodd,'${d}')`}
 
-function pintarSpon(){const el=$('spon');if(!el)return;const L=(S.sponsors||[]).filter(Boolean);
+/* escena 3: el partido actual arriba a la izquierda, el auspiciante (con su texto) arriba a la
+   derecha, los comentaristas en fila (2, 3 o 4) y el ticker abajo */
+function escenaPartido(){const G=gente(),n=Math.max(1,Math.min(G.length,4)),huecos=[];let h='';
+  PROG.S=S;const m=PROG.actual(),E=S.ev||{};
+  if(m){const t=m.teams;h+=`<div class="bug"><div class="bt"><span>${esc(m.label||'')}</span><b>${esc(E.stage||'')}</b><span>${m.bo?'MD'+esc(m.bo):''}</span></div>
+    <div class="bb"><span class="bl">${t[0].logo?`<img src="${t[0].logo}">`:''}</span><b>${esc(t[0].score||0)}</b><i>VS</i><b>${esc(t[1].score||0)}</b>
+    <span class="bl">${t[1].logo?`<img src="${t[1].logo}">`:''}</span></div></div>`}
+  h+=`<div class="spon2" id="spon2"></div>`;
+  const GAP=40,fw=Math.min(560,Math.floor((1700-(n-1)*GAP)/n)),fh=Math.round(fw*(n>=4?1.15:n===3?1.12:0.85)),PL=80;
+  const total=n*fw+(n-1)*GAP,x0=Math.round((1920-total)/2),y=200+Math.round((800-fh-PL)/2);
+  (G.length?G:[null]).slice(0,n).forEach((p,i)=>{const x=x0+i*(fw+GAP),r={x,y,w:fw,h:fh};
+    huecos.push(r);h+=marco(r,p);if(p)h+=`<div class="placa2" style="left:${x}px;top:${y+fh+12}px;width:${fw}px;height:${PL}px">
+      <b>${esc(p.name)}</b>${p.handle?`<small>${esc(p.handle)}</small>`:''}</div>`});
+  return {h,huecos}}
+function pintarSpon(){const s2=$('spon2');if(s2){PROG.S=S;PROG.spi=spi;const x=PROG.sponsor();
+    s2.innerHTML=x?`${x.etq?`<small>${esc(x.etq)}</small>`:''}<img src="${x.logo}">`:''}
+  const el=$('spon');if(!el)return;const L=(S.sponsors||[]).filter(Boolean);
   el.innerHTML=L.length?`<img src="${L[spi%L.length]}">`:''}
-function pintar(){if(!S)return;const E=ESCENA==='fila'?escenaFila():escenaLado();
-  $('cosas').innerHTML=E.h;recortar(E.huecos);pintarSpon()}
+function pintar(){if(!S)return;const E=ESCENA==='fila'?escenaFila():ESCENA==='partido'?escenaPartido():escenaLado();
+  $('cosas').innerHTML=E.h;recortar(E.huecos);pintarSpon();
+  if(ESCENA==='partido'){PROG.S=S;PROG.ponerTicker($('tic2'));PROG.encajar('.placa2 b',50,24)}}
 
 let ts=null;
 function ciclos(){clearInterval(ts);ts=setInterval(()=>{spi++;pintarSpon()},Math.max(2,S.sponsorSecs||7)*1000)}

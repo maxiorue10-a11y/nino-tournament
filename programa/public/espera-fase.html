@@ -1,0 +1,98 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Espera · Fase</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>
+/* ============================================================================
+   PANTALLA DE ESPERA "FASE" (1920x1080)
+   Arriba a la izquierda el nombre de la fase (por ejemplo FASE SUIZA) con la ronda
+   y el dia; arriba al centro "EMPEZAMOS EN:"; arriba a la derecha el auspiciante
+   con su texto. A la izquierda, la agenda del dia (hasta 4 partidos) o los
+   comentaristas (o las dos cosas turnandose). Abajo a la derecha, una ventana
+   hueca para tu video de OBS. Abajo de todo, el ticker.
+   ============================================================================ */
+:root{--gold:#e9b949;--gold2:#f6d98a;--linea:rgba(233,185,73,.55)}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
+#fondo{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 10%,rgba(58,160,255,.16),transparent 50%),
+ radial-gradient(ellipse at 85% 100%,rgba(233,185,73,.12),transparent 55%),
+ repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),linear-gradient(180deg,#0e1530,#070a12 75%)}
+.chico{position:absolute;top:22px;font-size:22px;font-weight:700;letter-spacing:2px;color:#cfd6ea}
+.tit{position:absolute;left:60px;top:52px;max-width:640px}
+.tit b{display:block;font-size:130px;font-weight:800;line-height:.9;white-space:nowrap;
+ background:linear-gradient(180deg,#fff6d8,var(--gold) 60%,#a37b24);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tit small{display:block;font-size:46px;font-weight:700;letter-spacing:2px;margin-top:4px}
+.reloj{position:absolute;left:720px;width:560px;top:22px;text-align:center}
+.reloj small{display:block;font-size:30px;font-weight:700;letter-spacing:2px;color:#9fd8ff}
+.reloj b{display:block;font-size:220px;font-weight:800;line-height:.92;font-variant-numeric:tabular-nums}
+.reloj em{display:block;font-style:normal;font-size:96px;font-weight:800;line-height:1;margin-top:60px;color:var(--gold)}
+.rayo{position:absolute;left:1300px;top:0;width:200px;height:330px}
+.spon{position:absolute;right:60px;top:80px;width:320px;height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.spon small{font-size:24px;font-weight:700;letter-spacing:2px;color:#cfd6ea}
+.spon img{max-width:300px;max-height:170px;object-fit:contain}
+/* ventana de video */
+.win{position:absolute;left:700px;top:330px;width:1180px;height:664px;border:3px solid var(--linea)}
+.win::before,.win::after{content:'';position:absolute;width:44px;height:44px;border:5px solid var(--gold)}
+.win::before{left:-7px;top:-7px;border-right:0;border-bottom:0}.win::after{right:-7px;bottom:-7px;border-left:0;border-top:0}
+/* izquierda: agenda */
+.izq{position:absolute;left:0;top:250px;width:700px;height:744px}
+.plac{margin-left:60px;margin-top:22px;width:600px;padding:14px 0 12px 60px;font-size:60px;font-weight:800;color:#2a2108;
+ background:linear-gradient(90deg,var(--gold2),var(--gold));clip-path:polygon(0 0,100% 0,100% 100%,0 100%,0 22px)}
+.ag{display:flex;flex-direction:column;margin-top:8px}
+.fila{position:relative;height:var(--h,150px);display:grid;grid-template-columns:140px 84px 1fr 84px 140px;align-items:center;
+ border-bottom:2px solid rgba(233,185,73,.25);padding:0 46px 0 40px}
+.fila .eq{text-align:center}
+.fila .eq b{display:block;font-size:30px;font-weight:800;white-space:nowrap;overflow:hidden}
+.fila .eq .l{height:calc(var(--h,150px) * .5);display:grid;place-items:center}
+.fila .eq img{max-width:110px;max-height:100%;object-fit:contain}
+.fila .sc{font-size:calc(var(--h,150px) * .6);font-weight:800;text-align:center;line-height:1}
+.fila .md{text-align:center;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;padding:12px 0}
+.fila .md small{font-size:24px;font-weight:700;letter-spacing:1px;color:#cfd6ea;white-space:nowrap}
+.fila .md i{font-style:normal;font-size:46px;font-weight:800;color:var(--gold)}
+.fila.act{background:linear-gradient(90deg,rgba(233,185,73,.16),transparent)}
+/* izquierda: comentaristas */
+.cas{position:absolute;inset:0;overflow:hidden}
+.cas .fotos{position:absolute;left:0;right:0;top:20px;bottom:64px;display:flex;align-items:flex-end;justify-content:center}
+.cas .fotos img{flex:1 1 0;min-width:0;height:100%;object-fit:contain;object-position:bottom;margin:0 -30px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.6))}
+.cas .nom{position:absolute;left:0;right:0;bottom:0;height:64px;display:flex;background:linear-gradient(90deg,#16305e,#0d1a3a);border-top:2px solid var(--linea)}
+.cas .nom b{flex:1;display:grid;place-items:center;font-size:40px;font-weight:800;color:#9fd8ff;white-space:nowrap;overflow:hidden}
+.cas .nom b+b{border-left:2px solid rgba(233,185,73,.3)}
+.fade{animation:fd .7s ease both}@keyframes fd{from{opacity:0}}
+</style></head><body>
+<div id="fondo"></div>
+<div id="app"></div>
+<div class="reloj" data-reloj></div>
+<div class="spon" data-spon="etq"></div>
+<div id="tic"></div>
+<script src="theme.js"></script>
+<script src="programa.js"></script>
+<script>
+const P=PROG,esc=P.esc,$=id=>document.getElementById(id);
+document.head.insertAdjacentHTML('beforeend',`<style>${P.tickerCSS}</style>`);
+const WIN={x:700,y:330,w:1180,h:664};
+$('fondo').style.clipPath=`path(evenodd,'M0 0H1920V1080H0ZM${WIN.x} ${WIN.y}h${WIN.w}v${WIN.h}h${-WIN.w}Z')`;
+let vista=0,tv=null;
+function agenda(S){const L=P.partidos().slice(0,Math.min(4,Math.max(2,+S.agendaN||4))),a=P.actual(),h=L.length<=3?150:132;
+  const eq=t=>`<div class="eq"><b>${esc(P.corto(t))}</b><div class="l">${t.logo?`<img src="${t.logo}">`:''}</div></div>`;
+  return `<div class="plac">Agenda del día</div><div class="ag fade" style="--h:${h}px">${L.map(m=>`<div class="fila${a&&a.i===m.i?' act':''}">
+    ${eq(m.teams[0])}<div class="sc">${esc(m.teams[0].score||0)}</div>
+    <div class="md"><small>${esc(m.label||'')}${m.bo?' - MD'+esc(m.bo):''}</small><i>VS</i><small>${esc(m.time||'')}</small></div>
+    <div class="sc">${esc(m.teams[1].score||0)}</div>${eq(m.teams[1])}</div>`).join('')}</div>`}
+function casters(){const G=P.gente(4);if(!G.length)return '';
+  return `<div class="cas fade"><div class="fotos">${G.filter(p=>p.photo).map(p=>`<img src="${p.photo}">`).join('')}</div>
+    <div class="nom">${G.map(p=>`<b>${esc(p.name)}</b>`).join('')}</div></div>`}
+function pintarIzq(){const S=P.S,modo=S.izq||'agenda',hay=P.partidos().length,gente=P.gente(4).length;
+  let v=modo;if(modo==='rotar')v=(vista%2===0&&hay)||!gente?'agenda':'casters';
+  if(v==='agenda'&&!hay&&gente)v='casters';if(v==='casters'&&!gente)v='agenda';
+  document.querySelector('.izq').innerHTML=v==='agenda'?agenda(S):casters();
+  P.encajar('.fila .eq b',30,16);P.encajar('.cas .nom b',40,20)}
+function pintar(S){const E=S.ev;
+  $('app').innerHTML=`${E.left?`<div class="chico" style="left:60px">◀ ${esc(E.left)}</div>`:''}
+   ${E.right?`<div class="chico" style="right:60px">${esc(E.right)} ▶</div>`:''}
+   <div class="tit"><b>${esc(E.stage||E.title||'')}</b>${E.round||E.day?`<small>${[E.round,E.day].filter(Boolean).map(esc).join(' - ')}</small>`:''}</div>
+   <svg class="rayo" viewBox="0 0 200 330"><defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2c4"/><stop offset=".5" stop-color="#e9b949"/><stop offset="1" stop-color="#7a5a14"/></linearGradient></defs>
+     <path d="M150 0 L60 170 L120 170 L30 330 L50 330 L150 150 L90 150 L175 0Z" fill="url(#rg)"/></svg>
+   <div class="win"></div><div class="izq"></div>`;
+  P.encajar('.tit b',130,60);pintarIzq();P.pintarReloj();P.ponerTicker($('tic'));
+  clearInterval(tv);if((S.izq||'agenda')==='rotar')tv=setInterval(()=>{vista++;pintarIzq()},Math.max(5,S.izqSecs||12)*1000)}
+P.empezar(pintar);
+</script></body></html>

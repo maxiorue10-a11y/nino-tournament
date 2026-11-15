@@ -74,6 +74,10 @@ ENLACES PARA OBS (Fuentes > + > Fuente de navegador, ancho 1920, alto 1080)
   Swiss Stage solo    http://localhost:3000/schedule-overlay.html?swiss
   Comentaristas 1     http://localhost:3000/casters-overlay.html?escena=lado
   Comentaristas 2     http://localhost:3000/casters-overlay.html?escena=fila
+  Comentaristas 3     http://localhost:3000/casters-overlay.html?escena=partido
+  Agenda del dia      http://localhost:3000/agenda-overlay.html
+  Espera Fase         http://localhost:3000/espera-fase.html
+  Knockout Stage      http://localhost:3000/knockout-overlay.html
   In game             http://localhost:3000/ingame.html
   Resultado           http://localhost:3000/resultado.html
   Marcador en vivo    http://localhost:3000/scoreboard.html

@@ -4,6 +4,30 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.37.0 - KNOCKOUT STAGE, AGENDA DEL DIA, ESPERA "FASE" Y COMENTARISTAS CON PARTIDO
+       - KNOCKOUT STAGE (knockout-overlay.html): doble eliminacion de 8 equipos.
+         Llave de ganadores (Match 1 a 6 y 11), llave de perdedores (Match 7 a 10, 12
+         y 13) y gran final. Cargas los 8 equipos y los resultados en el Control de
+         programacion; los ganadores y perdedores pasan solos al partido que les toca
+         y al final aparece el campeon. El BO de cada partido se puede cambiar
+         (por defecto BO3 la primera ronda, BO5 el resto y BO7 la final).
+         Tambien se puede mostrar en la ventana grande de la pantalla de espera.
+       - AGENDA DEL DIA (agenda-overlay.html): pantalla completa con 2, 3 o 4 partidos
+         (se elige en el panel), con la fase, la ronda y el dia arriba a la derecha.
+       - ESPERA "FASE" (espera-fase.html): el nombre de la fase grande arriba a la
+         izquierda con ronda y dia, "EMPEZAMOS EN:" arriba al centro, el auspiciante con
+         su texto arriba a la derecha, una ventana hueca para tu video y, a la
+         izquierda, la agenda del dia o los comentaristas (o las dos cosas turnandose).
+       - COMENTARISTAS CON EL PARTIDO ARRIBA (casters-overlay.html?escena=partido):
+         2, 3 o 4 comentaristas en fila, el partido actual arriba a la izquierda y el
+         auspiciante arriba a la derecha.
+       - TICKER: texto que corre abajo en estas pantallas. Se escribe en el panel,
+         separando las frases con |, y se puede apagar.
+       - AUSPICIANTES CON TEXTO: cada logo puede llevar arriba su texto (por ejemplo
+         POWERED BY u OFFICIAL GAMING PHONE), en el mismo orden, separados por comas.
+       - El panel suma Ronda, Dia, la frase de arriba a la izquierda y el lugar de
+         arriba a la derecha.
+
 0.36.0 - IN GAME Y RESULTADO DE LA PARTIDA
        - IN GAME (http://localhost:3000/ingame.html): va arriba del juego en OBS.
            * Arriba al centro, el marcador: kills, reloj, equipos, partidas ganadas y

@@ -76,12 +76,15 @@
   <div class="grid2"><section class="card" id="evento"></section><section class="card" id="prev"></section></div>
   <section class="card" id="talento"></section>
   <section class="card" id="escenas"></section>
+  <section class="card" id="extra"></section>
   <section class="card" id="partidas"></section>
   <section class="card" id="swiss"></section>
+  <section class="card" id="ko"></section>
 </main>
 
 <script src="nav.js"></script>
 <script src="swiss.js"></script>
+<script src="knockout.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -153,12 +156,12 @@ function renderAire(){
   const modo=(v,t)=>`<button class="${S.main===v?'on':''}" onclick="set(['main'],'${v}');build()">${t}</button>`;
   $('aire').innerHTML=`<h2>Pantalla de espera<span>Qué se ve en la ventana grande de la izquierda</span></h2>
    <div class="opts">
-     <span class="seg">${modo('video','Video (hueco transparente)')}${modo('partidos','Partidos del día')}${modo('swiss','Swiss Stage')}</span>
+     <span class="seg">${modo('video','Video (hueco transparente)')}${modo('partidos','Partidos del día')}${modo('swiss','Swiss Stage')}${modo('knockout','Knockout Stage')}</span>
    </div>
    <div class="opts" style="margin-top:10px">
      <label class="sw ${S.rotar!==false?'on':''}" onclick="set(['rotar'],S.rotar===false);build()"><i></i>Rotar los partidos</label>
      <label class="opt">cada<input type="number" min="2" max="60" value="${S.matchSecs||5}" style="width:70px" oninput="set(['matchSecs'],+this.value||5)">seg</label>
-     ${sw('countdown','Cuenta regresiva')}${sw('sponsor','Auspiciantes')}
+     ${sw('countdown','Cuenta regresiva')}${sw('sponsor','Auspiciantes')}${sw('ticker','Ticker de abajo')}
    </div>
    <div class="hint" style="margin:12px 0 0"><b>Video</b>: la ventana queda transparente; poné tu video o cámara <b>debajo</b> de esta fuente en OBS.
      <b>Partidos del día</b>: se muestran de a 3 y, si hay más, van pasando solos. Abajo siempre va el partido marcado como <b>Actual</b>.</div>`}
@@ -168,8 +171,14 @@ function renderEvento(){
   $('evento').innerHTML=`<h2>Torneo</h2>
    <div class="mg">
      <label>Nombre del torneo<input value="${esc(E.title)}" placeholder="Ej: Copa Nacional MLBB" ${ei('title','this.value')}></label>
-     <label>Fase / día<input value="${esc(E.stage)}" placeholder="Ej: PLAYOFFS" ${ei('stage','this.value')}></label>
+     <label>Fase<input value="${esc(E.stage)}" placeholder="Ej: FASE SUIZA" ${ei('stage','this.value')}></label>
+     <label>Ronda<input value="${esc(E.round||'')}" placeholder="Ej: RONDA 5" ${ei('round','this.value')}></label>
+     <label>Día<input value="${esc(E.day||'')}" placeholder="Ej: DÍA 7" ${ei('day','this.value')}></label>
+     <label>Frase arriba a la izquierda<input value="${esc(E.left||'')}" placeholder="Ej: LET THE GAMES BEGIN" ${ei('left','this.value')}></label>
+     <label>Lugar arriba a la derecha<input value="${esc(E.right||'')}" placeholder="Ej: ASUNCIÓN - PARAGUAY" ${ei('right','this.value')}></label>
    </div>
+   <div class="lbl">Ticker de abajo (separá las frases con | )</div>
+   <input value="${esc(S.ticker||'')}" placeholder="Ej: NINO TOURNAMENT | LET THE GAMES BEGIN" oninput="set(['ticker'],this.value)">
    <div class="lbl">Logo del torneo (va arriba a la derecha)</div>
    <div class="acts" style="align-items:center">
      <div class="lgbox" style="width:70px;height:70px;border:1px solid var(--line);border-radius:8px;background:var(--input);display:grid;place-items:center;overflow:hidden;font-size:11px;color:var(--mut)">${E.logo?`<img src="${E.logo}" style="max-width:100%;max-height:100%;object-fit:contain">`:'Sin logo'}</div>
@@ -192,7 +201,9 @@ function renderEvento(){
      <label>Texto al terminar<input value="${esc(C.end)}" ${ci('end','this.value')}></label>
    </div>
 
-   <h2 style="margin-top:18px">Auspiciantes<span>Cargá los que quieras; van rotando abajo a la derecha</span></h2>
+   <h2 style="margin-top:18px">Auspiciantes<span>Cargá los que quieras; van rotando</span></h2>
+   <div class="lbl">Texto arriba de cada auspiciante, en el mismo orden y separados por comas (si ponés uno solo, va para todos)</div>
+   <input value="${esc(S.sponsorLabels||'')}" placeholder="Ej: POWERED BY, OFFICIAL GAMING PHONE" oninput="set(['sponsorLabels'],this.value)">
    <div class="spon">
      ${S.sponsors.map((u,i)=>`<div class="sp"><img src="${u}"><button class="sm" onclick="borrarArchivo(S.sponsors[${i}]);S.sponsors.splice(${i},1);build();push()">×</button></div>`).join('')}
      <div class="sp add" onclick="elegir(u=>S.sponsors.push(u))">+ Agregar</div>
@@ -237,7 +248,18 @@ function renderEscenas(){const E=S.escenas||(S.escenas={fotos:false});
    <div class="opts"><label class="sw ${E.fotos?'on':''}" onclick="S.escenas.fotos=!S.escenas.fotos;build();push()"><i></i>Mostrar la foto de cada uno (si no tenés cámara)</label></div>
    <div class="hint" style="margin:10px 0 0">Los recuadros quedan <b>huecos</b>: en OBS poné cada cámara <b>debajo</b> de esta fuente y acomodala dentro de su recuadro. En la escena <b>al costado</b>, la ventana grande es para el juego o la repetición.</div>
    ${urlFila('casters-overlay.html?escena=lado','Escena 1 · comentaristas al costado + ventana grande')}
-   ${urlFila('casters-overlay.html?escena=fila','Escena 2 · comentaristas en fila, logo arriba y auspiciante abajo')}`}
+   ${urlFila('casters-overlay.html?escena=fila','Escena 2 · comentaristas en fila, logo arriba y auspiciante abajo')}
+   ${urlFila('casters-overlay.html?escena=partido','Escena 3 · comentaristas (2, 3 o 4) con el partido actual arriba y el auspiciante')}`}
+function renderExtra(){const sel=(k,ops,v)=>`<select onchange="set(['${k}'],this.value);build()">${ops.map(([a,b])=>`<option value="${a}" ${String(v)===String(a)?'selected':''}>${b}</option>`).join('')}</select>`;
+  $('extra').innerHTML=`<h2>Agenda del día y espera "Fase"<span>Usan los partidos marcados, la fase, ronda y día, el reloj, los auspiciantes y el ticker</span></h2>
+   <div class="acts" style="align-items:flex-end">
+     <label class="opt">Partidos en la agenda${sel('agendaN',[[2,'2'],[3,'3'],[4,'4']],S.agendaN||3)}</label>
+     <label class="opt">Izquierda de la espera "Fase"${sel('izq',[['agenda','Agenda del día'],['casters','Comentaristas'],['rotar','Turnar las dos']],S.izq||'agenda')}</label>
+     ${S.izq==='rotar'?`<label class="opt">cada<input type="number" min="5" value="${S.izqSecs||12}" style="width:70px" oninput="set(['izqSecs'],+this.value||12)">seg</label>`:''}
+   </div>
+   ${urlFila('agenda-overlay.html','Agenda del día (pantalla completa)')}
+   ${urlFila('espera-fase.html','Espera "Fase": título de la fase, reloj, agenda o comentaristas y ventana de video')}
+   ${urlFila('knockout-overlay.html','Knockout Stage (pantalla completa)')}`}
 
 function renderPartidas(){
   const n=S.matches.filter(m=>m.on).length;
@@ -261,6 +283,38 @@ function renderPartidas(){
        <input class="sc" value="${esc(t.score)}" placeholder="0" oninput="set(['matches',${i},'teams',${k},'score'],this.value)">
      </div>`).join('')}
    </div>`).join('')}</div>`}
+
+/* ================= KNOCKOUT STAGE ================= */
+function koNuevo(){if(S.ko&&Object.keys(S.ko.res||{}).length&&!confirm('Se borran los resultados cargados. ¿Seguir?'))return;
+  const v=S.ko;S.ko=KNOCKOUT.nuevo();if(v&&v.teams)S.ko.teams=v.teams;build();push()}
+function koBorrar(){if(!confirm('¿Borrar el Knockout Stage completo?'))return;S.ko=null;if(S.main==='knockout')S.main='video';build();push()}
+function koDeMis(i,v){const e=MIS[+v];if(!e)return;S.ko.teams[i]={name:e.name,logo:e.logo};build();push()}
+function koRes(id,lado,v){const r=S.ko.res[id]||(S.ko.res[id]={a:'',b:''});r[lado]=v;push()}
+function renderKO(){const el=$('ko');if(!el)return;const K=S.ko;
+  if(!K){el.innerHTML=`<h2>Knockout Stage<span>Doble eliminación de 8 equipos: llave de ganadores, llave de perdedores y gran final</span></h2>
+    <div class="acts"><button class="gold" onclick="koNuevo()">Armar Knockout Stage</button></div>`;return}
+  const C=KNOCKOUT.calcular(K),T=K.teams,nom=i=>i==null?null:(T[i]&&T[i].name)||'Equipo '+(i+1);
+  el.innerHTML=`<h2>Knockout Stage<span>Cargá los resultados: los ganadores y perdedores pasan solos al partido que les toca</span>
+     <span style="float:right"><button class="sm ${S.main==='knockout'?'gold':''}" onclick="set(['main'],'knockout');build()">Mostrar en la pantalla de espera</button>
+     <button class="sm" onclick="window.open('knockout-overlay.html','_blank')">Abrir sola</button>
+     <button class="sm" onclick="koNuevo()">Reiniciar resultados</button><button class="sm bad" onclick="koBorrar()">Borrar</button></span></h2>
+   <div class="mg"><label>Título<input value="${esc(S.koTitulo||'')}" placeholder="KNOCKOUT STAGE" oninput="set(['koTitulo'],this.value)"></label></div>
+   <div class="lbl">Equipos, en el orden de los cruces: 1 vs 2 (Match 1), 3 vs 4 (Match 2), 5 vs 6 (Match 3), 7 vs 8 (Match 4)</div>
+   <div class="swteams">${T.map((t,i)=>`<div class="swtr"><em>${i+1}</em>
+     <div class="mlogo" onclick="elegir(u=>S.ko.teams[${i}].logo=u,S.ko.teams[${i}].logo)">${t.logo?`<img src="${t.logo}">`:'LOGO'}</div>
+     <input value="${esc(t.name)}" placeholder="Equipo ${i+1}" oninput="S.ko.teams[${i}].name=this.value;push()" onchange="build()">
+     ${MIS.length?`<select onchange="koDeMis(${i},this.value)"><option value="">Mis equipos…</option>${MIS.map((e,k)=>`<option value="${k}">${esc(e.name)}</option>`).join('')}</select>`:''}
+   </div>`).join('')}</div>
+   ${[['Llave de ganadores',[1,2,3,4,5,6,11]],['Llave de perdedores',[7,8,9,10,12,13]],['Final',[14]]].map(([tt,ids])=>`
+   <div class="swr"><div class="swrh"><b>${tt}</b></div>${ids.map(id=>{const o=C[id];return `<div class="swx" style="grid-template-columns:110px 1fr 56px 14px 56px 1fr 90px">
+     <span class="swg">${KNOCKOUT.nombre(id)}</span>
+     <span class="${o.gan!=null&&o.gan===o.a?'swok':''}" style="font-size:14px">${esc(nom(o.a)||KNOCKOUT.texto(o.src.a))}</span>
+     <input class="sc" value="${esc(o.sa)}" placeholder="0" ${o.a==null||o.b==null?'disabled':''} oninput="koRes(${id},'a',this.value)" onchange="build()">
+     <span class="swvs">-</span>
+     <input class="sc" value="${esc(o.sb)}" placeholder="0" ${o.a==null||o.b==null?'disabled':''} oninput="koRes(${id},'b',this.value)" onchange="build()">
+     <span class="${o.gan!=null&&o.gan===o.b?'swok':''}" style="font-size:14px;text-align:right">${esc(nom(o.b)||KNOCKOUT.texto(o.src.b))}</span>
+     <select onchange="S.ko.bo[${id}]=+this.value;build();push()">${[1,3,5,7].map(b=>`<option value="${b}" ${o.bo==b?'selected':''}>BO${b}</option>`).join('')}</select>
+   </div>`}).join('')}</div>`).join('')}`}
 
 /* ================= SWISS STAGE ================= */
 let MIS=[];   /* equipos ya cargados en el draft, para elegirlos rapido */
@@ -330,7 +384,7 @@ function renderSwiss(){const el=$('swiss');if(!el)return;const W=S.swiss;
        :`<span class="hint" style="margin:0">${SWISS.terminado(W)?'¡Swiss Stage terminado!':'Ya están las '+nr+' rondas.'}</span>`}
    </div>`}
 
-function build(){renderTop();renderAire();renderEvento();renderPrev();renderTalento();renderEscenas();renderPartidas();renderSwiss();aplicarRol()}
+function build(){renderTop();renderAire();renderEvento();renderPrev();renderTalento();renderEscenas();renderExtra();renderPartidas();renderSwiss();renderKO();aplicarRol()}
 
 /* ---------- arranque ---------- */
 const es=new EventSource('/events?k=schedule');let primero=true;

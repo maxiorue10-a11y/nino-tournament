@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Knockout Stage</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>
+/* ============================================================================
+   KNOCKOUT STAGE (1920x1080, pantalla completa)
+   Doble eliminacion de 8 equipos: arriba la llave de ganadores, abajo la de
+   perdedores, a la derecha la gran final y el logo del torneo.
+   Se carga en el Control de programacion.
+   ============================================================================ */
+:root{--gold:#e9b949;--gold2:#f6d98a;--linea:rgba(233,185,73,.55);--azul:#5fb8ff}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;color:#eef2ff;
+ font-family:var(--fh,'Barlow Condensed'),'Bahnschrift',sans-serif;text-transform:uppercase}
+body{background:radial-gradient(ellipse at 80% 40%,rgba(233,185,73,.14),transparent 50%),
+ radial-gradient(ellipse at 10% 90%,rgba(58,160,255,.14),transparent 50%),
+ repeating-linear-gradient(-60deg,rgba(233,185,73,.035) 0 1px,transparent 1px 28px),linear-gradient(180deg,#0e1530,#070a12 75%)}
+body.emb{background:transparent}
+h1{position:absolute;left:40px;top:24px;font-size:110px;font-weight:800;line-height:1;white-space:nowrap;
+ background:linear-gradient(180deg,#fff6d8,var(--gold) 60%,#a37b24);-webkit-background-clip:text;background-clip:text;color:transparent}
+.spon{position:absolute;right:40px;top:30px;width:300px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.spon small{font-size:16px;letter-spacing:3px;color:#8d96b5}.spon img{max-width:280px;max-height:80px;object-fit:contain}
+svg.lin{position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none}
+.mx{position:absolute;width:300px}
+.mx .et{height:24px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 6px 2px;font-size:20px;font-weight:800;letter-spacing:1px}
+.mx .et small{font-size:16px;color:#8d96b5;letter-spacing:2px}
+.mx .t{height:38px;display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;margin-top:2px;
+ background:linear-gradient(90deg,rgba(233,185,73,.22),rgba(14,21,48,.92) 40%);border-left:4px solid var(--gold);
+ clip-path:polygon(10px 0,100% 0,100% 100%,0 100%)}
+.mx.low .t{background:linear-gradient(90deg,rgba(95,184,255,.22),rgba(14,21,48,.92) 40%);border-left-color:var(--azul)}
+.mx .t img{width:28px;height:28px;object-fit:contain;flex:none}
+.mx .t span{flex:1;min-width:0;font-size:22px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mx .t span.pend{color:#8d96b5;font-weight:600}
+.mx .t b{font-size:26px;font-weight:800;min-width:22px;text-align:right}
+.mx .t.gana b{color:var(--gold)}.mx .t.pierde{opacity:.45}
+.mx.gf{width:340px}.mx.gf .t{height:48px}.mx.gf .t span{font-size:28px}.mx.gf .t b{font-size:32px}
+.mx.gf .t span.pend{font-size:22px}
+.mx.gf .et{font-size:28px;color:var(--gold)}
+.div{position:absolute;left:40px;right:440px;top:648px;border-top:2px dashed rgba(255,255,255,.25)}
+.zt{position:absolute;right:450px;font-size:16px;font-weight:700;letter-spacing:3px;color:#8d96b5}
+.tlogo{position:absolute;left:1520px;top:170px;width:360px;height:340px;display:grid;place-items:center}
+.tlogo img{max-width:360px;max-height:340px;object-fit:contain;filter:drop-shadow(0 0 30px rgba(233,185,73,.35))}
+.camp{position:absolute;left:1480px;top:840px;width:400px;text-align:center}
+.camp small{display:block;font-size:22px;letter-spacing:4px;color:var(--gold2)}
+.camp b{display:block;font-size:64px;font-weight:800;line-height:1.05}
+.camp img{height:110px;object-fit:contain;margin-bottom:6px}
+.vacio{position:absolute;left:0;right:0;top:500px;text-align:center;font-size:48px;color:#8d96b5;font-weight:800}
+</style></head><body>
+<div id="app"></div>
+<script src="theme.js"></script>
+<script src="programa.js"></script>
+<script src="knockout.js"></script>
+<script>
+const P=PROG,esc=P.esc,EMB=/[?&]embed\b/.test(location.search);
+if(EMB)document.body.classList.add('emb');
+/* posicion de cada partido (izquierda, arriba) */
+const POS={1:[40,170],2:[40,282],3:[40,394],4:[40,506],5:[420,226],6:[420,450],11:[800,338],
+  7:[40,690],8:[40,870],9:[420,690],10:[420,870],12:[800,780],13:[1150,780],14:[1500,560]};
+const ALTO=24+2*40;
+function pintar(S){const K=S.ko;const app=document.getElementById('app');
+  if(!K||!K.teams){app.innerHTML=`<h1>Knockout Stage</h1><div class="vacio">Cargá los equipos en el Control de programación</div>`;return}
+  const C=KNOCKOUT.calcular(K),T=K.teams;
+  const fila=(o,lado)=>{const i=lado?o.b:o.a,src=lado?o.src.b:o.src.a,sc=lado?o.sb:o.sa;
+    if(i==null)return `<div class="t"><span class="pend">${esc(KNOCKOUT.texto(src))}</span><b></b></div>`;
+    const t=T[i]||{};return `<div class="t ${o.gan==null?'':o.gan===i?'gana':'pierde'}">${t.logo?`<img src="${t.logo}">`:''}
+      <span>${esc(t.name)||'Equipo '+(i+1)}</span><b>${esc(sc)}</b></div>`};
+  /* lineas: del costado derecho del partido al renglon que le toca en el siguiente */
+  const centro=(id,lado)=>{const[x,y]=POS[id],gf=id===14;return [x,y+24+(gf?52:40)*lado+(gf?26:21)]};
+  let lin='';Object.values(C).forEach(o=>{['a','b'].forEach((k,lado)=>{const s=o.src[k];if(!s.w)return;
+    const[x0,y0]=POS[s.w];const xa=x0+300,ya=y0+24+40;const[xb,yb]=centro(o.id,lado);const xm=Math.round((xa+xb)/2);
+    const col=o.zona==='low'?'rgba(95,184,255,.6)':'rgba(233,185,73,.6)';
+    lin+=`<polyline points="${xa},${ya} ${xm},${ya} ${xm},${yb} ${xb},${yb}" fill="none" stroke="${col}" stroke-width="2"/>`})});
+  const box=o=>{const[x,y]=POS[o.id];return `<div class="mx ${o.zona}" style="left:${x}px;top:${y}px">
+    <div class="et">${esc(KNOCKOUT.nombre(o.id))}<small>BO${o.bo}</small></div>${fila(o,0)}${fila(o,1)}</div>`};
+  const gf=C[14],camp=gf.gan!=null?T[gf.gan]:null,E=S.ev||{};
+  app.innerHTML=`<h1>${esc(S.koTitulo||'Knockout Stage')}</h1>${EMB?'':'<div class="spon" data-spon="etq"></div>'}
+    <svg class="lin">${lin}</svg>
+    <div class="div"></div><div class="zt" style="top:622px">Llave de ganadores</div><div class="zt" style="top:656px">Llave de perdedores</div>
+    ${Object.values(C).map(box).join('')}
+    <div class="tlogo">${E.logo?`<img src="${E.logo}">`:''}</div>
+    ${camp?`<div class="camp">${camp.logo?`<img src="${camp.logo}"><br>`:''}<small>Campeón</small><b>${esc(camp.name)}</b></div>`:''}`;
+  P.pintarSpon()}
+P.empezar(pintar);
+</script></body></html>
