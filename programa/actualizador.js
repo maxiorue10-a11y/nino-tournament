@@ -22,7 +22,8 @@ const PERMITIDOS = [
   'public/swiss.js', 'public/casters-overlay.html',
   'public/partida.js', 'public/ingame.html', 'public/resultado.html',
   'public/programa.js', 'public/agenda-overlay.html', 'public/espera-fase.html',
-  'public/knockout.js', 'public/knockout-overlay.html'
+  'public/knockout.js', 'public/knockout-overlay.html',
+  'public/items.js'
 ];
 /* Ademas de la lista de arriba, se aceptan paginas y hojas de estilo NUEVAS que vengan
    sueltas dentro de public/ (por ejemplo public/cierre.html). Sin esto, cada vez que el
@@ -34,7 +35,7 @@ const permitido = p => PERMITIDOS.includes(p) || (NUEVOS_OK.test(p) && !p.includ
 
 // Carpetas y archivos tuyos: el actualizador los ignora siempre.
 const INTOCABLES = ['public/heroes', 'public/picks', 'public/bans', 'public/logos', 'public/lanes',
-  'public/voces',
+  'public/voces', 'public/items',
   'configuracion.txt', 'state.json', 'state-schedule.json', 'state-scoreboard.json',
   'state-theme.json', 'state-cierre.json'];
 

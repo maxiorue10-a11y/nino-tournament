@@ -64,11 +64,16 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:transparent;colo
 .fj .tx em{display:block;font-style:normal;font-size:16px;color:var(--gold2);letter-spacing:1px;white-space:nowrap;overflow:hidden}
 .fj .lv{width:42px;flex:none;text-align:center;font-size:40px;font-weight:800;color:var(--gold)}
 .fj .lv:empty{display:none}
+
+.fj .esp{display:flex;gap:5px;margin-top:4px}
+.col.r .fj .esp{justify-content:flex-end}
+.fj .esp img{width:26px;height:26px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
 </style></head><body>
 <div id="sb"></div><div id="esq"></div>
 <div class="col l" id="cl"></div><div class="col r" id="cr"></div>
 <script src="theme.js"></script>
 <script src="heroes.js"></script>
+<script src="items.js"></script>
 <script src="partida.js"></script>
 <script>
 const P=PARTIDA,esc=P.esc,$=id=>document.getElementById(id);
@@ -89,7 +94,8 @@ function pintar(){const sb=P.sb||{},A=P.equipo(0),B=P.equipo(1),S=P.serie();
     <small>BO${S.bo} · Partida ${esc(S.game)}</small></div><div class="tn">${esc(S.tournament)}</div>`;
   pintarSpon();
   const fila=(T,j)=>`<div class="fj" style="--c:${T.color}"><span class="ret">${retrato(j.hero)}</span>
-    <div class="tx"><small>${esc(j.name)}</small><b>${esc(j.kda||'0/0/0')}</b>${j.hero?`<em>${esc(j.hero)}</em>`:''}</div>
+    <div class="tx"><small>${esc(j.name)}</small><b>${esc(j.kda||'0/0/0')}</b>
+      ${j.talent||j.spell?`<span class="esp">${ITEMS.img(j.talent)}${ITEMS.img(j.spell)}</span>`:(j.hero?`<em>${esc(j.hero)}</em>`:'')}</div>
     <span class="lv">${esc(j.lvl)}</span></div>`;
   const ver=vivo&&sb.showPlayers!==false;
   $('cl').classList.toggle('oculto',!ver);$('cr').classList.toggle('oculto',!ver);

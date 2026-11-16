@@ -157,7 +157,7 @@ const servidor = http.createServer((req, res) => {
   if (url === '/api/media') {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     return res.end(JSON.stringify({ heroes: listarMedia('heroes'), picks: listarMedia('picks'),
-      bans: listarMedia('bans'), voces: listarMedia('voces', '', 0, AUDIO_EXT) }));
+      bans: listarMedia('bans'), items: listarMedia('items'), voces: listarMedia('voces', '', 0, AUDIO_EXT) }));
   }
 
   // ---- actualizaciones (solo el administrador) ----

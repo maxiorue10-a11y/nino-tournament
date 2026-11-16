@@ -4,6 +4,19 @@ Formato: MAYOR.MENOR.PARCHE  (ej. 0.0.2)
  - MENOR (el del medio): una funcion nueva
  - MAYOR (el primero): un cambio grande. Seguimos en 0 hasta tener una version estable para torneos.
 
+0.38.0 - ITEMS, HECHIZOS Y TALENTOS, E ICONOS DE ROL NUEVOS
+       - ICONOS DE ROL NUEVOS (EXP, Jungla, Mid, Gold, Roam): se cambiaron en tu carpeta
+         public/lanes. Los anteriores quedaron guardados en respaldos/lanes-anteriores.
+       - ITEMS: el programa ahora lee la carpeta public/items (items, hechizos de batalla
+         y talentos de emblema). Las imagenes son tuyas y el actualizador no las toca.
+       - CONTROL DEL MARCADOR: abajo de cada jugador hay casilleros para el talento, el
+         hechizo y los 6 items. Tocas uno y se abre un selector con todos los iconos y un
+         buscador. "Dejar vacio" lo borra y la x de la derecha vacia los de ese jugador.
+         "Reiniciar partida" vacia los items (el talento y el hechizo quedan).
+       - RESULTADO DE LA PARTIDA: cada jugador muestra sus 6 items, y al lado del nombre
+         el talento y el hechizo. Si no cargaste ningun item, no aparecen los casilleros.
+       - IN GAME: abajo del KDA de cada jugador aparecen el talento y el hechizo.
+
 0.37.1 - ARREGLO: IMAGENES QUE NO SALIAN EN OBS
        - En la espera "Fase" y en las escenas de comentaristas no se veia ninguna
          imagen dentro de OBS (fotos, auspiciantes, logos), aunque en el navegador si.

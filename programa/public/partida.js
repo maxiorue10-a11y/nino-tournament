@@ -28,6 +28,7 @@
     const color=typeof colorLado==='function'?colorLado(i,i?(sb.red||'#ff3d55'):(sb.blue||'#2f80ff')):(i?'#ff3d55':'#2f80ff');
     const jug=[0,1,2,3,4].map(k=>{const p=((sb.players||[])[i]||[])[k]||{};
       return {name:p.name||(D.players||[])[k]||'',kda:p.kda||'',lvl:p.lvl||'',gold:p.gold||'',
+        items:(Array.isArray(p.items)?p.items:[]).filter(Boolean).slice(0,6),spell:p.spell||'',talent:p.talent||'',
         hero:((dr.picks||[])[i]||[])[k]||'',lane:(D.lanes||[0,1,2,3,4])[k]}});
     /* el oro del equipo: el que escribiste, o la suma de los jugadores */
     let oro=P.oroNum(T.gold);if(oro==null){const s=jug.map(j=>P.oroNum(j.gold)).filter(x=>x!=null);if(s.length)oro=s.reduce((a,b)=>a+b,0)}

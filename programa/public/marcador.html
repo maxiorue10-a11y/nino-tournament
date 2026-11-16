@@ -32,6 +32,24 @@
 .avisos{font-size:14px;line-height:1.8}
 .avisos li{margin-left:18px}
 .ok2{color:var(--ok)}.warn2{color:var(--acc)}
+
+.itr td{padding-top:0!important}
+.islots{display:flex;gap:5px;align-items:center;margin:-2px 0 8px}
+.islot{width:38px;height:38px;padding:0;border-radius:7px;border:1px dashed var(--line);background:var(--input);display:grid;place-items:center;overflow:hidden;cursor:pointer}
+.islot.esp{border-radius:50%}
+.islot.lleno{border-style:solid}
+.islot img{width:100%;height:100%;object-fit:cover}
+.islot small{font-size:8px;color:var(--mut);text-transform:uppercase}
+.isep{width:8px}
+#ipick{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:none;place-items:center}
+.ipbox{width:min(860px,94vw);max-height:84vh;display:flex;flex-direction:column;background:var(--card,#1b1e24);border:1px solid var(--line);border-radius:12px;padding:14px}
+.iphead{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.iphead b{flex:none}.iphead input{flex:1}
+.ipgrid{overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.ipit{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px;border-radius:8px;border:1px solid transparent;background:var(--input);cursor:pointer}
+.ipit:hover{border-color:var(--gold,#e9b949)}
+.ipit img{width:52px;height:52px;object-fit:cover;border-radius:8px}
+.ipit span{font-size:11px;text-align:center;line-height:1.15}
 </style></head><body>
 
 <header id="top"></header>
@@ -45,6 +63,7 @@
 </main>
 
 <script src="nav.js"></script>
+<script src="items.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -56,7 +75,7 @@ function oroNum(v){const t=String(v==null?'':v).trim().replace(/\s/g,'').replace
 function oroTxt(n){if(n==null)return '—';
   return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':String(n)}
 const EQ=()=>({name:'',logo:'',flag:'',score:'',kills:'',gold:'',turrets:'',lords:'',turtles:''});
-const JUG=()=>[0,1,2,3,4].map(()=>({name:'',kda:'',lvl:'',gold:''}));
+const JUG=()=>[0,1,2,3,4].map(()=>({name:'',kda:'',lvl:'',gold:'',talent:'',spell:'',items:['','','','','','']}));
 const def=()=>({onair:true,showPlayers:false,logo:'',blue:'#2f80ff',red:'#ff3d55',
   corner:{tournament:'',stage:'',game:'',casters:''},
   sponsor:{mode:'none',logos:[],secs:3},
@@ -84,7 +103,7 @@ function alAire(){S.onair=!S.onair;build();push()}
 function nuevaPartida(){if(!confirm('¿Reiniciar los datos de la partida? Se ponen en cero kills, oro, torres, lords, tortugas, el reloj, el KDA, nivel y oro de cada jugador, y el ganador. Los nombres quedan.'))return;
   S.teams.forEach(t=>{t.kills='';t.gold='';t.turrets='';t.lords='';t.turtles=''});
   S.clock={value:''};S.ganador=-1;
-  S.players=S.players.map(l=>l.map(p=>({name:p.name||'',kda:'',lvl:'',gold:''})));build();push()}
+  S.players=S.players.map(l=>l.map(p=>({name:p.name||'',kda:'',lvl:'',gold:'',talent:p.talent||'',spell:p.spell||'',items:['','','','','','']})));build();push()}
 function copiarDelDraft(){fetch('/api/state?k=draft').then(r=>r.json()).then(d=>{
   if(!d||!d.teams)return alert('Todavía no hay datos en el control de draft.');
   d.teams.forEach((t,i)=>{S.teams[i].name=t.name||'';S.teams[i].logo=t.logo||'';
@@ -186,8 +205,32 @@ function renderStats(){
        </span></div>`).join('')}
    </div>`).join('')}</div>`}
 
+/* ---------- ítems: casilleros y selector ---------- */
+const valSlot=(p,campo)=>campo.startsWith('items:')?(p.items||[])[+campo.split(':')[1]]||'':p[campo]||'';
+function slot(i,k,campo,cat,t){const v=valSlot(S.players[i][k],campo);
+  return `<button class="islot ${campo.startsWith('items')?'':'esp'} ${v?'lleno':''}" title="${esc(v?ITEMS.nombre(v):t)}" onclick="abrirItems(${i},${k},'${campo}','${cat}')">${v?ITEMS.img(v):`<small>${t.split(' ')[0]}</small>`}</button>`}
+function ponerItem(i,k,campo,v){const p=S.players[i][k];
+  if(campo.startsWith('items:')){p.items=p.items||['','','','','',''];p.items[+campo.split(':')[1]]=v}else p[campo]=v;
+  cerrarItems();build();push()}
+function vaciarItems(i,k){const p=S.players[i][k];p.items=['','','','','',''];p.spell='';p.talent='';build();push()}
+let selIt=null;
+function abrirItems(i,k,campo,cat){selIt={i,k,campo,cat};let m=$('ipick');
+  if(!m){m=document.createElement('div');m.id='ipick';document.body.appendChild(m);m.onclick=e=>{if(e.target===m)cerrarItems()}}
+  const etq={item:'Ítems',hechizo:'Hechizos',talento:'Talentos de emblema'};
+  m.innerHTML=`<div class="ipbox"><div class="iphead"><b>${esc((S.players[i][k].name||'Jugador '+(k+1)))} · ${etq[cat]}</b>
+     <input id="ipq" placeholder="Buscar…" oninput="filtrarItems()" autocomplete="off">
+     <button class="sm" onclick="ponerItem(${i},${k},'${campo}','')">Dejar vacío</button><button class="sm" onclick="cerrarItems()">Cerrar</button></div>
+   <div class="ipgrid" id="ipgrid"></div></div>`;
+  m.style.display='grid';filtrarItems();setTimeout(()=>$('ipq').focus(),30)}
+function filtrarItems(){if(!selIt)return;const q=($('ipq').value||'').toLowerCase().trim(),L=ITEMS.lista(selIt.cat);
+  $('ipgrid').innerHTML=L.length?L.filter(n=>!q||ITEMS.nombre(n).toLowerCase().includes(q)).map(n=>
+    `<button class="ipit" onclick="ponerItem(${selIt.i},${selIt.k},'${selIt.campo}',decodeURIComponent('${encodeURIComponent(n)}'))">${ITEMS.img(n)}<span>${esc(ITEMS.nombre(n))}</span></button>`).join('')
+    :'<p class="hint">No hay íconos en la carpeta <b>public/items</b> del programa.</p>'}
+function cerrarItems(){const m=$('ipick');if(m)m.style.display='none';selIt=null}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarItems()});
+
 function renderJug(){
-  $('jug').innerHTML=`<h2>Jugadores<span>Los héroes salen solos del draft. Nivel y oro se usan en In game y en el resultado de la partida.</span></h2>
+  $('jug').innerHTML=`<h2>Jugadores<span>Los héroes salen solos del draft. Tocá un casillero para elegir talento, hechizo e ítems. Nivel, oro e ítems se usan en In game y en el resultado.</span></h2>
    <div class="half2">${S.teams.map((t,i)=>`<div>
      <div class="sidet" style="color:${i?S.red:S.blue}">${i?'Equipo rojo':'Equipo azul'}</div>
      <table class="ptab2"><tr><th>Jugador</th><th style="width:110px">KDA</th><th style="width:64px">Nivel</th><th style="width:90px">Oro</th></tr>
@@ -195,7 +238,12 @@ function renderJug(){
        <td><input value="${esc(p.name)}" placeholder="Jugador ${k+1}" oninput="set(['players',${i},${k},'name'],this.value)"></td>
        <td><input value="${esc(p.kda)}" placeholder="0/0/0" oninput="set(['players',${i},${k},'kda'],this.value)"></td>
        <td><input value="${esc(p.lvl||'')}" placeholder="1" oninput="set(['players',${i},${k},'lvl'],this.value)"></td>
-       <td><input value="${esc(p.gold||'')}" placeholder="8.2k" oninput="set(['players',${i},${k},'gold'],this.value)"></td></tr>`).join('')}
+       <td><input value="${esc(p.gold||'')}" placeholder="8.2k" oninput="set(['players',${i},${k},'gold'],this.value)"></td></tr>
+       <tr class="itr"><td colspan="4"><div class="islots">
+         ${slot(i,k,'talent','talento','Talento')}${slot(i,k,'spell','hechizo','Hechizo')}<span class="isep"></span>
+         ${[0,1,2,3,4,5].map(x=>slot(i,k,'items:'+x,'item','Ítem '+(x+1))).join('')}
+         ${(p.items||[]).some(Boolean)||p.spell||p.talent?`<button class="sm" title="Vaciar los ítems de este jugador" onclick="vaciarItems(${i},${k})">×</button>`:''}
+       </div></td></tr>`).join('')}
      </table></div>`).join('')}</div>`}
 
 function renderAvisos(){
@@ -227,10 +275,12 @@ es.onmessage=e=>{if(!primero)return;primero=false;conectado=true;
     S.clock=Object.assign(b.clock,d.clock||{});
     S.teams=S.teams.map(t=>Object.assign(EQ(),t));
     if(!S.players||!S.players[0])S.players=[JUG(),JUG()];
-    S.players=S.players.map(l=>l.map(p=>Object.assign({name:'',kda:'',lvl:'',gold:''},p)));
+    S.players=S.players.map(l=>l.map(p=>{const q=Object.assign({name:'',kda:'',lvl:'',gold:'',talent:'',spell:''},p);
+      q.items=Array.isArray(p.items)?p.items.slice(0,6):[];while(q.items.length<6)q.items.push('');return q}));
     if(S.ganador==null)S.ganador=-1}
   build();es.close()};
 es.onerror=()=>{conectado=false;setConn()};
 cargarRol(build);
+ITEMS.cargar().then(()=>{if(primero===false)build()});
 fetch('/version').then(r=>r.json()).then(v=>{document.title='Control del Marcador · MLBB v'+v.version}).catch(()=>{});
 </script></body></html>

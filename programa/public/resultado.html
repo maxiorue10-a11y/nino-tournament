@@ -44,7 +44,7 @@ body{background:radial-gradient(ellipse at 15% 60%,rgba(47,128,255,.18),transpar
 .fj{position:relative;height:144px;display:flex;background:rgba(7,10,18,.82);border-radius:8px;overflow:hidden;
  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .cl.r .fj{flex-direction:row-reverse}
-.fj .art{position:relative;width:300px;flex:none;overflow:hidden;background:#141d3d}
+.fj .art{position:relative;width:250px;flex:none;overflow:hidden;background:#141d3d}
 .fj .art img,.fj .art video{width:100%;height:100%;object-fit:cover;object-position:50% 25%}
 .fj .art::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,var(--c))}
 .cl.r .fj .art::after{background:linear-gradient(270deg,transparent 55%,var(--c))}
@@ -52,7 +52,7 @@ body{background:radial-gradient(ellipse at 15% 60%,rgba(47,128,255,.18),transpar
 .cl.r .fj .art .hn{left:auto;right:12px}
 .fj .dat{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 26px;min-width:0}
 .cl.r .fj .dat{text-align:right}
-.fj .nm{display:flex;align-items:center;gap:12px;font-size:38px;font-weight:800;line-height:1;white-space:nowrap;overflow:hidden}
+.fj .nm{display:flex;align-items:center;gap:10px;font-size:32px;font-weight:800;line-height:1;white-space:nowrap;overflow:hidden}
 .cl.r .fj .nm{flex-direction:row-reverse}
 .fj .nm img{width:34px;height:34px;object-fit:contain;flex:none}
 .fj .nums{display:flex;gap:46px;margin-top:14px}
@@ -71,14 +71,24 @@ body{background:radial-gradient(ellipse at 15% 60%,rgba(47,128,255,.18),transpar
 .cen .st b{font-size:48px;font-weight:800}
 .cen .st b.mas{color:var(--gold)}
 .cen .st span{font-size:17px;font-weight:700;letter-spacing:1px;color:#8d96b5}
-.cen .st.oro b{font-size:40px}
+.cen .st.oro b{font-size:32px}
 .cen .spo{margin-top:16px;height:110px;display:grid;place-items:center}
 .cen .spo img{max-width:240px;max-height:110px;object-fit:contain}
+
+.fj .its{flex:none;width:186px;display:grid;grid-template-columns:repeat(3,56px);grid-auto-rows:56px;gap:6px;align-content:center;padding:0 10px}
+.fj .its{order:3}
+.fj .its i{display:block;width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.fj .its img{width:56px;height:56px;border-radius:8px;object-fit:cover;box-shadow:0 0 0 1px rgba(0,0,0,.6)}
+.fj .nm>span:not(.esp){min-width:0;overflow:hidden;text-overflow:ellipsis}
+.fj .esp{display:flex;gap:6px;margin-left:6px;flex:none}
+.cl.r .fj .esp{margin:0 6px 0 0}
+.fj .esp img{width:34px;height:34px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--c)}
 </style></head><body>
 <div id="cab"></div><div class="cl l" id="cl"></div><div class="cen" id="cen"></div><div class="cl r" id="cr"></div>
 <script src="theme.js"></script>
 <script src="equipos.js"></script>
 <script src="heroes.js"></script>
+<script src="items.js"></script>
 <script src="partida.js"></script>
 <script>
 const P=PARTIDA,esc=P.esc,$=id=>document.getElementById(id);
@@ -97,10 +107,14 @@ function pintar(){const sb=P.sb||{},A=P.equipo(0),B=P.equipo(1),S=P.serie(),gan=
      <div class="mid"><div class="lt">${S.logo?`<img src="${S.logo}">`:''}</div><b>${esc(S.stage||S.tournament)}</b>
        <small>BO${S.bo} · Partida ${esc(S.game)}</small></div>`;
   const mvp=gan<0?-1:(()=>{const J=[A,B][gan].jug;let m=0;J.forEach((j,k)=>{if(puntos(j.kda)>puntos(J[m].kda))m=k});return J[m].kda?m:-1})();
+  /* los casilleros de items aparecen solo si cargaste alguno */
+  const hayItems=[A,B].some(T=>T.jug.some(j=>j.items.length));
   const fila=(T,i,j,k)=>`<div class="fj" style="--c:${T.color}">
     <div class="art">${arte(j.hero)}${j.hero?`<span class="hn">${esc(j.hero)}</span>`:''}</div>
-    <div class="dat"><div class="nm"><img src="${LANE_ICON[j.lane]}" onerror="this.remove()"><span>${esc(j.name)||'Jugador '+(k+1)}</span></div>
+    <div class="dat"><div class="nm"><img src="${LANE_ICON[j.lane]}" onerror="this.remove()"><span>${esc(j.name)||'Jugador '+(k+1)}</span>
+      ${j.talent||j.spell?`<span class="esp">${ITEMS.img(j.talent)}${ITEMS.img(j.spell)}</span>`:''}</div>
       <div class="nums"><div><small>KDA</small><b>${esc(j.kda||'0/0/0')}</b></div><div><small>Oro</small><b>${P.oroTxt(P.oroNum(j.gold))}</b></div></div></div>
+    ${hayItems?`<div class="its">${[0,1,2,3,4,5].map(x=>j.items[x]?ITEMS.img(j.items[x]):'<i></i>').join('')}</div>`:''}
     ${gan===i&&mvp===k?'<span class="mvp">MVP</span>':''}</div>`;
   $('cl').innerHTML=A.jug.map((j,k)=>fila(A,0,j,k)).join('');
   $('cr').innerHTML=B.jug.map((j,k)=>fila(B,1,j,k)).join('');
